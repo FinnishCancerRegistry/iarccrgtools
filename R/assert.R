@@ -68,11 +68,17 @@ assert_path <- function(
   invisible(NULL)
 }
 
-assert_file_path <- function(path, path.arg.nm) {
+assert_file_path <- function(path, path.arg.nm = NULL) {
+  if (is.null(path.arg.nm)) {
+    path.arg.nm <- deparse(substitute(path))
+  }
   assert_path(path = path, path.arg.nm = path.arg.nm, path.type = "file")
 }
 
-assert_dir_path <- function(path, path.arg.nm) {
+assert_dir_path <- function(path, path.arg.nm = NULL) {
+  if (is.null(path.arg.nm)) {
+    path.arg.nm <- deparse(substitute(path))
+  }
   assert_path(path = path, path.arg.nm = path.arg.nm, path.type = "dir")
 }
 
@@ -80,12 +86,24 @@ assert_dir_path <- function(path, path.arg.nm) {
 
 
 
-
-
-
-
-
-
+assert_tools_program <- function(program.name, program.name.arg.nm = NULL) {
+  if (is.null(program.name.arg.nm)) {
+    program.name.arg.nm <- deparse(substitute(program.name))
+  }
+  
+  if (!is.character(program.name) != 1L) {
+    stop("Arg ", deparse(program.name.arg.nm), " must be of class 'character'")
+  }
+  if (length(program.name) != 1L) {
+    stop("Arg ", deparse(program.name.arg.nm), " must be of length 1")
+  }
+  prog_nms <- tools_program_names()
+  if (!program.name %in% prog_nms) {
+    stop("Arg ", deparse(program.name.arg.nm), " must be one of these: ",
+         deparse(prog_nms))
+  }
+  invisible(NULL)
+}
 
 
 
