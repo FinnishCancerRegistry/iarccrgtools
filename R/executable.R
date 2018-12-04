@@ -9,7 +9,7 @@
 #' Set and get path to IARC CRG Tools executable.
 #' @details
 #' The executable is attempted to be discovered automatically by
-#' \code{\link{guess_path_to_exe}} at start-up of this package, so with
+#' \code{\link{guess_tools_exe_path}} at start-up of this package, so with
 #' any luck you don't need to set it by hand.
 #'
 #' Executable path will be stored for the duration of the ongoing R session.
@@ -28,14 +28,14 @@ set_path_to_exe <- function(path) {
 #' @describeIn exe_path gets currently saved path to .exe;
 #' value will be \code{NA_character_} if no path has been set yet.
 #' @export
-get_path_to_exe <- function() {
+get_tools_exe_path <- function() {
   exe_path_env$path
 }
 
 #' @describeIn exe_path tries to guess where the executable is based on
 #' typical installation directories
 #' @export
-guess_path_to_exe <- function() {
+guess_tools_exe_path <- function() {
   dir_set <- c(
     "C:\\Program Files (x86)\\IARCcrgTools",
     "C:\\Program Files\\IARCcrgTools"
@@ -62,7 +62,7 @@ guess_path_to_exe <- function() {
 }
 
 exe_path_env <- new.env(parent = emptyenv())
-exe_path_env$path <- tryCatch(guess_path_to_exe(),
+exe_path_env$path <- tryCatch(guess_tools_exe_path(),
                               error = function(e) NA_character_,
                               warning = function(w) NA_character_)
 

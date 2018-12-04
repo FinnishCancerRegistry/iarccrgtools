@@ -82,6 +82,18 @@ assert_dir_path <- function(path, path.arg.nm = NULL) {
   assert_path(path = path, path.arg.nm = path.arg.nm, path.type = "dir")
 }
 
+assert_write_dir_path <- function(path, path.arg.nm = NULL) {
+  if (is.null(path.arg.nm)) {
+    path.arg.nm <- deparse(substitute(path))
+  }
+  assert_path(path = path, path.arg.nm = path.arg.nm, path.type = "dir")
+  if (!dir_is_writable(path)) {
+    stop("Directory ", deparse(path), " exists but is not writable; ensure ",
+         "you have writing permissions there.")
+  }
+  invisible(NULL)
+}
+
 
 
 
@@ -90,8 +102,8 @@ assert_tools_program <- function(program.name, program.name.arg.nm = NULL) {
   if (is.null(program.name.arg.nm)) {
     program.name.arg.nm <- deparse(substitute(program.name))
   }
-  
-  if (!is.character(program.name) != 1L) {
+
+  if (!is.character(program.name)) {
     stop("Arg ", deparse(program.name.arg.nm), " must be of class 'character'")
   }
   if (length(program.name) != 1L) {
@@ -104,6 +116,71 @@ assert_tools_program <- function(program.name, program.name.arg.nm = NULL) {
   }
   invisible(NULL)
 }
+
+
+
+
+assert_tools_data <- function(
+  data,
+  program.name,
+  data.arg.nm = NULL,
+  program.name.arg.nm = NULL
+) {
+  if (is.null(data.arg.nm)) {
+    data.arg.nm <- deparse(substitute(data))
+  }
+  if (is.null(program.name.arg.nm)) {
+    program.name.arg.nm <- deparse(substitute(program.name))
+  }
+
+  if (!is.data.frame(data)) {
+    stop("Arg ", deparse(data.arg.nm), " must be a data.frame")
+  }
+  if (nrow(data) == 0) {
+    stop("Arg ", deparse(data.arg.nm), " must have at least one row")
+  }
+  if (!is.data.frame(data)) {
+    stop("Arg ", deparse(data.arg.nm), " must be a data.frame")
+  }
+
+  mandatory_col_nms <- tools_program_colnameset(
+    paste0("mandatory_", program.name)
+  )
+  miss_col_nms <- setdiff(mandatory_col_nms, names(data))
+  if (length(miss_col_nms)) {
+    stop("To use with ", program.name.arg.nm, " = ", deparse(program.name),
+         ", data.frame passed to arg ", deparse(data.arg.nm), " must have ",
+         "these columns: ", deparse(miss_col_nms))
+  }
+  invisible(NULL)
+}
+
+
+
+
+
+
+assert_tools_colnameset_name <- function(set.nm, set.nm.arg.nm = NULL) {
+  if (is.null(set.nm.arg.nm)) {
+    set.nm.arg.nm <- deparse(substitute(set.nm))
+  }
+  allowed <- tools_program_colnameset_names()
+
+  if (length(set.nm) != 1) {
+    stop("Arg ", deparse(set.nm.arg.nm), " must be of length 1")
+  }
+  if (!is.character(set.nm)) {
+    stop("Arg ", deparse(set.nm.arg.nm), " must be of class 'character'")
+  }
+  if (!set.nm %in% allowed) {
+    stop("Arg ", deparse(set.nm.arg.nm), " must be one of the following: ",
+         deparse(allowed), "; Got instead: ", deparse(set.nm))
+  }
+  invisible(NULL)
+}
+
+
+
 
 
 

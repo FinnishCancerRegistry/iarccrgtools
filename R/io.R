@@ -3,6 +3,37 @@
 
 
 
+dir_is_writable <- function(
+  dir.path
+) {
+  assert_dir_path(dir.path)
+
+  tf <- tempfile(pattern = "file_", tmpdir = dir.path, fileext = ".tmp")
+
+  on.exit({
+    if (file.exists(tf)) {
+      file.remove(tf)
+    }
+  })
+
+  test <- tryCatch(
+    {
+      writeLines("test string", con = tf)
+      TRUE
+    },
+    error = function(e) e,
+    warning = function(w) w
+  )
+
+  if (!identical(test, TRUE)) {
+    test <- FALSE
+  }
+  test
+}
+
+
+
+
 get_data_template <- function(
   program
 ) {
@@ -14,16 +45,16 @@ get_data_template <- function(
     sex = "1",
     icd9 = "0001",
     icd10 = "0001",
-    icdo1_topo = "0001",
-    icdo1_morpho = "0001",
+    icdo1_topography = "0001",
+    icdo1_histology = "0001",
     icdo1_grade = "1",
-    icdo2_topo = "001",
-    icdo2_morpho = "0001",
-    icdo3_topo = "001",
-    icdo3_morpho = "0001",
-    icdo3_beh = "1",
+    icdo2_topography = "001",
+    icdo2_histology = "0001",
+    icdo3_topography = "001",
+    icdo3_histology = "0001",
+    icdo3_behaviour = "1",
     icdo3_grade = "1",
-    dg_basis = "1",
+    basis = "1",
     bi_date = "20001231",
     dg_date = "20001231",
     dg_age = 21:25
@@ -46,18 +77,25 @@ NULL
 #' @describeIn work_dir sets working directory
 #' @param dir string; path to a directory
 #' @export
-set_working_dir <- function(dir = tempdir()) {
+set_tools_working_dir <- function(dir) {
   assert_dir_path(dir)
+  dir <- normalizePath(dir)
   assign(x = "path", value = dir, envir = wd_env)
 }
 
 #' @describeIn work_dir gets current working directory as string
 #' @export
-get_working_dir <- function() {
+get_tools_working_dir <- function() {
+  if (identical(wd_env$path, FALSE)) {
+    stop("Working directory for IARC CRG Tools not set --- ",
+         "see ?set_tools_working_dir")
+  } else if (!dir.exists(wd_env$path)) {
+    stop("Invalid working directory: ", deparse(wd_env$path))
+  }
   wd_env$path
 }
 wd_env <- new.env(parent = emptyenv())
-wd_env$path <- tempdir()
+wd_env$path <- FALSE
 
 
 
@@ -73,13 +111,24 @@ wd_env$path <- tempdir()
 #' use when writing
 #' @import data.table
 #' @export
-iarccrgtools_write <- function(
+write_tools_data <- function(
   x,
-  file = tempfile(fileext = ".txt", tmpdir = get_working_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
   ...
 ) {
-  assert_names(x, expected.names = iarccrgtools_colnameset(), arg.nm = "x")
   assert_dataframe(x)
+  stopifnot(
+    is.character(file),
+    length(file) == 1
+  )
+
+  if (file.exists(file)) {
+    ow <- ask_yes_no("file ", deparse(file), " already exists. overwrite?")
+    if (!ow) {
+      message("Cancelled writing table to ", deparse(file), ".")
+      return(invisible(NULL))
+    }
+  }
 
   data.table::fwrite(
     x = x,
@@ -91,7 +140,14 @@ iarccrgtools_write <- function(
     col.names = FALSE,
     ...
   )
+  invisible(NULL)
+}
 
+
+
+
+read_tools_output <- function(...) {
+  stop("TODO")
 }
 
 
@@ -104,7 +160,7 @@ iarccrgtools_write <- function(
 iarccrgtools <- function(
   x,
   program = iarccrgtools_programs()[1],
-  tmp.file = paste0(get_working_dir(), "iarc_check_input.txt"),
+  tmp.file = paste0(get_tools_working_dir(), "iarc_check_input.txt"),
   clean = TRUE
 ) {
   program <- match.arg(program, iarccrgtools_programs())
@@ -326,16 +382,16 @@ iarccrgtools_program_result_files <- function(
   out <- switch(
     program,
     check = paste0(
-      get_working_dir(),
+      get_tools_working_dir(),
       c("iarc_check_output.log", "iarc_check_output.txt",
         "iarc_check_input.chk", "iarc_check_input.err")
     ),
     multi = paste0(
-      get_working_dir(),
+      get_tools_working_dir(),
       c("iarc_check_output.txt", "iarc_check_input.exl", "iarc_check_input.mul")
     ),
     O3to10 = paste0(
-      get_working_dir(),
+      get_tools_working_dir(),
       c("iarc_check_output.txt",
         "iarc_check_input.eO3to10", "iarc_check_input.wO3to10")
     ),

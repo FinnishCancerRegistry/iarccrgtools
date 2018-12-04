@@ -2,13 +2,13 @@
 % Please edit documentation in R/io.R
 \name{work_dir}
 \alias{work_dir}
-\alias{set_working_dir}
-\alias{get_working_dir}
+\alias{set_tools_working_dir}
+\alias{get_tools_working_dir}
 \title{IARC CRG Tools Working Directory}
 \usage{
-set_working_dir(dir = tempdir())
+set_tools_working_dir(dir)
 
-get_working_dir()
+get_tools_working_dir()
 }
 \arguments{
 \item{dir}{string; path to a directory}
@@ -19,8 +19,8 @@ are stored.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_working_dir}: sets working directory
+\item \code{set_tools_working_dir}: sets working directory
 
-\item \code{get_working_dir}: gets current working directory as string
+\item \code{get_tools_working_dir}: gets current working directory as string
 }}
 

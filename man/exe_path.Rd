@@ -3,15 +3,15 @@
 \name{exe_path}
 \alias{exe_path}
 \alias{set_path_to_exe}
-\alias{get_path_to_exe}
-\alias{guess_path_to_exe}
+\alias{get_tools_exe_path}
+\alias{guess_tools_exe_path}
 \title{IARC CRG Tools Executable Path}
 \usage{
 set_path_to_exe(path)
 
-get_path_to_exe()
+get_tools_exe_path()
 
-guess_path_to_exe()
+guess_tools_exe_path()
 }
 \arguments{
 \item{path}{path to IARC CRG Tools executable}
@@ -21,7 +21,7 @@ Set and get path to IARC CRG Tools executable.
 }
 \details{
 The executable is attempted to be discovered automatically by
-\code{\link{guess_path_to_exe}} at start-up of this package, so with
+\code{\link{guess_tools_exe_path}} at start-up of this package, so with
 any luck you don't need to set it by hand.
 
 Executable path will be stored for the duration of the ongoing R session.
@@ -31,10 +31,10 @@ If this package is somehow unloaded or reloaded, the setting will reset.
 \itemize{
 \item \code{set_path_to_exe}: sets path to .exe
 
-\item \code{get_path_to_exe}: gets currently saved path to .exe;
+\item \code{get_tools_exe_path}: gets currently saved path to .exe;
 value will be \code{NA_character_} if no path has been set yet.
 
-\item \code{guess_path_to_exe}: tries to guess where the executable is based on
+\item \code{guess_tools_exe_path}: tries to guess where the executable is based on
 typical installation directories
 }}
 
