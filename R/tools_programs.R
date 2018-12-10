@@ -10,66 +10,26 @@
 #' @return A character string vector.
 #' @export
 tools_program_names <- function() {
-  c(
-    "IARC/IACR Check" = "iarc_check",
-    "IARC/IACR Multiple Primary" = "iarc_multiple_primary",
-    "ICD-O-3 -> ICD-10" = "icdo3_to_icd10"
-  )
-}
-
-
-
-
-tools_program_guides <- function(program.name) {
-  assert_tools_program(program.name)
-
-  switch(
-    program.name,
-
-    iarc_check = {
-      data.frame(
-        stringsAsFactors = FALSE,
-        keystroke = c("ALT + T", "C"),
-        instruction = c("Select 'Tools'", "Select 'IARC/IACR Check'")
-      )
-    },
-
-    icdo3_to_icd10 = {
-      data.frame(
-        stringsAsFactors = FALSE,
-        keystroke = c("ALT + C", "3"),
-        instruction = c("Select 'Conversions'", "Select 'ICD-O-3 -> ICD-10'")
-      )
-    },
-
-    iarc_multiple_primary = {
-      data.frame(
-        stringsAsFactors = FALSE,
-        keystroke = c("BTN1", "BTN2"),
-        instruction = c("Select 'Tools'", "Select 'Multiple Primary'")
-      )
-    }
-  )
-
+  sort(unique(program_guides$program_name))
 }
 
 
 
 
 
-tools_program_keystrokes <- function(program.name) {
+tools_program_commands <- function(program.name) {
   assert_tools_program(program.name)
-
-  guide_df <- tools_program_guides(program.name)
-  guide_df[["keystroke"]]
-
+  is_in_program <- program_guides$program_name == program.name
+  ks <- program_guides[["command"]][is_in_program]
+  names(ks) <- program_guides[["instruction"]][is_in_program]
+  ks
 }
 
 tools_program_instructions <- function(program.name) {
   assert_tools_program(program.name)
-
-  guide_df <- tools_program_guides(program.name)
-  guide_df[["instruction"]]
+  
+  is_in_program <- program_guides$program_name == program.name
+  program_guides[["instruction"]][is_in_program]
 
 }
 
@@ -88,12 +48,12 @@ tools_program_colnameset <- function(set.nm) {
   icdo3_thb <- c("icdo3_topography", "icdo3_histology", "icdo3_behaviour")
   icdo3_all <- c(icdo3_thb, "icdo3_grade")
 
-  mandatory_icdo03_to_icd10 <- c(
+  mandatory_icdo3_to_icd10 <- c(
     "record_id", "sex",
     icdo3_thb
   )
   optional_icdo3_to_icd10 <- "icdo3_grade"
-  all_idco03_to_icd10 <- c(mandatory_icdo03_to_icd10, optional_icdo3_to_icd10)
+  all_icdo3_to_icd10 <- c(mandatory_icdo3_to_icd10, optional_icdo3_to_icd10)
 
 
   mandatory_iarc_check <- c(
@@ -154,7 +114,7 @@ get_tools_settings_template <- function(
   program.name
   ) {
   assert_dir_path(dir.path)
-  dir.path <- normalizePath(paste0(dir.path, "/"))
+  dir.path <- normalize_path(paste0(dir.path, "/"))
   assert_tools_program(program.name)
 
   file_paths_in_pkg <- paste0(program.name, ".", c("dfi", "frm"))

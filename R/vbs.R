@@ -15,16 +15,42 @@ as.vbslines.character <- function(x, ...) {
   class(y) <- c("vbslines" , "character")
   y
 }
-print.vbslines <- function(x, ...) {
+print.vbslines <- function(x, max.print = 50, ...) {
   n_lines <- length(x)
+  stopifnot(
+    length(max.print) == 1,
+    max.print %% 1 == 0,
+    max.print > 0
+  )
+  
+  max.print <- min(max.print, n_lines)
+  
+  printable <- rep(TRUE, n_lines)
+  
+  if (n_lines > max.print) {
+    first_10 <- 1:10
+    last_10 <- seq(n_lines, n_lines-9, -1)
+    printable[-c(first_10, last_10)] <- FALSE
+  }
 
   cat("--- vbslines vector with", n_lines, "lines ---\n")
-  row_num <- seq_along(x)
+  row_num <- which(printable)
   row_num <- formatC(x = row_num, digits = nchar(n_lines), flag = " ")
 
-  cat(paste0(row_num, ": ", x), sep = "\n")
+  if (n_lines > max.print) {
+    cat(paste0(row_num[1:10], ": ", x[1:10]), sep = "\n")
+    n_hidden_lines <- n_lines-20L
+    cat("---", n_hidden_lines, "lines not shown ---\n")
+    cat(paste0(row_num[11:20], ": ", x[11:20]), sep = "\n")
+  } else {
+    cat(paste0(row_num, ": ", x), sep = "\n")
+  }
+  cat("--- vbslines vector end ---\n")
+  
   invisible(NULL)
 }
+
+
 
 
 
@@ -61,7 +87,7 @@ call_vbslines <- function(lines) {
 
   tf <- tempfile(fileext = ".vbs")
   writeLines(text = "", con = tf)
-  tf <- normalizePath(tf)
+  tf <- normalize_path(tf)
   on.exit({
     if (file.exists(tf)) {
       file.remove(tf)
@@ -108,15 +134,31 @@ can_call_vbs <- function() {
 
 
 
+vbscript_protect_path <- function(
+  path
+) {
+  
+  protect <- grepl("\\s", path) & !(grepl('$""', path) & grepl('""^', path))
+  
+  path[protect] <- paste0('""', path[protect], '""')
+  
+  return(path)
+}
+
+
+
+
+
 vbslines_call_tools <- function(
   exe.path = get_tools_exe_path()
 ) {
   assert_file_path(exe.path, path.arg.nm = "exe.path")
-  exe.path <- normalizePath(exe.path)
+  exe.path <- normalize_path(exe.path)
+  exe.path <- vbscript_protect_path(exe.path)
   lines <- c(
     '',
     'Set WshShell = WScript.CreateObject("WScript.Shell")',
-    paste0('WshShell.Run """', exe.path,'""", 9'),
+    paste0('WshShell.Run "', exe.path,'", 9'),
     ''
   )
   as.vbslines(lines)
@@ -124,16 +166,19 @@ vbslines_call_tools <- function(
 
 
 
+
+
 vbslines_get_filesize <- function(
   file.path
 ) {
   assert_file_path(file.path, "file.path")
-  file.path <- normalizePath(file.path)
+  file.path <- normalize_path(file.path)
   lines <- c(
     '',
     'Set fso = CreateObject("Scripting.FileSystemObject")',
     paste0('Set fo = fso.GetFile("', file.path,'")'),
     'fosize = fo.Size',
+    'Wscript.Echo(fosize)',
     ''
   )
   as.vbslines(lines)
@@ -148,8 +193,8 @@ vbslines_wait_until_file_stops_growing <- function(
   check.interval = 30L,
   max.time = 60L*60L*12L ## 12 hours
 ) {
-  assert_file_path(file.path, path.arg.nm = "file.path")
-  file.path <- normalizePath(file.path)
+  assert_write_file_path(file.path, path.arg.nm = "file.path")
+  file.path <- normalize_path(file.path)
   stopifnot(
     length(check.interval) == 1,
     check.interval > 0,
@@ -179,7 +224,6 @@ vbslines_wait_until_file_stops_growing <- function(
     '   newsize = fo.Size',
     '   timeelapsed = timeelapsed + intervaltime',
     'Wend',
-    'Wscript.Echo("file stopped growing. ended.")',
     ''
   )
 
@@ -190,26 +234,74 @@ vbslines_wait_until_file_stops_growing <- function(
 
 
 
-vbslines_tools_program_keystrokes <- function(
-  program.name
+vbslines_exit_tools <- function() {
+  lines <- c("%F", "X")
+  lines <- paste0("WshShell.SendKeys(\"", lines, "\")")
+  as.vbslines(lines)
+}
+
+
+
+
+
+vbslines_tools_program_commands <- function(
+  program.name,
+  input.path,
+  output.path
 ) {
   assert_tools_program(program.name)
-  keystrokes <- tools_program_keystrokes(program.name)
-  specials <- list(CTRL = "^", ALT = "%", ENTER = "{ENTER}",
-                   SHIFT = "+")
+  assert_write_file_path(input.path)
+  assert_write_file_path(output.path)
+  commands <- tools_program_commands(program.name)
+  
+  special_strings <- list(
+    CTRL = "^", 
+    ALT = "%", 
+    ENTER = "{ENTER}",
+    SHIFT = "+",
+    TAB = "{TAB}",
+    `%%WRITE_INPUT_PATH%%` = input.path,
+    `%%WRITE_OUTPUT_PATH%%` = output.path
+  )
+  
+  lines <- toupper(commands)
 
-  lines <- keystrokes
-
-  for (special_name in names(specials)) {
+  for (nm in names(special_strings)) {
+    pat <- paste0("(\\Q", nm, c("", " + "), "\\E)", collapse = "|")
     lines <- gsub(
-      paste0(special_name, " + "),
-      specials[[special_name]],
-      lines
+      pattern = pat,
+      replacement = special_strings[[nm]],
+      x = lines
     )
   }
-
-  lines <- tolower(lines)
+  lines
+  
+  special_commands <- list(
+    `%%WAIT_UNTIL_READY%%` = vbslines_wait_until_file_stops_growing(
+      file.path = input.path
+    )
+  )
+  
   lines <- paste0("WshShell.SendKeys(\"", lines, "\")")
+  
+  for (cmd_nm in names(special_commands)) {
+    
+    has_special <- grepl(
+      pattern = cmd_nm,
+      x = lines,
+      fixed = TRUE
+    )
+    if (any(has_special)) {
+      lines <- local({
+        lines <- as.list(lines)
+        lines[has_special] <- special_commands[cmd_nm]
+        unlist(lines, use.names = FALSE)
+      })
+    }
+  }
+  
+  lines <- c(vbslines_call_tools(), "", lines, "", vbslines_exit_tools())
+  
   as.vbslines(lines)
 }
 
@@ -224,7 +316,8 @@ vbslines_call_tools_program <- function(
   wait.check.interval = 10L,
   wait.max.time = 60L*60L
 ) {
-
+  
+  
   vl_call_tools <- vbslines_call_tools(exe.path = exe.path)
 
   vl_keystrokes <- vbslines_tools_program_keystrokes(

@@ -86,12 +86,40 @@ NULL
 
 
 
+dir_of_path <- function(path) {
+  ## - if is existing dir, return path
+  ## - if is existing (non-directory) file path, return dir of this file
+  ## - if looks like file path, return implied dir
+  ## - else return path and throw warning
+  stopifnot(
+    length(path) == 1,
+    is.character(path)
+  )
+  has_ext <- grepl(
+    pattern = "\\.[[:alpha:]]{1,10}^",
+    x = path
+  )
+  if (dir.exists(path)) {
+    return(path)
+  } else if (file.exists(path) || has_ext) {
+    return(dirname(path))
+  }
+  warning("Could not guess directory for path ", deparse(path), "; ",
+          "you may encounter a strange error. If path is a file, ensure it ",
+          "ends with an extension such as .txt. If path is a directory, ",
+          "ensure that it exists.")
+  
+}
 
 
 
 
 
-
+normalize_path <- function(path) {
+  
+  normalizePath(path = path, winslash = "\\", mustWork = FALSE)
+  
+}
 
 
 

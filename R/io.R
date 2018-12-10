@@ -79,7 +79,7 @@ NULL
 #' @export
 set_tools_working_dir <- function(dir) {
   assert_dir_path(dir)
-  dir <- normalizePath(dir)
+  dir <- normalize_path(dir)
   assign(x = "path", value = dir, envir = wd_env)
 }
 
@@ -105,6 +105,7 @@ wd_env$path <- FALSE
 #' @description
 #' A text file is written in a fixed field format.
 #' @param x a data.frame
+#' @param colnameset.nm passed to \code{\link{tools_program_colnameset}}
 #' @param file string; where file will be saved to
 #' @param ... arguments passed to \code{\link[data.table]{fwrite}};
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
@@ -113,17 +114,20 @@ wd_env$path <- FALSE
 #' @export
 write_tools_data <- function(
   x,
+  colnameset.nm = tools_program_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
   ...
 ) {
   assert_dataframe(x)
-  stopifnot(
-    is.character(file),
-    length(file) == 1
-  )
+  col_nms <- tools_program_colnameset(colnameset.nm)
+  assert_names(x, expected.names = col_nms, arg.nm = "x")
+  assert_write_file_path(path = file)
+  
+  x <- data.table::setDF(mget(col_nms, as.environment(x)))
 
   if (file.exists(file)) {
-    ow <- ask_yes_no("file ", deparse(file), " already exists. overwrite?")
+    ow <- ask_yes_no("* write_tools_data: File ", deparse(file), 
+                     " already exists. overwrite?")
     if (!ow) {
       message("Cancelled writing table to ", deparse(file), ".")
       return(invisible(NULL))

@@ -29,7 +29,7 @@ assert_names <- function(
     stop("Object supplied to ", deparse(arg.nm), " has no names defined.")
   }
 
-  miss_nms <- setdiff(names(x), expected.names)
+  miss_nms <- setdiff(expected.names, names(x))
   if (length(miss_nms)) {
     stop("Object passed to argument ", deparse(arg.nm), " did not have these ",
          "names: ", paste0(deparse(miss_nms), collapse = ""))
@@ -92,6 +92,13 @@ assert_write_dir_path <- function(path, path.arg.nm = NULL) {
          "you have writing permissions there.")
   }
   invisible(NULL)
+}
+assert_write_file_path <- function(path, path.arg.nm = NULL) {
+  if (is.null(path.arg.nm)) {
+    path.arg.nm <- deparse(substitute(path))
+  }
+  implied_dir <- dirname(path)
+  assert_write_dir_path(implied_dir, path.arg.nm = path.arg.nm)
 }
 
 

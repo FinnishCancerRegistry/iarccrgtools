@@ -2,12 +2,12 @@
 % Please edit documentation in R/executable.R
 \name{exe_path}
 \alias{exe_path}
-\alias{set_path_to_exe}
+\alias{set_tools_exe_path}
 \alias{get_tools_exe_path}
 \alias{guess_tools_exe_path}
 \title{IARC CRG Tools Executable Path}
 \usage{
-set_path_to_exe(path)
+set_tools_exe_path(path)
 
 get_tools_exe_path()
 
@@ -29,7 +29,7 @@ If this package is somehow unloaded or reloaded, the setting will reset.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_path_to_exe}: sets path to .exe
+\item \code{set_tools_exe_path}: sets path to .exe
 
 \item \code{get_tools_exe_path}: gets currently saved path to .exe;
 value will be \code{NA_character_} if no path has been set yet.

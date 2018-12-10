@@ -19,7 +19,7 @@ NULL
 #' @describeIn exe_path sets path to .exe
 #' @param path path to IARC CRG Tools executable
 #' @export
-set_path_to_exe <- function(path) {
+set_tools_exe_path <- function(path) {
   assert_file_path(path)
   assign(x = "path", value = path, envir = exe_path_env)
   invisible(NULL)
@@ -44,7 +44,7 @@ guess_tools_exe_path <- function() {
   dir_exists <- dir.exists(dir_set)
   if (!any(dir_exists)) {
     stop("Could not guess path to IARC CRG Tools executable. You need to ",
-         "set it by hand using set_path_to_exe.")
+         "set it by hand using set_tools_exe_path.")
   }
   dir <- dir_set[dir_exists][1]
 
@@ -53,11 +53,11 @@ guess_tools_exe_path <- function() {
 
   if (length(exe_nm) != 1) {
     stop("Could not guess path to IARC CRG Tools executable. You need to ",
-         "set it by hand using set_path_to_exe.")
+         "set it by hand using set_tools_exe_path.")
   }
 
   exe_path <- paste0(dir, "\\", exe_nm)
-  exe_path <- normalizePath(exe_path, mustWork = TRUE)
+  exe_path <- normalize_path(exe_path)
   exe_path
 }
 
