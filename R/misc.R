@@ -145,3 +145,40 @@ file_ext <- function(file) {
 
 
 
+#' @title iarccrgtools: Using IARC CRG Tools via R
+#' @name iarccrgtools
+#' @docType package
+#' @description 
+#' Contains functions to make using IARC CRG Tools easier with R,
+#' including writing and reading IARC CRG Tools input/output files and
+#' guided or automatic use of IARC CRG Tools itself.
+#' @details
+#' 
+#' Main attractions include
+#' \code{\link{use_tools_automatically}} and 
+#' \code{\link{use_tools_interactively}} for calling IARC CRG Tools directly
+#' from R and for helping with input/output from and to R.
+#' 
+NULL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
