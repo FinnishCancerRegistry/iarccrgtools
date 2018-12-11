@@ -78,8 +78,21 @@ raise_internal_error <- function(
 #'
 #' @section Automatic use:
 #'
-#' @template tools_settings_for_automatic_use
+#' This pertains to using \code{\link{use_tools_automatically}}.
+#' You need to have a pre-defined settings file for the IARC CRG Tools program
+#' you want to use before using \code{\link{use_tools_automatically}}.
 #'
+#' Each program must have its own settings file. The file extension will be
+#' either .dfi or .frm. The name of the file must be the name of the program
+#' (one of the items given by \code{\link{tools_program_names}}). E.g.
+#' \code{"iarc_check.dfi"}. The settings files must be stored in the
+#' working directory set by \code{\link{set_tools_working_dir}}.
+#'
+#' This R package has pre-defined "sensible defaults" for certain programs,
+#' which you can fetch into a specific folder using
+#' \code{\link{get_tools_settings_template}}.
+#'
+
 NULL
 
 
@@ -164,9 +177,53 @@ NULL
 
 
 
+get_program_definition_data <- function(
+  data.nm = c("program_guides", "program_output_files")[1]
+) {
+  stopifnot(
+    length(data.nm) == 1,
+    is.character(data.nm),
+    data.nm %in% ls(as.environment("package:iarccrgtools"))
+  )
+  get(data.nm, pos = "package:iarccrgtools")
+  
+}
 
 
 
+
+
+#' @md
+#' @title Program Definitions
+#' @description data.frame of commands for assisted or 
+#' automated use of IARC CRG Tools.
+#' @format 
+#' A data.frame with these character string columns:
+#' - `program_name`: name of the program
+#' - `command`: computer-readable specification of keystrokes and certain special
+#'   commands (see below) that are executed in the given order to run an 
+#'   IARC CRG Tools program from start to finish; mainly relevant for
+#'   \code{\link{use_tools_automatically}}
+#' - `instruction`: plain English explanation of each step; these are shown
+#'   when you call \code{\link{use_tools_interactively}}, so they should
+#'   tell you quite clearly what you need to do.
+#' @family program_definition_data
+"program_guides"
+
+#' @md
+#' @title Program Definitions
+#' @description data.frame specifying output files for each
+#' IARC CRG Tools program.
+#' @format 
+#' A data.frame with these columns:
+#' - `program_name`: character string column; name of the program
+#' - `file_name_suffix`: character string column; suffix pasted to each output 
+#'   file name; in other words the output files are assumed to have these 
+#'   suffixes
+#' - `is_table`: logical column; `TRUE` if the output file is a table, 
+#'   `FALSE` if it is non-tabular text (such as a log file)
+#' @family program_definition_data
+"program_output_files"
 
 
 

@@ -7,6 +7,8 @@ Maintainer: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Description: Utilities for using IARC CRG Tools on Windows via R.
 Imports:
     data.table
+Depends:
+    R (>= 2.10)
 Suggests:
     utils
 License: MIT + file LICENCE

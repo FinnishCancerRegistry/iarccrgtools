@@ -10,6 +10,7 @@
 #' @return A character string vector.
 #' @export
 tools_program_names <- function() {
+  program_guides <- get_program_definition_data("program_guides")
   sort(unique(program_guides$program_name))
 }
 
@@ -19,6 +20,7 @@ tools_program_names <- function() {
 
 tools_program_commands <- function(program.name) {
   assert_tools_program(program.name)
+  program_guides <- get_program_definition_data("program_guides")
   is_in_program <- program_guides$program_name == program.name
   ks <- program_guides[["command"]][is_in_program]
   names(ks) <- program_guides[["instruction"]][is_in_program]
@@ -28,6 +30,7 @@ tools_program_commands <- function(program.name) {
 tools_program_instructions <- function(program.name) {
   assert_tools_program(program.name)
   
+  program_guides <- get_program_definition_data("program_guides")
   is_in_program <- program_guides$program_name == program.name
   program_guides[["instruction"]][is_in_program]
 
@@ -185,7 +188,7 @@ tools_program_output_file_paths <- function(
   assert_tools_program(program.name)
   assert_dir_path(dir)
   
-  prog_files_df <- program_output_files
+  prog_files_df <- get_program_definition_data("program_output_files")
   is_in_program <- prog_files_df$program_name == program.name
   prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_program]
   prog_file_is_table <- prog_files_df$is_table[is_in_program]
