@@ -1,0 +1,13 @@
+"column_name";"class";"info";"set_all_iarc_check";"set_mandatory_iarc_check";"set_optional_iarc_check";"set_all_iarc_multiple_primary";"set_mandatory_iarc_multiple_primary";"set_optional_iarc_multiple_primary";"set_all_icdo3_to_icd10";"set_mandatory_icdo3_to_icd10";"set_optional_icdo3_to_icd10";"set_all"
+"subject_id";"integer";"Subject identification number";FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE
+"record_id";"integer";"Record identification number (subject can have multiple records)";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;TRUE
+"multi_no";"integer";"Multiple primary order number";FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE
+"sex";"integer";"Sex, 1=male, 2 = female";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
+"icdo3_topography";"character";"ICD-O-3 topography code";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
+"icdo3_histology";"character";"ICD-O-3 histology code";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
+"icdo3_behaviour";"character";"ICD-O-3 behaviour number";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
+"icdo3_grade";"integer";"ICD-O-3 grade number";TRUE;FALSE;TRUE;FALSE;FALSE;FALSE;TRUE;FALSE;TRUE;TRUE
+"basis";"integer";"Basis of diagnosis";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;TRUE
+"bi_date";"Date";"Date of birth";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;TRUE
+"dg_date";"Date";"Date of diagnosis";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE
+"dg_age";"integer";"Age at date of diagnosis";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;TRUE

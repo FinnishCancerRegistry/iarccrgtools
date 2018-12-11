@@ -23,7 +23,8 @@ data.frame of commands for assisted or
 automated use of IARC CRG Tools.
 }
 \seealso{
-Other program_definition_data: \code{\link{program_output_files}}
+Other program_definition_data: \code{\link{column_specifications}},
+  \code{\link{program_output_files}}
 }
 \concept{program_definition_data}
 \keyword{datasets}

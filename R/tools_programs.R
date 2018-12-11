@@ -65,53 +65,59 @@ tools_program_colnameset <- function(
   set.nm
   ) {
   assert_tools_colnameset_name(set.nm)
-
-  icdo3_thb <- c("icdo3_topography", "icdo3_histology", "icdo3_behaviour")
-  icdo3_all <- c(icdo3_thb, "icdo3_grade")
-
-  mandatory_icdo3_to_icd10 <- c(
-    "record_id", "sex",
-    icdo3_thb
-  )
-  optional_icdo3_to_icd10 <- "icdo3_grade"
-  all_icdo3_to_icd10 <- c(mandatory_icdo3_to_icd10, optional_icdo3_to_icd10)
-
-
-  mandatory_iarc_check <- c(
-    "record_id", "sex",
-    icdo3_thb,
-    "basis", "dg_date", "bi_date", "dg_age"
-  )
-  optional_iarc_check <- c(
-    "icdo3_grade"
-  )
-  all_iarc_check <- c(mandatory_iarc_check, optional_iarc_check)
-
-
-  mandatory_iarc_multiple_primary <- c(
-    "subject_id", "multi_no", "sex", icdo3_thb, "dg_date"
-  )
-  optional_iarc_multiple_primary <- character(0)
-  all_iarc_multiple_primary <- c(mandatory_iarc_multiple_primary,
-                                 optional_iarc_multiple_primary)
-
-
-
-  all <- unique(unlist(mget(setdiff(ls(), "set.nm"))))
-
-  if (!set.nm %in% ls()) {
+  
+  col_specs <- get_program_definition_data("column_specifications")
+  col_specs_col_nm <- paste0("set_", set.nm)
+  
+  if (!col_specs_col_nm %in% names(col_specs)) {
     raise_internal_error(
-      "No set of column names defined for set.nm = ",
-      deparse(set.nm), " although it is allowed by ",
-      "tools_program_colnameset_names."
+      "Expected 'column_specifications' to have column with name ",
+      deparse(col_specs_col_nm), " but it didn't."
     )
   }
-
-
-
-  get(set.nm, inherits = FALSE)
+  
+  col_specs[["column_name"]][col_specs[[col_specs_col_nm]]]
+  
 }
 
+#' @describeIn column_names returns the required class for each column by
+#' column name
+#' @param col.nms character string vector; names of columns; must be subset of
+#' items returned by \code{tools_program_colnameset("all")}
+#' @export
+tools_program_column_classes <- function(
+  col.nms
+) {
+  stopifnot(
+    is.character(col.nms)
+  )
+  col_specs <- get_program_definition_data("column_specifications")
+  
+  cn <- col_specs[["column_name"]]
+  cc <- col_specs[["class"]]
+  
+  
+  cc[match(col.nms, cn, nomatch = NA_integer_)]
+  
+}
+
+#' @describeIn column_names returns short plain English explanation of column
+#' @export
+tools_program_column_infos <- function(
+  col.nms
+) {
+  stopifnot(
+    is.character(col.nms)
+  )
+  col_specs <- get_program_definition_data("column_specifications")
+  
+  cn <- col_specs[["column_name"]]
+  ci <- col_specs[["info"]]
+  
+  
+  ci[match(col.nms, cn, nomatch = NA_integer_)]
+  
+}
 
 
 

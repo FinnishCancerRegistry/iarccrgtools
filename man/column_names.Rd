@@ -4,15 +4,24 @@
 \alias{column_names}
 \alias{tools_program_colnameset_names}
 \alias{tools_program_colnameset}
+\alias{tools_program_column_classes}
+\alias{tools_program_column_infos}
 \title{Column Names}
 \usage{
 tools_program_colnameset_names()
 
 tools_program_colnameset(set.nm)
+
+tools_program_column_classes(col.nms)
+
+tools_program_column_infos(col.nms)
 }
 \arguments{
 \item{set.nm}{string; name of a column set; only those returned by
 \code{tools_program_colnameset_names} are allowed}
+
+\item{col.nms}{character string vector; names of columns; must be subset of
+items returned by \code{tools_program_colnameset("all")}}
 }
 \description{
 Utilities for handling sets of required column names for each 
@@ -25,5 +34,10 @@ returns all the names of the sets.
 
 \item \code{tools_program_colnameset}: returns a set of column name given the name of the
 set itself.
+
+\item \code{tools_program_column_classes}: returns the required class for each column by
+column name
+
+\item \code{tools_program_column_infos}: returns short plain English explanation of column
 }}
 

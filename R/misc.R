@@ -178,11 +178,13 @@ NULL
 
 
 get_program_definition_data <- function(
-  data.nm = c("program_guides", "program_output_files")[1]
+  data.nm
 ) {
   stopifnot(
     length(data.nm) == 1,
     is.character(data.nm),
+    data.nm %in% c("program_guides", "program_output_files", 
+                   "column_specifications"),
     data.nm %in% ls(as.environment("package:iarccrgtools"))
   )
   get(data.nm, pos = "package:iarccrgtools")
@@ -225,6 +227,24 @@ get_program_definition_data <- function(
 #' @family program_definition_data
 "program_output_files"
 
+#' @md
+#' @title Program Definitions
+#' @description data.frame of specifications for columns used in various
+#' functions
+#' @format 
+#' A data.frame with character string columns
+#' - `column_name` name of column
+#' - `class` expected class of column when using functions in this package
+#' - `info` short plain English explanation of column purpose and contents
+#' 
+#' as well as a number of logical (TRUE/FALSE) columns. The names of these
+#' logical columns follow the convention `"set_SETNAME"` where `SETNAME`
+#' is one of the items returned by \code{\link{tools_program_colnameset_names}}.
+#' Each such logical columns is `TRUE` when that column indicated in 
+#' `column_name` is included in that set of column names.
+#' 
+#' @family program_definition_data
+"column_specifications"
 
 
 

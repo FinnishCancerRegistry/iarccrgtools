@@ -21,7 +21,8 @@ data.frame specifying output files for each
 IARC CRG Tools program.
 }
 \seealso{
-Other program_definition_data: \code{\link{program_guides}}
+Other program_definition_data: \code{\link{column_specifications}},
+  \code{\link{program_guides}}
 }
 \concept{program_definition_data}
 \keyword{datasets}
