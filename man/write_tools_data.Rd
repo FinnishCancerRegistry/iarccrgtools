@@ -11,7 +11,8 @@ write_tools_data(x, colnameset.nm = tools_program_colnameset_names()[1],
 \arguments{
 \item{x}{a data.frame}
 
-\item{colnameset.nm}{passed to \code{\link{tools_program_colnameset}}}
+\item{colnameset.nm}{one of the items returned by 
+\code{\link{tools_program_colnameset_names}}}
 
 \item{file}{string; where file will be saved to}
 

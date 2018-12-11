@@ -106,7 +106,7 @@ wd_env$path <- FALSE
 #' @description
 #' A text file is written in a fixed field format.
 #' @param x a data.frame
-#' @param colnameset.nm passed to \code{\link{tools_program_colnameset}}
+#' @template colnameset_name
 #' @param file string; where file will be saved to
 #' @param ... arguments passed to \code{\link[data.table]{fwrite}};
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to

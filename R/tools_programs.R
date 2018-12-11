@@ -36,13 +36,31 @@ tools_program_instructions <- function(program.name) {
 
 
 
+#' @title Column Names
+#' @name column_names
+#' @description 
+#' Utilities for handling sets of required column names for each 
+#' IARC CRG Tools program.
+NULL
+
+#' @describeIn column_names each column name set has its own name. This function
+#' returns all the names of the sets.
+#' @export
 tools_program_colnameset_names <- function() {
   prog_nms <- tools_program_names()
   prog_set_nms <- paste0(c("all_", "mandatory_", "optional_"),
                          rep(prog_nms, each = 3))
   c(prog_set_nms, "all")
 }
-tools_program_colnameset <- function(set.nm) {
+
+#' @describeIn column_names returns a set of column name given the name of the
+#' set itself.
+#' @param set.nm string; name of a column set; only those returned by
+#' \code{tools_program_colnameset_names} are allowed
+#' @export
+tools_program_colnameset <- function(
+  set.nm
+  ) {
   assert_tools_colnameset_name(set.nm)
 
   icdo3_thb <- c("icdo3_topography", "icdo3_histology", "icdo3_behaviour")
