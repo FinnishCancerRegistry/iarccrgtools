@@ -4,7 +4,7 @@
 \alias{read_tools_results}
 \title{IARC CRG Tools Results}
 \usage{
-read_tools_results(program.name)
+read_tools_results(program.name, input.col.nms = NULL)
 }
 \arguments{
 \item{program.name}{character string; name of program to run}

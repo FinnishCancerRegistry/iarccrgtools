@@ -2,19 +2,30 @@
 
 
 
-
+#' @md
+#' @title Coercion to `vbslines`
+#' @description
+#' Coerce
+#' @param x any R object
+#' @param ... additional arguments passed to methods
+#' @export
 as.vbslines <- function(x, ...) {
   UseMethod("as.vbslines")
 }
+#' @describeIn as.vbslines default method --- only raises error
+#' @export
 as.vbslines.default <- function(x, ...) {
   stop("No method defined for 'x' with classes: ",
        deparse(class(x)))
 }
+#' @describeIn as.vbslines coerces character strings to class \ocde{vbslines}
+#' @export
 as.vbslines.character <- function(x, ...) {
   y <- as.character(x)
   class(y) <- c("vbslines" , "character")
   y
 }
+#' @export
 print.vbslines <- function(x, max.print = 50, ...) {
   n_lines <- length(x)
   stopifnot(
@@ -22,11 +33,11 @@ print.vbslines <- function(x, max.print = 50, ...) {
     max.print %% 1 == 0,
     max.print > 0
   )
-  
+
   max.print <- min(max.print, n_lines)
-  
+
   printable <- rep(TRUE, n_lines)
-  
+
   if (n_lines > max.print) {
     first_10 <- 1:10
     last_10 <- seq(n_lines, n_lines-9, -1)
@@ -46,8 +57,18 @@ print.vbslines <- function(x, max.print = 50, ...) {
     cat(paste0(row_num, ": ", x), sep = "\n")
   }
   cat("--- vbslines vector end ---\n")
-  
+
   invisible(NULL)
+}
+#' @export
+`[.vbslines` <- function(x, ...) {
+  y <- NextMethod()
+  as.vbslines(y)
+}
+#' @export
+c.vbslines <- function(...) {
+  y <- NextMethod()
+  as.vbslines(y)
 }
 
 
@@ -116,6 +137,26 @@ vbslines_echo <- function(
 
 
 
+vbslines_set_focus_to_window <- function(
+  window.name = "IARC/IACR Cancer Registry Tools"
+) {
+  stopifnot(
+    length(window.name) == 1,
+    is.character(window.name)
+  )
+
+  lines <- c(
+    "",
+    'Set FocusShell = WScript.CreateObject("WScript.Shell")',
+    paste0("FocusShell.AppActivate(\"", window.name, "\")"),
+    ""
+  )
+  as.vbslines(lines)
+}
+
+
+
+
 #' @title Test .vbs Capability
 #' @description
 #' Simply returns TRUE/FALSE depending on whether you can execute
@@ -137,11 +178,11 @@ can_call_vbs <- function() {
 vbscript_protect_path <- function(
   path
 ) {
-  
+
   protect <- grepl("\\s", path) & !(grepl('$""', path) & grepl('""^', path))
-  
+
   path[protect] <- paste0('""', path[protect], '""')
-  
+
   return(path)
 }
 
@@ -253,17 +294,17 @@ vbslines_tools_program_commands <- function(
   assert_write_file_path(input.path)
   assert_write_file_path(output.path)
   commands <- tools_program_commands(program.name)
-  
+
   special_strings <- list(
-    CTRL = "^", 
-    ALT = "%", 
+    CTRL = "^",
+    ALT = "%",
     ENTER = "{ENTER}",
     SHIFT = "+",
     TAB = "{TAB}",
     `%%WRITE_INPUT_PATH%%` = input.path,
     `%%WRITE_OUTPUT_PATH%%` = output.path
   )
-  
+
   lines <- toupper(commands)
 
   for (nm in names(special_strings)) {
@@ -275,17 +316,17 @@ vbslines_tools_program_commands <- function(
     )
   }
   lines
-  
+
   special_commands <- list(
     `%%WAIT_UNTIL_READY%%` = vbslines_wait_until_file_stops_growing(
       file.path = input.path
     )
   )
-  
+
   lines <- paste0("WshShell.SendKeys(\"", lines, "\")")
-  
+
   for (cmd_nm in names(special_commands)) {
-    
+
     has_special <- grepl(
       pattern = cmd_nm,
       x = lines,
@@ -299,9 +340,15 @@ vbslines_tools_program_commands <- function(
       })
     }
   }
-  
-  lines <- c(vbslines_call_tools(), "", lines, "", vbslines_exit_tools())
-  
+
+  lines <- c(vbslines_call_tools(),
+             "",
+             vbslines_set_focus_to_window("IARC/IACR Cancer Registry Tools"),
+             "",
+             lines,
+             "",
+             vbslines_exit_tools())
+
   as.vbslines(lines)
 }
 
@@ -316,20 +363,20 @@ vbslines_call_tools_program <- function(
   wait.check.interval = 10L,
   wait.max.time = 60L*60L
 ) {
-  
-  
+
+
   vl_call_tools <- vbslines_call_tools(exe.path = exe.path)
 
-  input_path <- paste0(get_tools_working_dir(), "\\", program.name, 
+  input_path <- paste0(get_tools_working_dir(), "\\", program.name,
                        "_input.txt")
-  output_path <- paste0(get_tools_working_dir(), "\\", program.name, 
+  output_path <- paste0(get_tools_working_dir(), "\\", program.name,
                         "_output.txt")
   vl_commands <- vbslines_tools_program_commands(
     program.name = program.name,
     input.path = input_path,
     output.path = output_path
   )
-  
+
   call_vbslines(vl_commands)
 
   TRUE
