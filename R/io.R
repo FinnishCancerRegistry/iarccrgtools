@@ -35,8 +35,15 @@ dir_is_writable <- function(
 
 
 get_data_template <- function(
-  program
+  set.nm,
+  n.rows = 10L
 ) {
+  stopifnot(
+    length(n.rows) == 1,
+    n.rows %% 1 == 0,
+    n.rows > 0
+  )
+  col_nms <- tools_program_colnameset(set.nm = set.nm)
 
   df <- data.frame(
     subject_id = "0000000001",
@@ -55,12 +62,13 @@ get_data_template <- function(
     icdo3_behaviour = "1",
     icdo3_grade = "1",
     basis = "1",
-    bi_date = "20001231",
+    bi_date = "19501231",
     dg_date = "20001231",
-    dg_age = 21:25
+    dg_age = "50"
   )
 
-  df
+
+  df[rep(1L, n.rows), col_nms]
 }
 
 
@@ -90,7 +98,7 @@ get_tools_working_dir <- function() {
     stop("Working directory for IARC CRG Tools not set --- ",
          "see ?set_tools_working_dir")
   } else if (!dir.exists(wd_env$path)) {
-    stop("Supplied IARC CRG Tools working directory does not exist: ", 
+    stop("Supplied IARC CRG Tools working directory does not exist: ",
          deparse(wd_env$path), "; see ?set_tools_working_dir")
   }
   wd_env$path
@@ -123,18 +131,18 @@ write_tools_data <- function(
   col_nms <- tools_program_colnameset(colnameset.nm)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
-  
+
   x <- data.table::setDF(mget(col_nms, as.environment(x)))
-  
-  ## to ensure that, when IARC CRG Tools writes a new column, when it is read 
+
+  ## to ensure that, when IARC CRG Tools writes a new column, when it is read
   ## into R, the new column will not mix with the last column in x.
   x[[".__this_is_a_buffer_column_yo__."]] <- 0L
-  
+
   if (file.exists(file)) {
-    ow <- ask_yes_no("* write_tools_data: File ", deparse(file), 
+    ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
                      " already exists. overwrite?")
     if (!ow) {
-      message("* write_tools_data: Cancelled writing table to ", 
+      message("* write_tools_data: Cancelled writing table to ",
               deparse(file), ".")
       return(invisible(NULL))
     }
@@ -159,7 +167,7 @@ write_tools_data <- function(
 
 n_file_lines <- function(path) {
   assert_file_path(path)
-  
+
   f <- file(path, open="rb")
   r <- as.raw(10L)
   n_lines <- 0L
@@ -179,35 +187,36 @@ n_file_lines <- function(path) {
 #' @template program_name
 #' @export
 read_tools_results <- function(
-  program.name
+  program.name,
+  input.col.nms = NULL
 ) {
   assert_tools_program(program.name = program.name)
   dir <- get_tools_working_dir()
-  
+
   file_paths <- tools_program_output_file_paths(program.name = program.name,
                                                 dir = dir)
-  
+
   output_list <- lapply(seq_along(file_paths), function(i) {
-    
+
     file_path <- file_paths[i]
     path_type <- names(file_paths)[i]
-    message("* read_tools_results: attempting to read file from ", 
+    message("* read_tools_results: attempting to read file from ",
             deparse(file_path))
-    
+
     if (!file.exists(file_path)) {
       message("* read_tools_results: that file did not exist, returning NULL")
       return(NULL)
     }
-    
+
     if (identical(path_type, "is_table")) {
       out <- read_table_without_header_and_footer(
         file = file_path
       )
-      
+
       if (is.null(out) || nrow(out) == 0) {
         out <- data.frame(NULL)
       } else {
-        ## in write_tools_data a zero is added as padding to enable safe 
+        ## in write_tools_data a zero is added as padding to enable safe
         ## reading into R. these steps handle this padding column.
         last_col <- names(out)[ncol(out)]
         if (is.character(last_col) && substr(out[[last_col]][1], 1, 2) == "0 ") {
@@ -216,9 +225,23 @@ read_tools_results <- function(
         } else if (all(out[["last_col"]] == 0L)) {
           out[[last_col]] <- NULL
         }
+
+      if (!is.null(input.col.nms)) {
+
+        if (ncol(out) == length(input.col.nms)+1L) {
+          input.col.nms <- c(input.col.nms, "tools_text")
+        }
+
+        if (length(input.col.nms) == ncol(out)) {
+          data.table::setnames(out, old = names(out), new = input.col.nms)
+        }
+
+
       }
 
-      
+      }
+
+
     } else if (identical(path_type, "is_not_table")) {
       out <- readLines(file_path)
     } else {
@@ -227,8 +250,8 @@ read_tools_results <- function(
       )
     }
     message("* read_tools_results: file successfully read ")
-    
-    
+
+
     out
   })
   names(output_list) <- basename(file_paths)
@@ -241,7 +264,7 @@ read_tools_results <- function(
 
 readlines_from_to <- function(
   file,
-  from = 1, 
+  from = 1,
   to = n_file_lines(file),
   ...
 ) {
@@ -255,14 +278,14 @@ readlines_from_to <- function(
     to > 0,
     from <= to
   )
-  
+
   file_con <- file(file, "r")
   row <- 0L
   while (row < from-1L) {
     readLines(file_con, n = 1L, ...)
     row <- row+1L
   }
-  
+
   lines <- readLines(file_con, n = to+1L-from)
   close(file_con)
   lines
@@ -283,20 +306,20 @@ guess_table_header_and_footer_sizes <- function(
   )
   n_lines <- n_file_lines(file)
   n.guessing.lines <- min(n.guessing.lines, n_lines)
-  header <- readLines(file, n = n.guessing.lines)  
-  footer <- readlines_from_to(file = file, 
+  header <- readLines(file, n = n.guessing.lines)
+  footer <- readlines_from_to(file = file,
                               from = n_lines+1L - n.guessing.lines,
                               to = n_lines)
   hf <- list(header, footer)
-  
+
   n_hf_lines <- vapply(seq_along(hf), function(i) {
     lines <- hf[[i]]
-    
+
     is_data <- grepl(
       data.regex,
       lines
     )
-    
+
     tgt_value <- switch(as.character(i),
                         "1" = 0L,
                         "2" = sum(is_data))
@@ -305,7 +328,7 @@ guess_table_header_and_footer_sizes <- function(
                   "2" = -1L)
     sum(cumsum(is_data) == tgt_value) + add
   }, integer(1))
-  
+
   n_hf_lines
 }
 
@@ -320,12 +343,12 @@ read_table_without_header_and_footer <- function(
   ...
 ) {
   requireNamespace("data.table")
-  
+
   n_lines <- n_file_lines(file)
   if (n_lines == 0) {
     return(data.frame(NULL))
   }
-  
+
   if (is.null(n.header.lines) || is.null(n.footer.lines)) {
     n_hf_lines <- guess_table_header_and_footer_sizes(file = file)
     if (is.null(n.header.lines)) {
@@ -342,10 +365,10 @@ read_table_without_header_and_footer <- function(
     n.footer.lines %% 1 == 0
   )
   assert_file_path(file)
-  
-  
+
+
   arg_list <- list(
-    file = file, 
+    file = file,
     sep = ";", dec = ",", header = FALSE, skip = n.header.lines,
     nrow = n_lines - n.header.lines - n.footer.lines,
     quote = '"'
