@@ -17,8 +17,10 @@ collect_tools_data <- function(
     paste0("optional_", program.name)
   )
 
+  used_set_name <- paste0("all_", program.name)
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
+    used_set_name <- paste0("mandatory_", program.name)
     message("Following optional columns were not found in data: ",
             deparse(miss_opt_col_nms),
             ". The program will still probably work.")
@@ -27,6 +29,7 @@ collect_tools_data <- function(
 
   col_nms <- c(mandatory_col_nms, found_opt_col_nms)
   df <- data.table::setDF(mget(col_nms, as.environment(data)))
+  data.table::setattr(df, "colnameset_name", used_set_name)
   df
 }
 
@@ -41,20 +44,26 @@ use_tools <- function(
   clean = TRUE
 ) {
   stopifnot(
-    how %in% c("interactively", "automatically"),
-    length(how) == 1
+    length(how) == 1,
+    how %in% c("interactively", "automatically")
   )
   assert_tools_program(program.name)
   assert_tools_data(tools.data, program.name)
   assert_is_logical_nonNA_atom(clean)
-  
+
   df <- collect_tools_data(data = tools.data, program.name = program.name)
+  colnameset_name <- attributes(df)$colnameset_name
+  if (is.null(colnameset_name)) {
+    raise_internal_error("Could not retrieve implied colnameset name for data.")
+  }
 
   write_path <- tools_program_input_file_path(program.name = program.name)
 
   cat("* Writing table to ", deparse(write_path), "...\n", sep = "")
 
-  write_tools_data(x = df, file = write_path)
+  write_tools_data(x = df, file = write_path, colnameset.nm = colnameset_name)
+  col_nms <- names(df)
+  rm("df")
 
   switch(
     how,
@@ -88,19 +97,19 @@ use_tools <- function(
     }
   )
 
-
   data_list <- read_tools_results(
-    program.name = program.name
+    program.name = program.name,
+    input.col.nms = col_nms
   )
-  
+
   if (clean) {
     rm_files <- c(tools_program_output_file_paths(program.name = program.name),
                   write_path)
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
   }
-  
-  
+
+
   data_list
 
 
