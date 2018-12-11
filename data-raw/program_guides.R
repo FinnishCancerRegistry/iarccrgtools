@@ -1,5 +1,6 @@
 
-## use this scipt to update the external data in data/progran_guides.rda
+## - modify data-raw/program_guides.csv by hand
+## - use this script to update the external data in data/program_guides.rda
 
 program_guides <- read.table(file = "data-raw/program_guides.csv",
                              sep = ";",

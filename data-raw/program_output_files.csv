@@ -1,0 +1,11 @@
+"program_name";"file_name_suffix";"is_table"
+"iarc_check";"_output.txt";TRUE
+"iarc_check";"_output.log";FALSE
+"iarc_check";"_input.chk";TRUE
+"iarc_check";"_input.err";TRUE
+"icdo3_to_icd10";"_output.txt";TRUE
+"icdo3_to_icd10";"_input.eO3to10";TRUE
+"icdo3_to_icd10";"_input.wO3to10";TRUE
+"iarc_multiple_primary";"_output.txt";TRUE
+"iarc_multiple_primary";"_input.exl";TRUE
+"iarc_multiple_primary";"_input.mul";TRUE

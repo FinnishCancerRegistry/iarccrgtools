@@ -37,7 +37,8 @@ collect_tools_data <- function(
 use_tools <- function(
   tools.data,
   program.name,
-  how = c("interactively", "automatically")[1]
+  how = c("interactively", "automatically")[1],
+  clean = TRUE
 ) {
   stopifnot(
     how %in% c("interactively", "automatically"),
@@ -45,11 +46,11 @@ use_tools <- function(
   )
   assert_tools_program(program.name)
   assert_tools_data(tools.data, program.name)
-
+  assert_is_logical_nonNA_atom(clean)
+  
   df <- collect_tools_data(data = tools.data, program.name = program.name)
 
-  write_path <- paste0(get_tools_working_dir(), "/", program.name,
-                       ".txt")
+  write_path <- tools_program_input_file_path(program.name = program.name)
 
   cat("* Writing table to ", deparse(write_path), "...\n", sep = "")
 
@@ -88,10 +89,18 @@ use_tools <- function(
   )
 
 
-  data_list <- read_tools_output(
-    dir.path = get_tools_working_dir(),
+  data_list <- read_tools_results(
     program.name = program.name
   )
+  
+  if (clean) {
+    rm_files <- c(tools_program_output_file_paths(program.name = program.name),
+                  write_path)
+    rm_files <- rm_files[file.exists(rm_files)]
+    file.remove(rm_files)
+  }
+  
+  
   data_list
 
 

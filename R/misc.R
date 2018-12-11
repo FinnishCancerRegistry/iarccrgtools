@@ -125,9 +125,21 @@ normalize_path <- function(path) {
 
 
 
+str_extract_all <- function(x, pattern, ...) {
+  m <- gregexpr(pattern = pattern, text = x, ...)
+  regmatches(x = x, m = m)
+}
+str_extract <- function(x, pattern, ...) {
+  m <- regexpr(pattern = pattern, text = x, ...)
+  regmatches(x = x, m = m)
+}
 
 
 
+
+file_ext <- function(file) {
+  str_extract(file, pattern = "(?<=\\.)\\w{1,}$", perl = TRUE)
+}
 
 
 

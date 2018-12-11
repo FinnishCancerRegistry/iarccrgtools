@@ -312,7 +312,7 @@ vbslines_tools_program_commands <- function(
 vbslines_call_tools_program <- function(
   exe.path = get_tools_exe_path(),
   working.dir = get_tools_working_dir(),
-  program.name = "check",
+  program.name = "iarc_check",
   wait.check.interval = 10L,
   wait.max.time = 60L*60L
 ) {
@@ -320,30 +320,19 @@ vbslines_call_tools_program <- function(
   
   vl_call_tools <- vbslines_call_tools(exe.path = exe.path)
 
-  vl_keystrokes <- vbslines_tools_program_keystrokes(
-    program.name = program.name
+  input_path <- paste0(get_tools_working_dir(), "\\", program.name, 
+                       "_input.txt")
+  output_path <- paste0(get_tools_working_dir(), "\\", program.name, 
+                        "_output.txt")
+  vl_commands <- vbslines_tools_program_commands(
+    program.name = program.name,
+    input.path = input_path,
+    output.path = output_path
   )
+  
+  call_vbslines(vl_commands)
 
-  tgt_file_name <- tools_program_output_file_name(program.name = program.name)
-  tgt_file_path <- paste0(working.dir, tgt_file_name)
-
-  if (!file.exists(tgt_file_path)) {
-    writeLines("", con = tgt_file_path)
-  }
-
-  vl_wait_until_finished <- vbslines_wait_until_file_stops_growing(
-    file.path = tgt_file_path,
-    check.interval = wait.check.interval,
-    max.time = wait.max.time
-  )
-
-  lines <- c(
-    vl_call_tools,
-    vl_keystrokes,
-    vl_wait_until_finished,
-    'wscript.shell.sendkeys("{ENTER}")'
-  )
-  as.vbslines(lines)
+  TRUE
 }
 
 

@@ -160,6 +160,44 @@ get_tools_settings_template <- function(
 
 
 
+tools_program_output_file_paths <- function(
+  dir = get_tools_working_dir(),
+  program.name
+) {
+  assert_tools_program(program.name)
+  assert_dir_path(dir)
+  
+  prog_files_df <- program_output_files
+  is_in_program <- prog_files_df$program_name == program.name
+  prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_program]
+  prog_file_is_table <- prog_files_df$is_table[is_in_program]
+  
+  file_paths <- paste0(dir, "\\", program.name, prog_file_suffixes)
+  names(file_paths) <- rep("is_not_table", length(file_paths))
+  names(file_paths)[prog_file_is_table] <- rep("is_table", 
+                                               sum(prog_file_is_table))
+  file_paths
+}
+
+
+
+
+
+tools_program_input_file_path <- function(
+  dir = get_tools_working_dir(),
+  program.name
+) {
+  assert_tools_program(program.name)
+  assert_dir_path(dir)
+  
+  paste0(dir, "\\", program.name, "_input.txt")
+  
+}
+
+
+
+
+
 
 
 

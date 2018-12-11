@@ -189,6 +189,46 @@ assert_tools_colnameset_name <- function(set.nm, set.nm.arg.nm = NULL) {
 
 
 
+assert_is_logical_nonNA_atom <- function(arg, arg.nm = NULL) {
+  if (is.null(arg.nm)) {
+    arg.nm <- deparse(substitute(arg))
+  }
+  
+  pass <- TRUE
+  m <- paste0("Arg ", deparse(arg.nm), " was %%BAD&&, but expected %%GOOD%%")
+  if (!is.logical(arg)) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("of class(es) ", deparse(class(arg))), m)
+    m <- sub("%%GOOD%%", "class \"logical\"", m)
+  }
+  if (length(arg) != 1) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("of length ", length(arg)), m)
+    m <- sub("%%GOOD%%", "length 1", m)
+  }
+  if (is.na(arg)) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("NA ", length(arg)), m)
+    m <- sub("%%GOOD%%", "TRUE/FALSE", m)
+  }
+  if (!pass) {
+    stop(m)
+  }
+  invisible(NULL)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
