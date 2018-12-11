@@ -90,7 +90,8 @@ get_tools_working_dir <- function() {
     stop("Working directory for IARC CRG Tools not set --- ",
          "see ?set_tools_working_dir")
   } else if (!dir.exists(wd_env$path)) {
-    stop("Invalid working directory: ", deparse(wd_env$path))
+    stop("Supplied IARC CRG Tools working directory does not exist: ", 
+         deparse(wd_env$path), "; see ?set_tools_working_dir")
   }
   wd_env$path
 }

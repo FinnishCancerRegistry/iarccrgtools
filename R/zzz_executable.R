@@ -29,7 +29,16 @@ set_tools_exe_path <- function(path) {
 #' value will be \code{NA_character_} if no path has been set yet.
 #' @export
 get_tools_exe_path <- function() {
-  exe_path_env$path
+  path <- exe_path_env$path
+  if (is.na(path) || is.null(path)) {
+    stop("Path to IARC CRG Tools executable not defined. ",
+         "See ?set_tools_exe_path")
+  } else if (!file.exists(path)) {
+    stop("Path to IARC CRG Tools executable ill-defined; the specified ",
+         "file does not exist in path ", deparse(path), ". Ensure the ",
+         "path actually points to the executable.")
+  }
+  path
 }
 
 #' @describeIn exe_path tries to guess where the executable is based on
@@ -63,8 +72,8 @@ guess_tools_exe_path <- function() {
 
 exe_path_env <- new.env(parent = emptyenv())
 exe_path_env$path <- tryCatch(guess_tools_exe_path(),
-                              error = function(e) NA_character_,
-                              warning = function(w) NA_character_)
+                              error = function(e) e,
+                              warning = function(w) w)
 
 
 
