@@ -121,7 +121,7 @@ dir_of_path <- function(path) {
           "you may encounter a strange error. If path is a file, ensure it ",
           "ends with an extension such as .txt. If path is a directory, ",
           "ensure that it exists.")
-  
+
 }
 
 
@@ -129,9 +129,9 @@ dir_of_path <- function(path) {
 
 
 normalize_path <- function(path) {
-  
+
   normalizePath(path = path, winslash = "\\", mustWork = FALSE)
-  
+
 }
 
 
@@ -161,17 +161,17 @@ file_ext <- function(file) {
 #' @title iarccrgtools: Using IARC CRG Tools via R
 #' @name iarccrgtools
 #' @docType package
-#' @description 
+#' @description
 #' Contains functions to make using IARC CRG Tools easier with R,
 #' including writing and reading IARC CRG Tools input/output files and
 #' guided or automatic use of IARC CRG Tools itself.
 #' @details
-#' 
+#'
 #' Main attractions include
-#' \code{\link{use_tools_automatically}} and 
+#' \code{\link{use_tools_automatically}} and
 #' \code{\link{use_tools_interactively}} for calling IARC CRG Tools directly
 #' from R and for helping with input/output from and to R.
-#' 
+#'
 NULL
 
 
@@ -183,12 +183,12 @@ get_program_definition_data <- function(
   stopifnot(
     length(data.nm) == 1,
     is.character(data.nm),
-    data.nm %in% c("program_guides", "program_output_files", 
+    data.nm %in% c("program_guides", "program_output_files",
                    "column_specifications"),
     data.nm %in% ls(as.environment("package:iarccrgtools"))
   )
   get(data.nm, pos = "package:iarccrgtools")
-  
+
 }
 
 
@@ -197,13 +197,13 @@ get_program_definition_data <- function(
 
 #' @md
 #' @title Program Definitions
-#' @description data.frame of commands for assisted or 
+#' @description data.frame of commands for assisted or
 #' automated use of IARC CRG Tools.
-#' @format 
+#' @format
 #' A data.frame with these character string columns:
 #' - `program_name`: name of the program
 #' - `command`: computer-readable specification of keystrokes and certain special
-#'   commands (see below) that are executed in the given order to run an 
+#'   commands (see below) that are executed in the given order to run an
 #'   IARC CRG Tools program from start to finish; mainly relevant for
 #'   \code{\link{use_tools_automatically}}
 #' - `instruction`: plain English explanation of each step; these are shown
@@ -216,13 +216,13 @@ get_program_definition_data <- function(
 #' @title Program Definitions
 #' @description data.frame specifying output files for each
 #' IARC CRG Tools program.
-#' @format 
+#' @format
 #' A data.frame with these columns:
 #' - `program_name`: character string column; name of the program
-#' - `file_name_suffix`: character string column; suffix pasted to each output 
-#'   file name; in other words the output files are assumed to have these 
+#' - `file_name_suffix`: character string column; suffix pasted to each output
+#'   file name; in other words the output files are assumed to have these
 #'   suffixes
-#' - `is_table`: logical column; `TRUE` if the output file is a table, 
+#' - `is_table`: logical column; `TRUE` if the output file is a table,
 #'   `FALSE` if it is non-tabular text (such as a log file)
 #' @family program_definition_data
 "program_output_files"
@@ -231,20 +231,90 @@ get_program_definition_data <- function(
 #' @title Program Definitions
 #' @description data.frame of specifications for columns used in various
 #' functions
-#' @format 
+#' @format
 #' A data.frame with character string columns
 #' - `column_name` name of column
 #' - `class` expected class of column when using functions in this package
 #' - `info` short plain English explanation of column purpose and contents
-#' 
+#'
 #' as well as a number of logical (TRUE/FALSE) columns. The names of these
 #' logical columns follow the convention `"set_SETNAME"` where `SETNAME`
 #' is one of the items returned by \code{\link{tools_program_colnameset_names}}.
-#' Each such logical columns is `TRUE` when that column indicated in 
+#' Each such logical columns is `TRUE` when that column indicated in
 #' `column_name` is included in that set of column names.
-#' 
+#'
 #' @family program_definition_data
 "column_specifications"
+
+
+
+
+seconds_elapsed <- function(t) {
+  stopifnot(
+    inherits(t, "proc_time")
+  )
+  proc.time()["elapsed"] - t["elapsed"]
+}
+
+
+
+
+
+wait_until_all_files_stops_growing <- function(
+  file.paths,
+  check.interval = 30, ## 30 sec
+  max.wait.time = 60*30 ## 30 min
+) {
+  lapply(file.paths, assert_file_path)
+  stopifnot(
+    length(check.interval) == 1,
+    check.interval %% 1 == 0,
+    check.interval > 0,
+    length(max.wait.time) == 1,
+    max.wait.time %% 1 == 0,
+    max.wait.time > 0,
+    max.wait.time > check.interval
+  )
+
+  n_files <- length(file.paths)
+  prev_file_sizes <- rep(-1L, n_files)
+  file_sizes <- file.size(file.paths)
+  file_sizes[is.na(file_sizes)] <- -1.0
+  t <- proc.time()
+  sec_elapsed <- 0L
+  while (all(prev_file_sizes < file_sizes) &&
+         sec_elapsed < max.wait.time - check.interval) {
+
+    Sys.sleep(check.interval)
+    sec_elapsed <- seconds_elapsed(t)
+    prev_file_sizes <- file_sizes
+    file_sizes <- file.size(file.paths)
+
+    ## when file no longer found
+    file_sizes[is.na(file_sizes)] <- -1.0
+
+  }
+  if (sec_elapsed > max.wait.time) {
+    warning(
+      "While waiting for files ", deparse(file.paths), " to stop growing ",
+      "in disk space reserved, ",
+      "reached max.wait.time = ", max.wait.time, " before they all stopped ",
+      "growing."
+    )
+  }
+  return(TRUE)
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
