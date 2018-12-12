@@ -18,7 +18,7 @@ as.vbslines.default <- function(x, ...) {
   stop("No method defined for 'x' with classes: ",
        deparse(class(x)))
 }
-#' @describeIn as.vbslines coerces character strings to class \ocde{vbslines}
+#' @describeIn as.vbslines coerces character strings to class \code{vbslines}
 #' @export
 as.vbslines.character <- function(x, ...) {
   y <- as.character(x)

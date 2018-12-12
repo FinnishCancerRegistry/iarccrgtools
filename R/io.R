@@ -182,9 +182,24 @@ n_file_lines <- function(path) {
 
 
 
+#' @md
 #' @title IARC CRG Tools Results
 #' @description Read IARC CRG Tools results into R.
 #' @template program_name
+#' @param input.col.nms `NULL` (default) or a character string vector of column 
+#' names; when not `NULL`, allows setting column names on the tables that were
+#' read. See Details.
+#' @return 
+#' A list of data.frames (where the read file was a table) and/or character 
+#' string vectors (where the read file was a non-table file such as a log file).
+#' The names of the list correspond to the names of the files that were read.
+#' @details
+#' When `input.col.nms` is a character string vector, it is attempted to be
+#' used as the set of column names for any tables that are read by this 
+#' function. You should supply the same column names that were in the file
+#' saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
+#' to the ones you had in input data, that column will gain the name 
+#' `"tools_text"` automatically.
 #' @export
 read_tools_results <- function(
   program.name,

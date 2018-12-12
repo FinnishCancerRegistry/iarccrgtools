@@ -24,6 +24,6 @@ Coerce
 \itemize{
 \item \code{default}: default method --- only raises error
 
-\item \code{character}: coerces character strings to class \ocde{vbslines}
+\item \code{character}: coerces character strings to class \code{vbslines}
 }}
 

@@ -12,7 +12,7 @@ guided or automatic use of IARC CRG Tools itself.
 }
 \details{
 Main attractions include
-\code{\link{use_tools_automatically}} and 
+\code{\link{use_tools_automatically}} and
 \code{\link{use_tools_interactively}} for calling IARC CRG Tools directly
 from R and for helping with input/output from and to R.
 }

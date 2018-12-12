@@ -8,7 +8,24 @@ read_tools_results(program.name, input.col.nms = NULL)
 }
 \arguments{
 \item{program.name}{character string; name of program to run}
+
+\item{input.col.nms}{\code{NULL} (default) or a character string vector of column
+names; when not \code{NULL}, allows setting column names on the tables that were
+read. See Details.}
+}
+\value{
+A list of data.frames (where the read file was a table) and/or character
+string vectors (where the read file was a non-table file such as a log file).
+The names of the list correspond to the names of the files that were read.
 }
 \description{
 Read IARC CRG Tools results into R.
+}
+\details{
+When \code{input.col.nms} is a character string vector, it is attempted to be
+used as the set of column names for any tables that are read by this
+function. You should supply the same column names that were in the file
+saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
+to the ones you had in input data, that column will gain the name
+\code{"tools_text"} automatically.
 }
