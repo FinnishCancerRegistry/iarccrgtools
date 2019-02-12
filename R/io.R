@@ -119,7 +119,7 @@ wd_env$path <- FALSE
 #' @param ... arguments passed to \code{\link[data.table]{fwrite}};
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 #' use when writing
-#' @import data.table
+#' @importFrom data.table fwrite setDF
 #' @export
 write_tools_data <- function(
   x,
@@ -186,20 +186,21 @@ n_file_lines <- function(path) {
 #' @title IARC CRG Tools Results
 #' @description Read IARC CRG Tools results into R.
 #' @template program_name
-#' @param input.col.nms `NULL` (default) or a character string vector of column 
+#' @param input.col.nms `NULL` (default) or a character string vector of column
 #' names; when not `NULL`, allows setting column names on the tables that were
 #' read. See Details.
-#' @return 
-#' A list of data.frames (where the read file was a table) and/or character 
+#' @return
+#' A list of data.frames (where the read file was a table) and/or character
 #' string vectors (where the read file was a non-table file such as a log file).
 #' The names of the list correspond to the names of the files that were read.
 #' @details
 #' When `input.col.nms` is a character string vector, it is attempted to be
-#' used as the set of column names for any tables that are read by this 
+#' used as the set of column names for any tables that are read by this
 #' function. You should supply the same column names that were in the file
 #' saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
-#' to the ones you had in input data, that column will gain the name 
+#' to the ones you had in input data, that column will gain the name
 #' `"tools_text"` automatically.
+#' @importFrom data.table setnames
 #' @export
 read_tools_results <- function(
   program.name,
@@ -211,12 +212,14 @@ read_tools_results <- function(
   file_paths <- tools_program_output_file_paths(program.name = program.name,
                                                 dir = dir)
 
+  file_paths <- file_paths[file.exists(file_paths)]
+
   output_list <- lapply(seq_along(file_paths), function(i) {
 
     file_path <- file_paths[i]
     path_type <- names(file_paths)[i]
     message("* read_tools_results: attempting to read file from ",
-            deparse(file_path))
+            deparse(unname(file_path)))
 
     if (!file.exists(file_path)) {
       message("* read_tools_results: that file did not exist, returning NULL")
@@ -269,6 +272,13 @@ read_tools_results <- function(
 
     out
   })
+  output_list[] <- lapply(output_list, function(obj) {
+    if (sum(nrow(obj)) == 0) {
+      return(NULL)
+    }
+    obj
+  })
+
   names(output_list) <- basename(file_paths)
   output_list
 }
@@ -320,6 +330,11 @@ guess_table_header_and_footer_sizes <- function(
     n.guessing.lines > 0
   )
   n_lines <- n_file_lines(file)
+
+  if (n_lines %in% 0:1) {
+    return(c(0L, 0L))
+  }
+
   n.guessing.lines <- min(n.guessing.lines, n_lines)
   header <- readLines(file, n = n.guessing.lines)
   footer <- readlines_from_to(file = file,
@@ -351,6 +366,7 @@ guess_table_header_and_footer_sizes <- function(
 
 
 
+#' @importFrom data.table fread
 read_table_without_header_and_footer <- function(
   file,
   n.header.lines = NULL,
@@ -358,11 +374,6 @@ read_table_without_header_and_footer <- function(
   ...
 ) {
   requireNamespace("data.table")
-
-  n_lines <- n_file_lines(file)
-  if (n_lines == 0) {
-    return(data.frame(NULL))
-  }
 
   if (is.null(n.header.lines) || is.null(n.footer.lines)) {
     n_hf_lines <- guess_table_header_and_footer_sizes(file = file)
@@ -374,9 +385,11 @@ read_table_without_header_and_footer <- function(
     }
   }
   stopifnot(
-    n.header.lines >= 0, length(n.header.lines) == 1,
+    n.header.lines >= 0,
+    length(n.header.lines) == 1,
     n.header.lines %% 1 == 0,
-    n.footer.lines >= 0, length(n.footer.lines) == 1,
+    n.footer.lines >= 0,
+    length(n.footer.lines) == 1,
     n.footer.lines %% 1 == 0
   )
   assert_file_path(file)
@@ -385,7 +398,7 @@ read_table_without_header_and_footer <- function(
   arg_list <- list(
     file = file,
     sep = ";", dec = ",", header = FALSE, skip = n.header.lines,
-    nrow = n_lines - n.header.lines - n.footer.lines,
+    nrow = n_file_lines(file) - n.header.lines - n.footer.lines,
     quote = '"'
   )
   ddd <- list(...)

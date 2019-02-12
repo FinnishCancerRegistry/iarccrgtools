@@ -96,6 +96,12 @@ write_vbsfile <- function(lines, file, ...) {
     is.character(file),
     grepl("\\.vbs", file)
   )
+
+  # stringi::stri_write_lines(
+  #   lines,
+  #   file,
+  #   encoding = "WINDOWS-1252"
+  # )
   writeLines(lines, con = file, ...)
 
 }
@@ -199,6 +205,12 @@ vbslines_call_tools <- function(
   lines <- c(
     '',
     'Set WshShell = WScript.CreateObject("WScript.Shell")',
+    'If WScript.Arguments.Length = 0 Then',
+    'Set ObjShell = CreateObject("Shell.Application")',
+    'ObjShell.ShellExecute "wscript.exe" _',
+    ', """" & WScript.ScriptFullName & """ RunAsAdministrator", , "runas", 1',
+    'WScript.Quit',
+    'End if',
     paste0('WshShell.Run "', exe.path,'", 9'),
     ''
   )
@@ -285,14 +297,17 @@ vbslines_exit_tools <- function() {
 
 
 
-vbslines_tools_program_commands <- function(
+tools_program_expr_list <- function(
   program.name,
   input.path,
   output.path
 ) {
   assert_tools_program(program.name)
   assert_write_file_path(input.path)
+  input.path <- normalize_path(input.path, double.slash = TRUE)
   assert_write_file_path(output.path)
+  output.path <- normalize_path(output.path, double.slash = TRUE)
+
   commands <- tools_program_commands(program.name)
 
   special_strings <- list(
@@ -315,41 +330,68 @@ vbslines_tools_program_commands <- function(
       x = lines
     )
   }
-  lines
 
-  special_commands <- list(
-    `%%WAIT_UNTIL_READY%%` = vbslines_wait_until_file_stops_growing(
-      file.path = input.path
+  r_cmd_pool <- list(
+    `%%WAIT_UNTIL_READY%%` = quote(wait_until_all_files_stop_growing(
+      file.paths = tools_program_output_file_paths(program.name = program.name)
+    ))
+  )
+  wh_r_cmds <- lapply(names(r_cmd_pool), function(r_cmd_nm) {
+    wh <- which(grepl(
+      pattern = r_cmd_nm,
+      x = lines,
+      fixed = TRUE
+    ))
+    if (sum(wh) == 0) {
+      wh <- NULL
+    }
+    wh
+  })
+
+  expr_list <- lapply(lines, function(line) {
+    if (line %in% names(r_cmd_pool)) {
+      return(r_cmd_pool[[line]])
+    }
+    line
+  })
+
+  wh_char <- which(vapply(expr_list, is.character, logical(1)))
+  wh_char_grps <- group_indices(wh_char)
+  grps <- seq_along(expr_list)
+  grps[setdiff(grps, wh_char)] <- grps[setdiff(grps, wh_char)] + max(grps)
+  grps[wh_char] <- wh_char_grps
+  grps <- as.integer(factor(grps, levels = unique(grps)))
+
+  expr_list <- lapply(unique(grps), function(u_grp) {
+    wh_in_grp <- which(grps == u_grp)
+    if (is.character(expr_list[[wh_in_grp[1]]])) {
+      lines <- unlist(expr_list[wh_in_grp])
+      lines <- c(
+        'Set WshShell = WScript.CreateObject("WScript.Shell")',
+        as.vbslines(paste0("WshShell.SendKeys(\"", lines, "\")"))
+      )
+      as.vbslines(lines)
+    } else {
+      expr_list[[wh_in_grp]]
+    }
+  })
+
+
+  expr_list <- c(
+    list(
+    quote(open_tools_program()),
+    quote(call_vbslines(vbslines_set_focus_to_window(
+      "IARC/IACR Cancer Registry Tools"
+    )))
+    ),
+    expr_list,
+    list(
+      quote(call_vbslines(vbslines_exit_tools()))
     )
   )
 
-  lines <- paste0("WshShell.SendKeys(\"", lines, "\")")
+  expr_list
 
-  for (cmd_nm in names(special_commands)) {
-
-    has_special <- grepl(
-      pattern = cmd_nm,
-      x = lines,
-      fixed = TRUE
-    )
-    if (any(has_special)) {
-      lines <- local({
-        lines <- as.list(lines)
-        lines[has_special] <- special_commands[cmd_nm]
-        unlist(lines, use.names = FALSE)
-      })
-    }
-  }
-
-  lines <- c(vbslines_call_tools(),
-             "",
-             vbslines_set_focus_to_window("IARC/IACR Cancer Registry Tools"),
-             "",
-             lines,
-             "",
-             vbslines_exit_tools())
-
-  as.vbslines(lines)
 }
 
 
@@ -371,13 +413,21 @@ vbslines_call_tools_program <- function(
                        "_input.txt")
   output_path <- paste0(get_tools_working_dir(), "\\", program.name,
                         "_output.txt")
-  vl_commands <- vbslines_tools_program_commands(
+  expr_list <- tools_program_expr_list(
     program.name = program.name,
     input.path = input_path,
     output.path = output_path
   )
 
-  call_vbslines(vl_commands)
+  unused <- lapply(expr_list, function(expr) {
+    if (is.language(expr)) {
+      eval(expr)
+    } else if (inherits(expr, "vbslines")) {
+      call_vbslines(expr)
+    } else {
+      raise_internal_error("expr was not language nor vbslines object")
+    }
+  })
 
   TRUE
 }

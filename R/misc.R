@@ -128,9 +128,22 @@ dir_of_path <- function(path) {
 
 
 
-normalize_path <- function(path) {
+normalize_path <- function(path, double.slash = FALSE) {
+  stopifnot(
+    is.character(path)
+  )
+  assert_is_logical_nonNA_atom(double.slash)
+  path <- normalizePath(path = path, winslash = "\\", mustWork = FALSE)
+  path <- gsub("\\{2,}", "\\", path)
 
-  normalizePath(path = path, winslash = "\\", mustWork = FALSE)
+  if (double.slash) {
+    path <- gsub("\\", "\\\\", path, fixed = TRUE)
+  }
+
+  is_dir <- dir.exists(path)
+  path[is_dir] <- paste0(path, "\\")
+
+  path
 
 }
 
@@ -260,7 +273,7 @@ seconds_elapsed <- function(t) {
 
 
 
-wait_until_all_files_stops_growing <- function(
+wait_until_all_files_stop_growing <- function(
   file.paths,
   check.interval = 30, ## 30 sec
   max.wait.time = 60*30 ## 30 min
@@ -310,13 +323,98 @@ wait_until_all_files_stops_growing <- function(
 
 
 
+tools_program_definition_files <- function(
+  colnameset.name
+) {
+  assert_tools_colnameset_name(colnameset.name)
+
+  src_file_exts <- switch(
+    colnameset.name,
+    mandatory_icdo3_to_icd10 = "dfi",
+    all_icdo3_to_icd10 = "dfi",
+    all_iarc_check = "frm",
+    all_iarc_multiple_primary = "mpr",
+    raise_internal_error(
+      "No source file location defined for colnameset.name = ",
+      deparse(colnameset.name)
+    )
+  )
+  src_files <- paste0("inst/", colnameset.name, ".", src_file_exts)
+  src_files <- system.file(src_files, package = "iarccrgtools")
+  src_files
+}
 
 
 
 
 
+group_indices <- function(x) {
+  stopifnot(
+    is.integer(x),
+    x > 0,
+    !is.na(x),
+    identical(x, sort(x)),
+    length(x) > 1
+  )
+
+  d <- diff(x)
+
+  n_x <- length(x)
+
+  grps <- rep(NA_integer_, n_x)
+  grps[1] <- 1L
+  current_grp <- 1L
+  for (i in 2:n_x) {
+    if (d[i-1L] > 1L) {
+      current_grp <- current_grp + 1L
+    }
+    grps[i] <- current_grp
+
+  }
+  grps
+}
 
 
+
+
+
+open_tools_program <- function(exe.path = get_tools_exe_path()) {
+
+  dir <- dir_of_path(exe.path)
+
+  bat_lines <- c(
+    paste0("cd ", dir),
+    basename(exe.path)
+  )
+
+  tf <- tempfile(pattern = "tmp_iarccrgtools_bat_", fileext = ".bat")
+
+  on.exit({
+    if (file.exists(tf)) file.remove(tf)
+  })
+  writeLines(bat_lines, tf)
+
+  e <- environment()
+  warn_fun <- function(w) {
+    assign(x = "warn", value = w, envir = e)
+  }
+  warn <- ""
+  suppressWarnings(withCallingHandlers(
+    unused <- system2(
+      command = tf,
+      timeout = 1L
+    ),
+    warning = warn_fun
+  ))
+
+  out <- FALSE
+  if (grepl("timed out after 1s", warn$message, fixed = TRUE)) {
+    out <- TRUE
+  } else {
+    warning(warn)
+  }
+  out
+}
 
 
 

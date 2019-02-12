@@ -3,6 +3,7 @@
 
 
 
+#' @importFrom data.table setDF setattr
 collect_tools_data <- function(
   data,
   program.name
@@ -52,16 +53,16 @@ use_tools <- function(
   assert_is_logical_nonNA_atom(clean)
 
   df <- collect_tools_data(data = tools.data, program.name = program.name)
-  colnameset_name <- attributes(df)$colnameset_name
+  colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
 
-  write_path <- tools_program_input_file_path(program.name = program.name)
+  input_path <- tools_program_input_file_path(program.name = program.name)
 
-  cat("* Writing table to ", deparse(write_path), "...\n", sep = "")
+  cat("* Writing table to ", deparse(input_path), "...\n", sep = "")
 
-  write_tools_data(x = df, file = write_path, colnameset.nm = colnameset_name)
+  write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name)
   col_nms <- names(df)
   rm("df")
 
@@ -77,7 +78,11 @@ use_tools <- function(
       ))
     },
     interactively = {
-      cat("* Open IARC CRG Tools and follow the instructions:\n")
+      cat(
+        "* Open IARC CRG Tools and follow the instructions. Ensure that the",
+        "input path is", input_path, "and the output path is",
+        output_path
+      )
       instructions <- tools_program_instructions(program.name)
       inst_no <- formatC(seq_along(instructions),
                          digits = nchar(length(instructions)),
@@ -104,7 +109,7 @@ use_tools <- function(
 
   if (clean) {
     rm_files <- c(tools_program_output_file_paths(program.name = program.name),
-                  write_path)
+                  input_path)
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
   }
