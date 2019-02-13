@@ -4,7 +4,7 @@
 \alias{read_tools_results}
 \title{IARC CRG Tools Results}
 \usage{
-read_tools_results(program.name, input.col.nms = NULL)
+read_tools_results(program.name, input.col.nms = NULL, verbose = TRUE)
 }
 \arguments{
 \item{program.name}{character string; name of program to run}
@@ -12,6 +12,8 @@ read_tools_results(program.name, input.col.nms = NULL)
 \item{input.col.nms}{\code{NULL} (default) or a character string vector of column
 names; when not \code{NULL}, allows setting column names on the tables that were
 read. See Details.}
+
+\item{verbose}{if TRUE, this function gives messages during its process}
 }
 \value{
 A list of data.frames (where the read file was a table) and/or character

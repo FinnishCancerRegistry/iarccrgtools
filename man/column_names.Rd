@@ -24,7 +24,7 @@ tools_program_column_infos(col.nms)
 items returned by \code{tools_program_colnameset("all")}}
 }
 \description{
-Utilities for handling sets of required column names for each 
+Utilities for handling sets of required column names for each
 IARC CRG Tools program.
 }
 \section{Functions}{

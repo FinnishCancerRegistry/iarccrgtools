@@ -4,13 +4,16 @@
 \alias{use_tools_interactively}
 \title{IARC CRG Tools R Interface}
 \usage{
-use_tools_interactively(tools.data, program.name)
+use_tools_interactively(tools.data, program.name, verbose)
 }
 \arguments{
 \item{tools.data}{a \code{data.frame}; required columns depend on
 the IARC CRG Tools program used}
 
 \item{program.name}{character string; name of program to run}
+
+\item{verbose}{if \code{TRUE}, this functions is chatty and gives messages
+durings its run; if \code{FALSE}, you will only see necessary messages}
 }
 \description{
 Simplifies using IARC CRG Tools by preparing the data in a suitable

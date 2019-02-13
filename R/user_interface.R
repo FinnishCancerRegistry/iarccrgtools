@@ -42,7 +42,8 @@ use_tools <- function(
   tools.data,
   program.name,
   how = c("interactively", "automatically")[1],
-  clean = TRUE
+  clean = TRUE,
+  verbose = TRUE
 ) {
   stopifnot(
     length(how) == 1,
@@ -60,9 +61,12 @@ use_tools <- function(
 
   input_path <- tools_program_input_file_path(program.name = program.name)
 
-  message("* Writing table to ", deparse(input_path), "...\n", sep = "")
+  if (verbose) {
+    message("* Writing table to '", input_path, "'...\n", sep = "")
+  }
 
-  write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name)
+  write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
+                   verbose = verbose)
   col_nms <- names(df)
   rm("df")
 
@@ -75,7 +79,8 @@ use_tools <- function(
         exe.path = get_tools_exe_path(),
         working.dir = get_tools_working_dir(),
         wait.check.interval = 30L,
-        wait.max.time = 60L*60L
+        wait.max.time = 60L*60L,
+        verbose = verbose
       )
     },
     interactively = {
@@ -103,7 +108,10 @@ use_tools <- function(
     }
   )
 
-  message("* reading tools results")
+  if (verbose) {
+    message("* reading tools results")
+  }
+
   data_list <- read_tools_results(
     program.name = program.name,
     input.col.nms = col_nms
@@ -117,7 +125,10 @@ use_tools <- function(
   }
 
 
-  message("* all done!")
+  if (verbose) {
+    message("* all done!")
+  }
+
 
   data_list
 
@@ -134,6 +145,7 @@ use_tools <- function(
 #' to finish.
 #' @template tools_data
 #' @template program_name
+#' @template verbose
 #' @details
 #'
 #' See \code{\link{use_tools_interactively}} for the manual but more foolproof
@@ -167,9 +179,10 @@ use_tools <- function(
 #' @export
 use_tools_automatically <- function(
   tools.data,
-  program.name
+  program.name,
+  verbose = TRUE
 ) {
-  use_tools(tools.data, program.name, how = "automatically")
+  use_tools(tools.data, program.name, verbose = verbose, how = "automatically")
 }
 
 
@@ -183,6 +196,7 @@ use_tools_automatically <- function(
 #' to use IARC CRG Tools manually.
 #' @template tools_data
 #' @template program_name
+#' @template verbose
 #' @details
 #'
 #' See \code{\link{use_tools_automatically}} for the automatic but
@@ -197,9 +211,10 @@ use_tools_automatically <- function(
 #' @export
 use_tools_interactively <- function(
   tools.data,
-  program.name
+  program.name,
+  verbose
 ) {
-  use_tools(tools.data, program.name, how = "interactively")
+  use_tools(tools.data, program.name, verbose = verbose, how = "interactively")
 }
 
 

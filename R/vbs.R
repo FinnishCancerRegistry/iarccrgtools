@@ -301,7 +301,8 @@ vbslines_exit_tools <- function() {
 tools_program_expr_list <- function(
   program.name,
   input.path,
-  output.path
+  output.path,
+  verbose = TRUE
 ) {
   assert_tools_program(program.name)
   assert_write_file_path(input.path)
@@ -339,9 +340,8 @@ tools_program_expr_list <- function(
   r_cmd_pool <- list(
     `%%WAIT_UNTIL_READY%%` = substitute(wait_until_all_files_stop_growing(
       file.paths = FILE_PATHS,
-      check.interval = 3L,
-      initial.wait = 3L
-    ), list(FILE_PATHS = wait_for_files))
+      verbose = VERBOSE
+    ), list(FILE_PATHS = wait_for_files, VERBOSE = verbose))
   )
   wh_r_cmds <- lapply(names(r_cmd_pool), function(r_cmd_nm) {
     wh <- which(grepl(
@@ -384,18 +384,22 @@ tools_program_expr_list <- function(
   })
 
 
+  focus_tools <- substitute(call_vbslines(vbslines_set_focus_to_window(
+    FOCUS_TO
+  )), list(FOCUS_TO = "IARC/IACR Cancer Registry Tools"))
+  prog_win_nm <- tools_program_window_name(program.name)
+  focus_popup <- substitute(call_vbslines(vbslines_set_focus_to_window(
+    FOCUS_TO
+  )), list(FOCUS_TO = prog_win_nm))
+
   expr_list <- c(
     list(
       quote(run_tools_executable()),
-      quote(call_vbslines(vbslines_set_focus_to_window(
-        "IARC/IACR Cancer Registry Tools"
-      )))
+      focus_tools
     ),
     expr_list,
     list(
-      quote(call_vbslines(vbslines_set_focus_to_window(
-        "IARC/IACR Cancer Registry Tools"
-      ))),
+      focus_popup,
       quote(call_vbslines(vbslines_exit_tools()))
     )
   )
@@ -412,9 +416,10 @@ call_tools_program <- function(
   working.dir = get_tools_working_dir(),
   program.name = "iarc_check",
   wait.check.interval = 10L,
-  wait.max.time = 60L*60L
+  wait.max.time = 60L*60L,
+  verbose = TRUE
 ) {
-
+  assert_is_logical_nonNA_atom(verbose)
   input_path <- paste0(get_tools_working_dir(), "\\", program.name,
                        "_input.txt")
   output_path <- paste0(get_tools_working_dir(), "\\", program.name,
@@ -423,7 +428,8 @@ call_tools_program <- function(
   expr_list <- tools_program_expr_list(
     program.name = program.name,
     input.path = input_path,
-    output.path = output_path
+    output.path = output_path,
+    verbose = verbose
   )
 
   error_to_warning <- function(e) {
@@ -434,16 +440,22 @@ call_tools_program <- function(
   }
 
   unused <- lapply(expr_list, function(expr) {
-    message("* call_tools_program: executing this: ")
+    if (verbose) {
+      message("* call_tools_program: executing this: ")
+    }
     if (is.language(expr)) {
-      expr_stri <- paste0("   ", deparse(expr), collapse = "\n")
-      message(expr_stri)
+      if (verbose) {
+        expr_stri <- paste0("   ", deparse(expr), collapse = "\n")
+        message(expr_stri)
+      }
       tryCatch(
         eval(expr),
         error = error_to_warning
       )
     } else if (inherits(expr, "vbslines")) {
-      message(paste0("   ", expr, collapse = "\n"))
+      if (verbose) {
+        message(paste0("   ", expr, collapse = "\n"))
+      }
       tryCatch(
         call_vbslines(expr),
         error = error_to_warning

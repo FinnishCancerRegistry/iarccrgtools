@@ -196,22 +196,6 @@ NULL
 
 
 
-get_program_definition_data <- function(
-  data.nm
-) {
-  stopifnot(
-    length(data.nm) == 1,
-    is.character(data.nm),
-    data.nm %in% c("program_guides", "program_output_files",
-                   "column_specifications"),
-    data.nm %in% ls(as.environment("package:iarccrgtools"))
-  )
-  get(data.nm, pos = "package:iarccrgtools")
-
-}
-
-
-
 
 
 #' @md
@@ -278,12 +262,50 @@ seconds_elapsed <- function(t) {
 
 
 
+is_writable <- function(
+  file.paths
+) {
+
+
+  vapply(file.paths, function(file_path) {
+    assert_file_path(file_path)
+    bat_lines <- c(
+      "2>nul (",
+      paste0("  >>", file_path, " (call )"),
+      ") && (echo 1) || (echo 0)"
+    )
+
+    tf <- tempfile(pattern = "tmp_iarccrgtools_bat_",
+                   fileext = ".bat")
+
+    writeLines(bat_lines, tf)
+
+    output <- system2(
+      command = tf,
+      stdout = TRUE,
+      stderr = TRUE
+    )
+    output <- output[output %in% c("0", "1")]
+    switch(
+      output,
+      "0" = FALSE,
+      "1" = TRUE,
+      raise_internal_error("could not determine writability of file ",
+                           file_path)
+    )
+  }, logical(1))
+}
+
+
+
+
 
 wait_until_all_files_stop_growing <- function(
   file.paths,
-  check.interval = 30, ## 30 sec
+  check.interval = 10, ## 30 sec
   max.wait.time = 60*30, ## 30 min
-  initial.wait = 5L,
+  initial.wait = 10L,
+  wait.until.writable = FALSE,
   verbose = TRUE
 ) {
   lapply(file.paths, function(file_path) {
@@ -302,6 +324,7 @@ wait_until_all_files_stop_growing <- function(
     initial.wait > 0
   )
   assert_is_logical_nonNA_atom(verbose)
+  assert_is_logical_nonNA_atom(wait.until.writable)
 
   if (verbose) {
     message("* wait_until_all_files_stop_growing: waiting for ",
@@ -317,12 +340,16 @@ wait_until_all_files_stop_growing <- function(
   t <- proc.time()
   sec_elapsed <- 0L
   if (verbose) {
-    message("* wait_until_all_files_stop_growing: starting to wait for these ",
-            "files: ", deparse(unname(file.paths)))
+    message(
+      "* wait_until_all_files_stop_growing: starting to wait for these ",
+      "files:\n", paste0("   '", unname(file.paths), "'", collapse = "\n")
+    )
   }
 
   file_grew <- rep(TRUE, length(file.paths))
-  while (any(file_grew) && sec_elapsed < max.wait.time - check.interval) {
+  reached_max_time <- FALSE
+  file_writable <- rep(FALSE, length(file.paths))
+  while (any(file_grew | !file_writable) && !reached_max_time) {
 
     Sys.sleep(check.interval)
     sec_elapsed <- seconds_elapsed(t)
@@ -333,30 +360,44 @@ wait_until_all_files_stop_growing <- function(
     file_sizes[is.na(file_sizes)] <- -1.0
 
     file_grew <- prev_file_sizes < file_sizes
+    reached_max_time <- sec_elapsed >= max.wait.time - check.interval
+    file_writable <- if (wait.until.writable) is_writable(file.paths) else TRUE
 
     tick <- tick + 1L
     if (verbose) {
       msg <- paste0(
         "* wait_until_all_files_stop_growing: iteration ",tick, " done. ",
-        "In total ", round(sec_elapsed), " seconds have elapsed. "
+        "In total ", round(sec_elapsed), " seconds have elapsed."
       )
       if (any(file_grew)) {
         msg <- paste0(
           msg,
-          "These ",
-          "files grew this iteration: ", deparse(file.paths[file_grew])
+          "\n** These ",
+          "files grew this iteration: \n",
+          paste0("   '", file.paths[file_grew], "'", collapse = "\n")
         )
       } else {
-        msg <- paste0(msg, "No files grew anoymore, so stopping.")
+        msg <- paste0(msg, "\n** No files grew since previous iteration. ")
       }
+      if (wait.until.writable) {
+        if (any(!file_writable)) {
+          msg <- paste0(
+            msg, "\n** These files are not yet writable:\n",
+            paste0("   '",  file.paths[!file_writable], "'", collapse = "\n")
+          )
+        } else {
+          msg <- paste0(msg, "\n** All files are now writable. ")
+        }
+      }
+
       message(msg)
     }
 
   }
   if (sec_elapsed > max.wait.time) {
     warning(
-      "While waiting for files ", deparse(file.paths), " to stop growing ",
-      "in disk space reserved, ",
+      "While waiting for files ", paste0("'", file.paths, "'", collapse = ", "),
+      " to stop growing in disk space, ",
       "reached max.wait.time = ", max.wait.time, " before they all stopped ",
       "growing."
     )
@@ -466,6 +507,62 @@ run_tools_executable <- function(exe.path = get_tools_exe_path()) {
   }
   out
 }
+
+
+
+
+
+#' @importFrom utils data
+get_exported_dataset <- function(dataset.name) {
+  stopifnot(
+    length(dataset.name) == 1,
+    is.character(dataset.name),
+    !is.na(dataset.name)
+  )
+
+  expo_data_nms <- utils::data(package = "iarccrgtools")$results[, "Item"]
+  if (!dataset.name %in% expo_data_nms) {
+    raise_internal_error(
+      "Requested exported dataset ",
+      deparse(dataset.name), " is not one of ",
+      deparse(expo_data_nms), ". "
+    )
+  }
+  e <- new.env(parent = emptyenv())
+  utils::data(list = dataset.name, envir = e)
+  e[[dataset.name]]
+}
+
+
+
+
+
+get_internal_dataset <- function(dataset.name) {
+  stopifnot(
+    length(dataset.name) == 1,
+    is.character(dataset.name),
+    !is.na(dataset.name)
+  )
+  pkg_env <- as.environment("package:iarccrgtools")
+  object_nms <- getNamespaceExports("iarccrgtools")
+
+  dataset_nms <- object_nms[vapply(object_nms, function(object_nm) {
+    is.data.frame(pkg_env[[object_nm]])
+  }, logical(1))]
+
+  if (!dataset.name %in% dataset_nms) {
+    raise_internal_error(
+      "Requested internal dataset ",
+      deparse(dataset.name), " is not one of ",
+      deparse(dataset_nms), ". "
+    )
+  }
+
+  pkg_env[[dataset.name]]
+}
+
+
+
 
 
 
