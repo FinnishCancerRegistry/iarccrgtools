@@ -60,7 +60,7 @@ use_tools <- function(
 
   input_path <- tools_program_input_file_path(program.name = program.name)
 
-  cat("* Writing table to ", deparse(input_path), "...\n", sep = "")
+  message("* Writing table to ", deparse(input_path), "...\n", sep = "")
 
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name)
   col_nms <- names(df)
@@ -69,16 +69,17 @@ use_tools <- function(
   switch(
     how,
     automatically = {
-      call_vbslines(vbslines_call_tools_program(
+      message("* calling tools automatically...")
+      call_tools_program(
         program.name = program.name,
         exe.path = get_tools_exe_path(),
         working.dir = get_tools_working_dir(),
         wait.check.interval = 30L,
         wait.max.time = 60L*60L
-      ))
+      )
     },
     interactively = {
-      cat(
+      message(
         "* Open IARC CRG Tools and follow the instructions. Ensure that the",
         "input path is", input_path, "and the output path is",
         output_path
@@ -87,8 +88,8 @@ use_tools <- function(
       inst_no <- formatC(seq_along(instructions),
                          digits = nchar(length(instructions)),
                          flag = " ")
-      instructions <- paste0("  ", inst_no, ": ", instructions)
-      cat(instructions, sep = "\n")
+      instructions <- paste0("  ", inst_no, ": ", instructions, collapse = "\n")
+      message(instructions)
 
       proceed <- ask_yes_no(
         "* Once IARC CRG Tools has finished, select 'yes' to proceed. ",
@@ -102,6 +103,7 @@ use_tools <- function(
     }
   )
 
+  message("* reading tools results")
   data_list <- read_tools_results(
     program.name = program.name,
     input.col.nms = col_nms
@@ -114,6 +116,8 @@ use_tools <- function(
     file.remove(rm_files)
   }
 
+
+  message("* all done!")
 
   data_list
 

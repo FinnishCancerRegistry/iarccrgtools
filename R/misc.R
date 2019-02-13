@@ -10,11 +10,15 @@ ask_yes_no <- function(
     vapply(list(...), is.character, logical(1))
   )
 
-  cat(paste0(..., collapse = ""),
-      "1: yes",
-      "2: no",
-      "c: cancel",
-      sep = "\n")
+  message(
+    paste0(
+      paste0(..., collapse = ""),
+      "\n",
+      "1: yes\n",
+      "2: no\n",
+      "c: cancel"
+    )
+  )
 
   allowed_answers <- c("1", "2", "c")
   answer <- ""
@@ -23,10 +27,12 @@ ask_yes_no <- function(
     answer <- tolower(answer)
   }
 
-  switch(answer,
-         "1" = TRUE,
-         "2" = FALSE,
-         c = stop("Cancelled.", call. = FALSE))
+  switch(
+    answer,
+    "1" = TRUE,
+    "2" = FALSE,
+    c = stop("Cancelled by user.", call. = FALSE)
+  )
 }
 
 
@@ -109,7 +115,7 @@ dir_of_path <- function(path) {
     is.character(path)
   )
   has_ext <- grepl(
-    pattern = "\\.[[:alpha:]]{1,10}^",
+    pattern = "\\.[[:alnum:]]{1,10}$",
     x = path
   )
   if (dir.exists(path)) {
@@ -276,9 +282,13 @@ seconds_elapsed <- function(t) {
 wait_until_all_files_stop_growing <- function(
   file.paths,
   check.interval = 30, ## 30 sec
-  max.wait.time = 60*30 ## 30 min
+  max.wait.time = 60*30, ## 30 min
+  initial.wait = 5L,
+  verbose = TRUE
 ) {
-  lapply(file.paths, assert_file_path)
+  lapply(file.paths, function(file_path) {
+    assert_dir_path(dir_of_path(file_path))
+  })
   stopifnot(
     length(check.interval) == 1,
     check.interval %% 1 == 0,
@@ -286,17 +296,33 @@ wait_until_all_files_stop_growing <- function(
     length(max.wait.time) == 1,
     max.wait.time %% 1 == 0,
     max.wait.time > 0,
-    max.wait.time > check.interval
+    max.wait.time > check.interval,
+    length(initial.wait) == 1,
+    initial.wait %% 1 == 0,
+    initial.wait > 0
   )
+  assert_is_logical_nonNA_atom(verbose)
 
+  if (verbose) {
+    message("* wait_until_all_files_stop_growing: waiting for ",
+            initial.wait, " seconds before starting to inspect file sizes...")
+  }
+  Sys.sleep(initial.wait)
+
+  tick <- 0L
   n_files <- length(file.paths)
   prev_file_sizes <- rep(-1L, n_files)
   file_sizes <- file.size(file.paths)
   file_sizes[is.na(file_sizes)] <- -1.0
   t <- proc.time()
   sec_elapsed <- 0L
-  while (all(prev_file_sizes < file_sizes) &&
-         sec_elapsed < max.wait.time - check.interval) {
+  if (verbose) {
+    message("* wait_until_all_files_stop_growing: starting to wait for these ",
+            "files: ", deparse(unname(file.paths)))
+  }
+
+  file_grew <- rep(TRUE, length(file.paths))
+  while (any(file_grew) && sec_elapsed < max.wait.time - check.interval) {
 
     Sys.sleep(check.interval)
     sec_elapsed <- seconds_elapsed(t)
@@ -305,6 +331,26 @@ wait_until_all_files_stop_growing <- function(
 
     ## when file no longer found
     file_sizes[is.na(file_sizes)] <- -1.0
+
+    file_grew <- prev_file_sizes < file_sizes
+
+    tick <- tick + 1L
+    if (verbose) {
+      msg <- paste0(
+        "* wait_until_all_files_stop_growing: iteration ",tick, " done. ",
+        "In total ", round(sec_elapsed), " seconds have elapsed. "
+      )
+      if (any(file_grew)) {
+        msg <- paste0(
+          msg,
+          "These ",
+          "files grew this iteration: ", deparse(file.paths[file_grew])
+        )
+      } else {
+        msg <- paste0(msg, "No files grew anoymore, so stopping.")
+      }
+      message(msg)
+    }
 
   }
   if (sec_elapsed > max.wait.time) {
@@ -315,8 +361,12 @@ wait_until_all_files_stop_growing <- function(
       "growing."
     )
   }
-  return(TRUE)
 
+  if (verbose) {
+    message("* wait_until_all_files_stop_growing: stopped waiting")
+  }
+
+  return(TRUE)
 }
 
 
@@ -378,7 +428,7 @@ group_indices <- function(x) {
 
 
 
-open_tools_program <- function(exe.path = get_tools_exe_path()) {
+run_tools_executable <- function(exe.path = get_tools_exe_path()) {
 
   dir <- dir_of_path(exe.path)
 
@@ -402,7 +452,8 @@ open_tools_program <- function(exe.path = get_tools_exe_path()) {
   suppressWarnings(withCallingHandlers(
     unused <- system2(
       command = tf,
-      timeout = 1L
+      timeout = 1L,
+      stdout = TRUE
     ),
     warning = warn_fun
   ))

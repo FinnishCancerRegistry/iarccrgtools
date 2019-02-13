@@ -189,6 +189,7 @@ n_file_lines <- function(path) {
 #' @param input.col.nms `NULL` (default) or a character string vector of column
 #' names; when not `NULL`, allows setting column names on the tables that were
 #' read. See Details.
+#' @param verbose if TRUE, this function gives messages during its process
 #' @return
 #' A list of data.frames (where the read file was a table) and/or character
 #' string vectors (where the read file was a non-table file such as a log file).
@@ -204,7 +205,8 @@ n_file_lines <- function(path) {
 #' @export
 read_tools_results <- function(
   program.name,
-  input.col.nms = NULL
+  input.col.nms = NULL,
+  verbose = TRUE
 ) {
   assert_tools_program(program.name = program.name)
   dir <- get_tools_working_dir()
@@ -212,17 +214,29 @@ read_tools_results <- function(
   file_paths <- tools_program_output_file_paths(program.name = program.name,
                                                 dir = dir)
 
-  file_paths <- file_paths[file.exists(file_paths)]
-
   output_list <- lapply(seq_along(file_paths), function(i) {
 
     file_path <- file_paths[i]
     path_type <- names(file_paths)[i]
-    message("* read_tools_results: attempting to read file from ",
-            deparse(unname(file_path)))
+
+    if (verbose) {
+      message("* read_tools_results: attempting to read file from ",
+              deparse(unname(file_path)))
+    }
 
     if (!file.exists(file_path)) {
-      message("* read_tools_results: that file did not exist, returning NULL")
+      if (verbose) {
+        message("* read_tools_results: file '", file_path, "' did not exist; ",
+                "returning NULL")
+      }
+      return(NULL)
+    }
+    n_lines <- n_file_lines(path = file_path)
+    if (n_lines == 0) {
+      if (verbose) {
+        message("* read_tools_results: file '", file_path, "' had zero rows; ",
+                "returning NULL")
+      }
       return(NULL)
     }
 
@@ -244,18 +258,16 @@ read_tools_results <- function(
           out[[last_col]] <- NULL
         }
 
-      if (!is.null(input.col.nms)) {
+        if (!is.null(input.col.nms)) {
 
-        if (ncol(out) == length(input.col.nms)+1L) {
-          input.col.nms <- c(input.col.nms, "tools_text")
+          if (ncol(out) == length(input.col.nms)+1L) {
+            input.col.nms <- c(input.col.nms, "tools_text")
+          }
+
+          if (length(input.col.nms) == ncol(out)) {
+            data.table::setnames(out, old = names(out), new = input.col.nms)
+          }
         }
-
-        if (length(input.col.nms) == ncol(out)) {
-          data.table::setnames(out, old = names(out), new = input.col.nms)
-        }
-
-
-      }
 
       }
 
@@ -267,7 +279,10 @@ read_tools_results <- function(
         "file_path = ", deparse(file_path), " file path type was not defined. "
       )
     }
-    message("* read_tools_results: file successfully read ")
+    if (verbose) {
+      message("* read_tools_results: file successfully read ")
+    }
+
 
 
     out

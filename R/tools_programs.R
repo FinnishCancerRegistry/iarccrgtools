@@ -29,7 +29,7 @@ tools_program_commands <- function(program.name) {
 
 tools_program_instructions <- function(program.name) {
   assert_tools_program(program.name)
-  
+
   program_guides <- get_program_definition_data("program_guides")
   is_in_program <- program_guides$program_name == program.name
   program_guides[["instruction"]][is_in_program]
@@ -41,8 +41,8 @@ tools_program_instructions <- function(program.name) {
 
 #' @title Column Names
 #' @name column_names
-#' @description 
-#' Utilities for handling sets of required column names for each 
+#' @description
+#' Utilities for handling sets of required column names for each
 #' IARC CRG Tools program.
 NULL
 
@@ -65,19 +65,19 @@ tools_program_colnameset <- function(
   set.nm
   ) {
   assert_tools_colnameset_name(set.nm)
-  
+
   col_specs <- get_program_definition_data("column_specifications")
   col_specs_col_nm <- paste0("set_", set.nm)
-  
+
   if (!col_specs_col_nm %in% names(col_specs)) {
     raise_internal_error(
       "Expected 'column_specifications' to have column with name ",
       deparse(col_specs_col_nm), " but it didn't."
     )
   }
-  
+
   col_specs[["column_name"]][col_specs[[col_specs_col_nm]]]
-  
+
 }
 
 #' @describeIn column_names returns the required class for each column by
@@ -92,13 +92,13 @@ tools_program_column_classes <- function(
     is.character(col.nms)
   )
   col_specs <- get_program_definition_data("column_specifications")
-  
+
   cn <- col_specs[["column_name"]]
   cc <- col_specs[["class"]]
-  
-  
+
+
   cc[match(col.nms, cn, nomatch = NA_integer_)]
-  
+
 }
 
 #' @describeIn column_names returns short plain English explanation of column
@@ -110,13 +110,13 @@ tools_program_column_infos <- function(
     is.character(col.nms)
   )
   col_specs <- get_program_definition_data("column_specifications")
-  
+
   cn <- col_specs[["column_name"]]
   ci <- col_specs[["info"]]
-  
-  
+
+
   ci[match(col.nms, cn, nomatch = NA_integer_)]
-  
+
 }
 
 
@@ -193,15 +193,16 @@ tools_program_output_file_paths <- function(
 ) {
   assert_tools_program(program.name)
   assert_dir_path(dir)
-  
+
   prog_files_df <- get_program_definition_data("program_output_files")
   is_in_program <- prog_files_df$program_name == program.name
   prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_program]
   prog_file_is_table <- prog_files_df$is_table[is_in_program]
-  
+
   file_paths <- paste0(dir, "\\", program.name, prog_file_suffixes)
+  file_paths <- normalize_path(file_paths)
   names(file_paths) <- rep("is_not_table", length(file_paths))
-  names(file_paths)[prog_file_is_table] <- rep("is_table", 
+  names(file_paths)[prog_file_is_table] <- rep("is_table",
                                                sum(prog_file_is_table))
   file_paths
 }
@@ -216,9 +217,9 @@ tools_program_input_file_path <- function(
 ) {
   assert_tools_program(program.name)
   assert_dir_path(dir)
-  
+
   paste0(dir, "\\", program.name, "_input.txt")
-  
+
 }
 
 

@@ -97,11 +97,6 @@ write_vbsfile <- function(lines, file, ...) {
     grepl("\\.vbs", file)
   )
 
-  # stringi::stri_write_lines(
-  #   lines,
-  #   file,
-  #   encoding = "WINDOWS-1252"
-  # )
   writeLines(lines, con = file, ...)
 
 }
@@ -290,6 +285,12 @@ vbslines_wait_until_file_stops_growing <- function(
 vbslines_exit_tools <- function() {
   lines <- c("%F", "X")
   lines <- paste0("WshShell.SendKeys(\"", lines, "\")")
+  lines <- c(
+    "",
+    'Set WshShell = WScript.CreateObject("WScript.Shell")',
+    lines,
+    ""
+  )
   as.vbslines(lines)
 }
 
@@ -311,6 +312,7 @@ tools_program_expr_list <- function(
   commands <- tools_program_commands(program.name)
 
   special_strings <- list(
+
     CTRL = "^",
     ALT = "%",
     ENTER = "{ENTER}",
@@ -331,10 +333,15 @@ tools_program_expr_list <- function(
     )
   }
 
+  wait_for_files <- tools_program_output_file_paths(program.name = program.name)
+  wait_for_files <- unname(wait_for_files)
+
   r_cmd_pool <- list(
-    `%%WAIT_UNTIL_READY%%` = quote(wait_until_all_files_stop_growing(
-      file.paths = tools_program_output_file_paths(program.name = program.name)
-    ))
+    `%%WAIT_UNTIL_READY%%` = substitute(wait_until_all_files_stop_growing(
+      file.paths = FILE_PATHS,
+      check.interval = 3L,
+      initial.wait = 3L
+    ), list(FILE_PATHS = wait_for_files))
   )
   wh_r_cmds <- lapply(names(r_cmd_pool), function(r_cmd_nm) {
     wh <- which(grepl(
@@ -379,17 +386,19 @@ tools_program_expr_list <- function(
 
   expr_list <- c(
     list(
-    quote(open_tools_program()),
-    quote(call_vbslines(vbslines_set_focus_to_window(
-      "IARC/IACR Cancer Registry Tools"
-    )))
+      quote(run_tools_executable()),
+      quote(call_vbslines(vbslines_set_focus_to_window(
+        "IARC/IACR Cancer Registry Tools"
+      )))
     ),
     expr_list,
     list(
+      quote(call_vbslines(vbslines_set_focus_to_window(
+        "IARC/IACR Cancer Registry Tools"
+      ))),
       quote(call_vbslines(vbslines_exit_tools()))
     )
   )
-
   expr_list
 
 }
@@ -398,7 +407,7 @@ tools_program_expr_list <- function(
 
 
 
-vbslines_call_tools_program <- function(
+call_tools_program <- function(
   exe.path = get_tools_exe_path(),
   working.dir = get_tools_working_dir(),
   program.name = "iarc_check",
@@ -406,24 +415,39 @@ vbslines_call_tools_program <- function(
   wait.max.time = 60L*60L
 ) {
 
-
-  vl_call_tools <- vbslines_call_tools(exe.path = exe.path)
-
   input_path <- paste0(get_tools_working_dir(), "\\", program.name,
                        "_input.txt")
   output_path <- paste0(get_tools_working_dir(), "\\", program.name,
                         "_output.txt")
+
   expr_list <- tools_program_expr_list(
     program.name = program.name,
     input.path = input_path,
     output.path = output_path
   )
 
+  error_to_warning <- function(e) {
+    warning(simpleWarning(
+      paste0("CONVERTED ERROR TO WARNING: ", e$message),
+      call = e$call
+    ))
+  }
+
   unused <- lapply(expr_list, function(expr) {
+    message("* call_tools_program: executing this: ")
     if (is.language(expr)) {
-      eval(expr)
+      expr_stri <- paste0("   ", deparse(expr), collapse = "\n")
+      message(expr_stri)
+      tryCatch(
+        eval(expr),
+        error = error_to_warning
+      )
     } else if (inherits(expr, "vbslines")) {
-      call_vbslines(expr)
+      message(paste0("   ", expr, collapse = "\n"))
+      tryCatch(
+        call_vbslines(expr),
+        error = error_to_warning
+      )
     } else {
       raise_internal_error("expr was not language nor vbslines object")
     }
