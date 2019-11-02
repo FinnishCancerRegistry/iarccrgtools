@@ -467,29 +467,28 @@ group_indices <- function(x) {
 
 
 
-
-
-run_tools_executable <- function(exe.path = get_tools_exe_path()) {
-
-  dir <- dir_of_path(exe.path)
-
+run_executable <- function(exe_path) {
+  assert_file_path(exe_path)
+  
+  dir <- dir_of_path(exe_path)
+  
   bat_lines <- c(
     paste0("cd ", dir),
-    basename(exe.path)
+    basename(exe_path)
   )
-
-  tf <- tempfile(pattern = "tmp_iarccrgtools_bat_", fileext = ".bat")
-
+  
+  tf <- tempfile(pattern = "tmp_exe_call_", fileext = ".bat")
+  
   on.exit({
     if (file.exists(tf)) file.remove(tf)
   })
   writeLines(bat_lines, tf)
-
+  
   e <- environment()
   warn_fun <- function(w) {
     assign(x = "warn", value = w, envir = e)
   }
-  warn <- ""
+  warn <- list(message = "")
   suppressWarnings(withCallingHandlers(
     unused <- system2(
       command = tf,
@@ -498,14 +497,20 @@ run_tools_executable <- function(exe.path = get_tools_exe_path()) {
     ),
     warning = warn_fun
   ))
-
+  
   out <- FALSE
-  if (grepl("timed out after 1s", warn$message, fixed = TRUE)) {
+  if (grepl("timed out after 1s", warn[["message"]], fixed = TRUE)) {
     out <- TRUE
   } else {
-    warning(warn)
+    warning(simpleWarning(warn[["message"]], call = warn[["call"]]))
   }
   out
+}
+
+
+
+run_tools_executable <- function(exe.path = get_tools_exe_path()) {
+  run_executable(exe.path)
 }
 
 

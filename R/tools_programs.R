@@ -10,7 +10,7 @@
 #' @return A character string vector.
 #' @export
 tools_program_names <- function() {
-  program_guides <- get_exported_dataset("program_guides")
+  program_guides <- get_internal_dataset("program_guides")
   sort(unique(program_guides$program_name))
 }
 
@@ -20,7 +20,7 @@ tools_program_names <- function() {
 
 tools_program_commands <- function(program.name) {
   assert_tools_program(program.name)
-  program_guides <- get_exported_dataset("program_guides")
+  program_guides <- get_internal_dataset("program_guides")
   is_in_program <- program_guides$program_name == program.name
   ks <- program_guides[["command"]][is_in_program]
   names(ks) <- program_guides[["instruction"]][is_in_program]
@@ -30,7 +30,7 @@ tools_program_commands <- function(program.name) {
 tools_program_instructions <- function(program.name) {
   assert_tools_program(program.name)
 
-  program_guides <- get_exported_dataset("program_guides")
+  program_guides <- get_internal_dataset("program_guides")
   is_in_program <- program_guides$program_name == program.name
   program_guides[["instruction"]][is_in_program]
 
@@ -66,7 +66,7 @@ tools_program_colnameset <- function(
   ) {
   assert_tools_colnameset_name(set.nm)
 
-  col_specs <- get_exported_dataset("column_specifications")
+  col_specs <- get_internal_dataset("column_specifications")
   col_specs_col_nm <- paste0("set_", set.nm)
 
   if (!col_specs_col_nm %in% names(col_specs)) {
@@ -91,7 +91,7 @@ tools_program_column_classes <- function(
   stopifnot(
     is.character(col.nms)
   )
-  col_specs <- get_exported_dataset("column_specifications")
+  col_specs <- get_internal_dataset("column_specifications")
 
   cn <- col_specs[["column_name"]]
   cc <- col_specs[["class"]]
@@ -109,7 +109,7 @@ tools_program_column_infos <- function(
   stopifnot(
     is.character(col.nms)
   )
-  col_specs <- get_exported_dataset("column_specifications")
+  col_specs <- get_internal_dataset("column_specifications")
 
   cn <- col_specs[["column_name"]]
   ci <- col_specs[["info"]]
@@ -194,7 +194,7 @@ tools_program_output_file_paths <- function(
   assert_tools_program(program.name)
   assert_dir_path(dir)
 
-  prog_files_df <- get_exported_dataset("program_output_files")
+  prog_files_df <- get_internal_dataset("program_output_files")
   is_in_program <- prog_files_df$program_name == program.name
   prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_program]
   prog_file_is_table <- prog_files_df$is_table[is_in_program]
@@ -230,7 +230,7 @@ tools_program_window_name <- function(
   program.name
 ) {
   assert_tools_program(program.name)
-  pwn <- get_exported_dataset("program_window_names")
+  pwn <- get_internal_dataset("program_window_names")
   pwn[pwn$program_name == program.name, "program_window_name"]
 }
 
