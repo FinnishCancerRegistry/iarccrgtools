@@ -412,11 +412,11 @@ tools_program_expr_list <- function(
 
 
 call_tools_program <- function(
-  exe.path = get_tools_exe_path(),
+  program.name = program.name,
+  program.exe.path = get_tools_program_exe_path(),
   working.dir = get_tools_working_dir(),
-  program.name = "iarc_check",
-  wait.check.interval = 10L,
-  wait.max.time = 60L*60L,
+  wait.check.interval = 30L,
+  wait.max.time = 60L * 60L,
   verbose = TRUE
 ) {
   assert_is_logical_nonNA_atom(verbose)
@@ -438,7 +438,7 @@ call_tools_program <- function(
       call = e$call
     ))
   }
-
+  stop("TODO: just call an exe with the settings file and press OK after waiting.")
   unused <- lapply(expr_list, function(expr) {
     if (verbose) {
       message("* call_tools_program: executing this: ")

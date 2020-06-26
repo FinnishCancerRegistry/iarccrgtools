@@ -10,8 +10,7 @@
 #' @return A character string vector.
 #' @export
 tools_program_names <- function() {
-  program_guides <- get_internal_dataset("program_guides")
-  sort(unique(program_guides$program_name))
+  stop("use program_clean_names() instead")
 }
 
 

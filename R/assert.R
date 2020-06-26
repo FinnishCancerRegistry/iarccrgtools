@@ -105,7 +105,7 @@ assert_write_file_path <- function(path, path.arg.nm = NULL) {
 
 
 
-assert_tools_program <- function(program.name, program.name.arg.nm = NULL) {
+assert_tool <- function(program.name, program.name.arg.nm = NULL) {
   if (is.null(program.name.arg.nm)) {
     program.name.arg.nm <- deparse(substitute(program.name))
   }
@@ -116,7 +116,7 @@ assert_tools_program <- function(program.name, program.name.arg.nm = NULL) {
   if (length(program.name) != 1L) {
     stop("Arg ", deparse(program.name.arg.nm), " must be of length 1")
   }
-  prog_nms <- tools_program_names()
+  prog_nms <- tool_names()
   if (!program.name %in% prog_nms) {
     stop("Arg ", deparse(program.name.arg.nm), " must be one of these: ",
          deparse(prog_nms))
@@ -146,11 +146,8 @@ assert_tools_data <- function(
   if (nrow(data) == 0) {
     stop("Arg ", deparse(data.arg.nm), " must have at least one row")
   }
-  if (!is.data.frame(data)) {
-    stop("Arg ", deparse(data.arg.nm), " must be a data.frame")
-  }
 
-  mandatory_col_nms <- tools_program_colnameset(
+  mandatory_col_nms <- tool_colnameset(
     paste0("mandatory_", program.name)
   )
   miss_col_nms <- setdiff(mandatory_col_nms, names(data))
@@ -171,7 +168,7 @@ assert_tools_colnameset_name <- function(set.nm, set.nm.arg.nm = NULL) {
   if (is.null(set.nm.arg.nm)) {
     set.nm.arg.nm <- deparse(substitute(set.nm))
   }
-  allowed <- tools_program_colnameset_names()
+  allowed <- tool_colnameset_names()
 
   if (length(set.nm) != 1) {
     stop("Arg ", deparse(set.nm.arg.nm), " must be of length 1")
@@ -200,6 +197,36 @@ assert_is_logical_nonNA_atom <- function(arg, arg.nm = NULL) {
     pass <- FALSE
     m <- sub("%%BAD%%", paste0("of class(es) ", deparse(class(arg))), m)
     m <- sub("%%GOOD%%", "class \"logical\"", m)
+  }
+  if (length(arg) != 1) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("of length ", length(arg)), m)
+    m <- sub("%%GOOD%%", "length 1", m)
+  }
+  if (is.na(arg)) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("NA ", length(arg)), m)
+    m <- sub("%%GOOD%%", "TRUE/FALSE", m)
+  }
+  if (!pass) {
+    stop(m)
+  }
+  invisible(NULL)
+}
+
+
+
+assert_is_character_nonNA_atom <- function(arg, arg.nm = NULL) {
+  if (is.null(arg.nm)) {
+    arg.nm <- deparse(substitute(arg))
+  }
+  
+  pass <- TRUE
+  m <- paste0("Arg ", deparse(arg.nm), " was %%BAD&&, but expected %%GOOD%%")
+  if (!is.character(arg)) {
+    pass <- FALSE
+    m <- sub("%%BAD%%", paste0("of class(es) ", deparse(class(arg))), m)
+    m <- sub("%%GOOD%%", "class \"character\"", m)
   }
   if (length(arg) != 1) {
     pass <- FALSE

@@ -1,4 +1,4 @@
-"program_name";"file_name_suffix";"is_table"
+"clean_name";"file_name_suffix";"is_table"
 "iarc_check";"_output.txt";TRUE
 "iarc_check";"_output.log";FALSE
 "iarc_check";"_input.chk";TRUE

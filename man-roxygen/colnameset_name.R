@@ -1,4 +1,4 @@
 
 
 #' @param colnameset.nm one of the items returned by 
-#' \code{\link{tools_program_colnameset_names}}
+#' \code{\link{tool_colnameset_names}}

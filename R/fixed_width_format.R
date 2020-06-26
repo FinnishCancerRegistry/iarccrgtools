@@ -2,25 +2,31 @@
 
 
 
-format_fwf <- function(x, width, dec) {
+format_fwf <- function(x, width) {
+  stopifnot(
+    length(width) == 1L,
+    width > 0L,
+    width %% 1L == 0L,
+    width >= nchar(x)
+  )
   UseMethod("format_fwf")
 }
-format_fwf.default <- function(x, width, dec) {
-  stop("Cannot write column of class ", deparse(class(x)), " into fixed ",
-       "width format (yet)")
-}
-format_fwf.integer <- function(x, width, dec) {
+format_fwf.integer <- function(x, width) {
   formatC(x = x, width = width, flag = "0")
 }
-format_fwf.character <- function(x, width, dec) {
-  x
+format_fwf.numeric <- function(x, width) {
+  formatC(x = x, width = width, flag = "0")
 }
-format_fwf.Date <- function(x, width, dec) {
-  as.character(x)
+format_fwf.character <- function(x, width) {
+  formatC(x = x, width = width, flag = " ")
+}
+format_fwf.Date <- function(x, width) {
+  format_fwf(as.character(x), width)
 }
 
 
 
+#' @importFrom data.table setDT setnames fwrite
 write_fwf <- function(x, path, widths = NULL, ...) {
   assert_dataframe(x)
   assert_write_file_path(path)

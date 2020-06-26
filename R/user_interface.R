@@ -8,7 +8,6 @@ collect_tools_data <- function(
   data,
   program.name
 ) {
-  requireNamespace("data.table")
   assert_tools_program(program.name)
   assert_tools_data(data = data, program.name = program.name)
   mandatory_col_nms <- tools_program_colnameset(
@@ -49,8 +48,8 @@ use_tools <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
-  assert_tools_program(program.name)
-  assert_tools_data(tools.data, program.name)
+  # assert_tools_program(program.name)
+  # assert_tools_data(tools.data, program.name)
   assert_is_logical_nonNA_atom(clean)
 
   df <- collect_tools_data(data = tools.data, program.name = program.name)
@@ -62,7 +61,7 @@ use_tools <- function(
   input_path <- tools_program_input_file_path(program.name = program.name)
 
   if (verbose) {
-    message("* Writing table to '", input_path, "'...\n", sep = "")
+    message("* use_tools: Writing table to '", input_path, "'...\n", sep = "")
   }
 
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
@@ -73,33 +72,34 @@ use_tools <- function(
   switch(
     how,
     automatically = {
-      message("* calling tools automatically...")
+      message("* use_tools: calling tools automatically...")
       call_tools_program(
         program.name = program.name,
-        exe.path = get_tools_exe_path(),
+        program.exe.path = get_tools_program_exe_path(),
         working.dir = get_tools_working_dir(),
         wait.check.interval = 30L,
-        wait.max.time = 60L*60L,
+        wait.max.time = 60L * 60L,
         verbose = verbose
       )
     },
     interactively = {
+      message("* use_tools: calling tools interactively...")
       message(
-        "* Open IARC CRG Tools and follow the instructions. Ensure that the",
-        "input path is", input_path, "and the output path is",
-        output_path
+        "- open IARC CRG Tools\n",
+        "- start the tool titled ", 
+        deparse(program_real_name_of_clean_name(program.name)), "\n",
+        "- supply this as input path: ", input_path, "\n",
+        "- supply this as output path", output_path, "\n",
+        "- choose columns when prompted; the columns in the input file are ",
+        "  in order the following:\n  ", deparse(col_nms), "\n",
+        "- choose other settings as is appropriate for your dataset and run",
+        "  the tool\n",
+        "- once it has finished, (press OK in IARC CRG Tools and) supply ",
+        "  'yes' without quotes in the prompt below"
       )
-      instructions <- tools_program_instructions(program.name)
-      inst_no <- formatC(seq_along(instructions),
-                         digits = nchar(length(instructions)),
-                         flag = " ")
-      instructions <- paste0("  ", inst_no, ": ", instructions, collapse = "\n")
-      message(instructions)
-
       proceed <- ask_yes_no(
-        "* Once IARC CRG Tools has finished, select 'yes' to proceed. ",
-        "The files produced by IARC CRG Tools will next be read into R. ",
-        "You can cancel by selecting 'no' or 'cancel'."
+        "- write 'yes' to proceed and read the results into R\n",
+        "  or cancel by selecting 'no' or 'cancel'."
       )
 
       if (!proceed) {
@@ -109,7 +109,7 @@ use_tools <- function(
   )
 
   if (verbose) {
-    message("* reading tools results")
+    message("* use_tools: reading tools results")
   }
 
   data_list <- read_tools_results(
@@ -118,21 +118,21 @@ use_tools <- function(
   )
 
   if (clean) {
+    if (verbose) {
+      message("* use_tools: clean = TRUE, deleting input and output datasets ",
+              "from disk")
+    }
     rm_files <- c(tools_program_output_file_paths(program.name = program.name),
                   input_path)
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
   }
 
-
   if (verbose) {
-    message("* all done!")
+    message("* use_tools: finished")
   }
-
-
+  
   data_list
-
-
 }
 
 

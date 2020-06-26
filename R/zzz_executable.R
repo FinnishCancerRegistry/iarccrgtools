@@ -59,6 +59,21 @@ guess_tools_exe_dir_path <- function() {
   dir
 }
 
+
+#' @describeIn exe_path gets currently saved path to directory where
+#' IARC CRG Tools is installed
+#' @export
+get_tools_install_dir_path <- function() {
+  exe_path_env[["dir"]]
+}
+
+#' @describeIn exe_path subdir of `get_tools_install_dir_path()` output where
+#' program-specfic executables live
+#' @export
+get_tools_program_exe_dir_path <- function() {
+  normalize_path(paste0(get_tools_install_dir_path(), "\\pgm\\"))
+}
+
 #' @describeIn exe_path tries to guess where the executable is based on
 #' typical installation directories
 #' @export

@@ -200,20 +200,17 @@ NULL
 
 #' @md
 #' @title Program Definitions
-#' @description data.frame of commands for assisted or
-#' automated use of IARC CRG Tools.
+#' @description 
+#' 
 #' @format
 #' A data.frame with these character string columns:
-#' - `program_name`: name of the program
-#' - `command`: computer-readable specification of keystrokes and certain special
-#'   commands (see below) that are executed in the given order to run an
-#'   IARC CRG Tools program from start to finish; mainly relevant for
-#'   \code{\link{use_tools_automatically}}
-#' - `instruction`: plain English explanation of each step; these are shown
-#'   when you call \code{\link{use_tools_interactively}}, so they should
-#'   tell you quite clearly what you need to do.
+#' - `clean_name`: name of programme as understood by the functions in this 
+#'   package
+#' - `real_name`: name of programme in IARC CRG Tools menu
+#' - `executable_name`: name of executable for corresponding programme
+#' - `window_name`: name of executable's window in Windows
 #' @family program_definition_data
-"program_guides"
+"programs"
 
 #' @md
 #' @title Program Definitions
