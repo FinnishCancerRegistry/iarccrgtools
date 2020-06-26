@@ -63,9 +63,7 @@ tool_column_classes <- function(
   cn <- col_specs[["column_name"]]
   cc <- col_specs[["class"]]
 
-
   cc[match(col.nms, cn, nomatch = NA_integer_)]
-
 }
 
 #' @describeIn column_names returns an integer vector of default column widths

@@ -156,6 +156,21 @@ assert_tools_data <- function(
          ", data.frame passed to arg ", deparse(data.arg.nm), " must have ",
          "these columns: ", deparse(miss_col_nms))
   }
+  
+  col_nms <- intersect(tool_colnameset(paste0("all_", tool.name)), names(data))
+  col_classes <- tool_column_classes(col_nms)
+  lapply(seq_along(col_nms), function(col_no) {
+    col_nm <- col_nms[col_no]
+    col_class <- col_classes[col_no]
+    has_class <- inherits(data[[col_nm]], col_class)
+    if (!has_class) {
+      stop("column ", deparse(col_nm), " was expected to have class ",
+           deparse(col_class), "; instead it had class(es) ", 
+           deparse(class(data[[col_nm]])))
+    }
+    NULL
+  })
+  
   invisible(NULL)
 }
 

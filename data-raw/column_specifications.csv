@@ -5,7 +5,7 @@
 "sex";"integer";1;"Sex, 1 = male, 2 = female";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
 "icdo3_topography";"character";3;"ICD-O-3 topography code";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
 "icdo3_histology";"character";4;"ICD-O-3 histology code";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
-"icdo3_behavior";"character";1;"ICD-O-3 behavior type";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
+"icdo3_behavior";"integer";1;"ICD-O-3 behavior type";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
 "icdo3_grade";"integer";1;"ICD-O-3 grade number";TRUE;FALSE;TRUE;FALSE;FALSE;FALSE;TRUE;FALSE;TRUE;TRUE
 "basis";"integer";1;"Basis of diagnosis";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;FALSE;TRUE
 "dg_date";"Date";8;"Date of diagnosis";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE

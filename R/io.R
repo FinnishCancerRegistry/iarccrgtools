@@ -64,7 +64,7 @@ create_example <- function(
     basis = 1L,
     bi_date = as.Date("1950-12-31"),
     dg_date = as.Date("2000-12-31"),
-    dg_age = 50.0
+    dg_age = 50L
   )
 
 
