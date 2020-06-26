@@ -8,6 +8,8 @@ write_tools_data(
   x,
   colnameset.nm = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
+  overwrite = NULL,
+  verbose = FALSE,
   ...
 )
 }
@@ -17,7 +19,25 @@ write_tools_data(
 \item{colnameset.nm}{one of the items returned by
 \code{\link{tool_colnameset_names}}}
 
-\item{file}{string; where file will be saved to}
+\item{file}{\verb{[character]} (mandatory, no default)
+
+path where \code{x} will be written to; if the file already exists, this
+function prompts you whether to overwrite or not; in non-interactive
+use}
+
+\item{overwrite}{\verb{[NULL, logical]} (optional, default \code{NULL})
+\itemize{
+\item \code{NULL}: if \code{file} already exists, user is prompted whether to overwrite;
+in non-interactive mode (see \code{?interactive}) a pre-existing file causes
+an error
+\item \code{TRUE}: any pre-existing file is overwritten without prompting
+\item \code{FALSE} any pre-existing file is overwritten causes an error
+}}
+
+\item{verbose}{\verb{[logical]} (mandatory, no default)
+
+if \code{TRUE}, the function emits messages during it's run to let you know
+what's happening}
 
 \item{...}{arguments passed to \link{write_fwf};
 e.g. try \code{nThread = x} where \code{x} is a desired number of cores to

@@ -4,7 +4,7 @@
 \alias{use_tools_interactively}
 \title{IARC CRG Tools R Interface}
 \usage{
-use_tools_interactively(tools.data, tool.name, verbose)
+use_tools_interactively(tools.data, tool.name, clean = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{tools.data}{a \code{data.frame}; required columns depend on

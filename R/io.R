@@ -133,23 +133,61 @@ get_tool_dir <- function(tool.name) {
 #' A text file is written in a fixed field format.
 #' @param x a data.frame
 #' @template colnameset_name
-#' @param file string; where file will be saved to
-#' @param ... arguments passed to [write_fwf];
+#' @param file `[character]` (mandatory, no default)
+#' 
+#' path where `x` will be written to; if the file already exists, this
+#' function prompts you whether to overwrite or not; in non-interactive
+#' use
+#' @param overwrite `[NULL, logical]` (optional, default `NULL`)
+#' 
+#' - `NULL`: if `file` already exists, user is prompted whether to overwrite;
+#'   in non-interactive mode (see `?interactive`) a pre-existing file causes
+#'   an error
+#' - `TRUE`: any pre-existing file is overwritten without prompting
+#' - `FALSE` any pre-existing file is overwritten causes an error
+#' @param verbose `[logical]` (mandatory, no default)
+#' 
+#' if `TRUE`, the function emits messages during it's run to let you know
+#' what's happening
+#' @param ... 
+#' 
+#' arguments passed to [write_fwf];
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 #' use when writing
+#' 
 #' @importFrom data.table fwrite setDF
 #' @export
 write_tools_data <- function(
   x,
   colnameset.nm = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
+  overwrite = NULL,
+  verbose = FALSE,
   ...
 ) {
+  assert_is_logical_nonNA_atom(verbose)
   assert_dataframe(x)
   col_nms <- tool_colnameset(colnameset.nm)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
-
+  
+  if (file.exists(file) && is.null(overwrite)) {
+    if (!interactive()) {
+      stop("* write_tools_data: File ", deparse(file), " already existed ",
+           "so aborted. see ?write_tools_data")
+    }
+    ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
+                     " already exists. overwrite?")
+    if (!ow) {
+      message("* write_tools_data: Cancelled writing table to ",
+              deparse(file), ".")
+      return(invisible(NULL))
+    }
+  }
+  
+  if (verbose) {
+    message("* write_tools_data: collecting and transforming data...")
+  }
   x <- data.table::setDT(mget(col_nms, as.environment(x)))
   
   is_Date_col <- vapply(x, inherits, logical(1L), what = "Date")
@@ -196,17 +234,17 @@ write_tools_data <- function(
     j = ".__this_is_a_buffer_column_yo__.",
     value = ""
   )
-
-  if (file.exists(file)) {
-    ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
-                     " already exists. overwrite?")
-    if (!ow) {
-      message("* write_tools_data: Cancelled writing table to ",
-              deparse(file), ".")
-      return(invisible(NULL))
-    }
+  
+  if (verbose) {
+    message("* write_tools_data: ready to write to disk; first five rows ",
+            "of current dataset:")
+    print(head(x))
   }
   
+  if (verbose) {
+    message("* write_tools_data: writing...")
+    t_write <- proc.time()
+  }
   widths <- tool_column_fwf_widths(
     setdiff(names(x), ".__this_is_a_buffer_column_yo__.")
   )
@@ -222,6 +260,11 @@ write_tools_data <- function(
     col.names = FALSE,
     ...
   )
+  if (verbose) {
+    message(
+      "* write_tools_data: done writing; ", data.table::timetaken(t_write)
+    )
+  }
   invisible(NULL)
 }
 

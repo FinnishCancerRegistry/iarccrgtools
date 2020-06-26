@@ -63,7 +63,9 @@ use_tools <- function(
   input_path <- tool_input_file_path(tool.name = tool.name)
   
   if (verbose) {
-    message("* use_tools: Writing table to '", input_path, "'...\n", sep = "")
+    message("* use_tools: selected columns; first five row of working table: ")
+    print(head(df))
+    message("* use_tools: Writing table to '", input_path, "'...")
   }
   
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
@@ -97,7 +99,8 @@ use_tools <- function(
         "in order the following:\n  ", deparse(col_nms), "\n",
         "- if applicable, make sure you select ",
         "\"Creates one record per type of error ",
-        "(ie the same case may appear several times).\"\n",
+        "(ie the same case may appear several times).\" or any other setting",
+        "with the same effect\n",
         "- choose other settings as is appropriate for your dataset and run ",
         "the tool\n",
         "- once it has finished, (press OK in IARC CRG Tools and) select ",
