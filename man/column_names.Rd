@@ -5,6 +5,7 @@
 \alias{tool_colnameset_names}
 \alias{tool_colnameset}
 \alias{tool_column_classes}
+\alias{tool_column_fwf_widths}
 \alias{tool_column_infos}
 \title{Column Names}
 \usage{
@@ -13,6 +14,8 @@ tool_colnameset_names()
 tool_colnameset(set.nm)
 
 tool_column_classes(col.nms)
+
+tool_column_fwf_widths(col.nms)
 
 tool_column_infos(col.nms)
 }
@@ -37,6 +40,9 @@ set itself.
 
 \item \code{tool_column_classes}: returns the required class for each column by
 column name
+
+\item \code{tool_column_fwf_widths}: returns an integer vector of default column widths
+for fixed-width format
 
 \item \code{tool_column_infos}: returns short plain English explanation of column
 }}

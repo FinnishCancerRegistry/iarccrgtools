@@ -7,19 +7,19 @@
 write_tools_data(
   x,
   colnameset.nm = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
   ...
 )
 }
 \arguments{
 \item{x}{a data.frame}
 
-\item{colnameset.nm}{one of the items returned by 
+\item{colnameset.nm}{one of the items returned by
 \code{\link{tool_colnameset_names}}}
 
 \item{file}{string; where file will be saved to}
 
-\item{...}{arguments passed to \code{\link[data.table]{fwrite}};
+\item{...}{arguments passed to \link{write_fwf};
 e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 use when writing}
 }

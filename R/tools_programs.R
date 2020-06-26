@@ -3,38 +3,6 @@
 
 
 
-#' @title IARC CRG Tools Program Names
-#' @description
-#' This function simply returns a haracter string vector of IARC CRG Tools
-#' tool names supported by this R package.
-#' @return A character string vector.
-#' @export
-tool_names <- function() {
-  stop("use tool_clean_names() instead")
-}
-
-
-
-
-
-tool_commands <- function(tool.name) {
-  assert_tool(tool.name)
-  tool_guides <- get_internal_dataset("tool_guides")
-  is_in_tool <- tool_guides$tool_name == tool.name
-  ks <- tool_guides[["command"]][is_in_tool]
-  names(ks) <- tool_guides[["instruction"]][is_in_tool]
-  ks
-}
-
-tool_instructions <- function(tool.name) {
-  assert_tool(tool.name)
-
-  tool_guides <- get_internal_dataset("tool_guides")
-  is_in_tool <- tool_guides$tool_name == tool.name
-  tool_guides[["instruction"]][is_in_tool]
-
-}
-
 
 
 
@@ -100,6 +68,24 @@ tool_column_classes <- function(
 
 }
 
+#' @describeIn column_names returns an integer vector of default column widths
+#' for fixed-width format
+#' @export
+tool_column_fwf_widths <- function(
+  col.nms
+) {
+  stopifnot(
+    is.character(col.nms)
+  )
+  col_specs <- get_internal_dataset("column_specifications")
+  
+  cn <- col_specs[["column_name"]]
+  wi <- as.integer(col_specs[["fwf_width"]])
+  
+  
+  wi[match(col.nms, cn, nomatch = NA_integer_)]
+}
+
 #' @describeIn column_names returns short plain English explanation of column
 #' @export
 tool_column_infos <- function(
@@ -136,7 +122,7 @@ tool_column_infos <- function(
 #' or not.
 #'
 get_tools_settings_template <- function(
-  dir.path = get_tools_working_dir(),
+  dir.path = get_tool_dir(tool.name),
   tool.name
   ) {
   assert_dir_path(dir.path)
@@ -187,14 +173,14 @@ get_tools_settings_template <- function(
 
 
 tool_output_file_paths <- function(
-  dir = get_tools_working_dir(),
+  dir = get_tool_dir(tool.name),
   tool.name
 ) {
   assert_tool(tool.name)
   assert_dir_path(dir)
 
   tool_files_df <- get_internal_dataset("tool_output_files")
-  is_in_tool <- tool_files_df$tool_name == tool.name
+  is_in_tool <- tool_files_df$clean_name == tool.name
   tool_file_suffixes <- tool_files_df$file_name_suffix[is_in_tool]
   tool_file_is_table <- tool_files_df$is_table[is_in_tool]
 
@@ -211,7 +197,7 @@ tool_output_file_paths <- function(
 
 
 tool_input_file_path <- function(
-  dir = get_tools_working_dir(),
+  dir = get_tool_dir(tool.name),
   tool.name
 ) {
   assert_tool(tool.name)

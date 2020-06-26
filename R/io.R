@@ -34,7 +34,7 @@ dir_is_writable <- function(
 
 
 
-get_data_template <- function(
+create_example <- function(
   set.nm,
   n.rows = 10L
 ) {
@@ -46,29 +46,36 @@ get_data_template <- function(
   col_nms <- tool_colnameset(set.nm = set.nm)
 
   df <- data.frame(
-    subject_id = "0000000001",
-    record_id = "0000000001",
-    multi_no = "001",
-    sex = "1",
-    icd9 = "0001",
-    icd10 = "0001",
-    icdo1_topography = "0001",
-    icdo1_histology = "0001",
-    icdo1_grade = "1",
-    icdo2_topography = "001",
-    icdo2_histology = "0001",
-    icdo3_topography = "001",
-    icdo3_histology = "0001",
-    icdo3_behaviour = "1",
-    icdo3_grade = "1",
-    basis = "1",
-    bi_date = "19501231",
-    dg_date = "20001231",
-    dg_age = "50"
+    subject_id = 1L,
+    record_id = 1L,
+    record_order = 1L,
+    sex = 1L,
+    icd9 = "5020",
+    icd10 = "5020",
+    icdo1_topography = "5020",
+    icdo1_histology = "8522",
+    icdo1_grade = 1L,
+    icdo2_topography = "502",
+    icdo2_histology = "8522",
+    icdo3_topography = "502",
+    icdo3_histology = "8522",
+    icdo3_behavior = 1L,
+    icdo3_grade = 1L,
+    basis = 1L,
+    bi_date = as.Date("1950-12-31"),
+    dg_date = as.Date("2000-12-31"),
+    dg_age = 50.0
   )
 
 
-  df[rep(1L, n.rows), col_nms]
+  df <- df[rep(1L, n.rows), col_nms]
+  if ("record_id" %in% names(df)) {
+    df[["record_id"]] <- 1:nrow(df)
+  }
+  if ("subject_id" %in% names(df)) {
+    df[["subject_id"]] <- 1:nrow(df)
+  }
+  return(df[])
 }
 
 
@@ -85,27 +92,38 @@ NULL
 #' @describeIn work_dir sets working directory
 #' @param dir string; path to a directory
 #' @export
-set_tools_working_dir <- function(dir) {
+set_tools_root_dir <- function(dir) {
   assert_dir_path(dir)
   dir <- normalize_path(dir)
   assign(x = "path", value = dir, envir = wd_env)
 }
 
-#' @describeIn work_dir gets current working directory as string
+#' @describeIn work_dir gets current root working directory as string
 #' @export
-get_tools_working_dir <- function() {
+get_tools_root_dir <- function() {
   if (identical(wd_env$path, FALSE)) {
     stop("Working directory for IARC CRG Tools not set --- ",
-         "see ?set_tools_working_dir")
+         "see ?set_tools_root_dir")
   } else if (!dir.exists(wd_env$path)) {
-    stop("Supplied IARC CRG Tools working directory does not exist: ",
-         deparse(wd_env$path), "; see ?set_tools_working_dir")
+    stop("Supplied IARC CRG Tools root working directory does not exist: ",
+         deparse(wd_env$path), "; see ?set_tools_root_dir")
   }
   wd_env$path
 }
 wd_env <- new.env(parent = emptyenv())
 wd_env$path <- FALSE
 
+#' @describeIn work_dir gets current 
+#' @export
+get_tool_dir <- function(tool.name) {
+  assert_tool(tool.name = tool.name)
+  root_dir <- get_tools_root_dir()
+  dir <- normalize_path(paste0(root_dir, "\\", tool.name))
+  if (!dir.exists(dir)) {
+    dir.create(dir)
+  }
+  return(dir)
+}
 
 
 
@@ -116,7 +134,7 @@ wd_env$path <- FALSE
 #' @param x a data.frame
 #' @template colnameset_name
 #' @param file string; where file will be saved to
-#' @param ... arguments passed to \code{\link[data.table]{fwrite}};
+#' @param ... arguments passed to [write_fwf];
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 #' use when writing
 #' @importFrom data.table fwrite setDF
@@ -124,7 +142,7 @@ wd_env$path <- FALSE
 write_tools_data <- function(
   x,
   colnameset.nm = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
   ...
 ) {
   assert_dataframe(x)
@@ -132,11 +150,52 @@ write_tools_data <- function(
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
 
-  x <- data.table::setDF(mget(col_nms, as.environment(x)))
+  x <- data.table::setDT(mget(col_nms, as.environment(x)))
+  
+  is_Date_col <- vapply(x, inherits, logical(1L), what = "Date")
+  date_col_nms <- names(x)[is_Date_col]
+  lapply(date_col_nms, function(col_nm) {
+    col <- x[[col_nm]]
+    data.table::set(
+      x,
+      j = col_nm,
+      value = NULL
+    )    
+    data.table::set(
+      x,
+      j = col_nm,
+      value = format(col, "%Y%m%d")
+    )
+    invisible(NULL)
+    
+  })
+  
+  is_double_col <- vapply(x, is.double, logical(1L))
+  is_double_col <- is_double_col & vapply(x, is.numeric, logical(1L))
+  double_col_nms <- names(x)[is_double_col]
+  lapply(double_col_nms, function(col_nm) {
+    col <- x[[col_nm]]
+    data.table::set(
+      x,
+      j = col_nm,
+      value = NULL
+    )    
+    data.table::set(
+      x,
+      j = col_nm,
+      value = as.integer(round(col))
+    )
+    invisible(NULL)
+  })
+  data.table::setcolorder(x, col_nms)
 
   ## to ensure that, when IARC CRG Tools writes a new column, when it is read
   ## into R, the new column will not mix with the last column in x.
-  x[[".__this_is_a_buffer_column_yo__."]] <- 0L
+  data.table::set(
+    x = x,
+    j = ".__this_is_a_buffer_column_yo__.",
+    value = ""
+  )
 
   if (file.exists(file)) {
     ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
@@ -147,13 +206,18 @@ write_tools_data <- function(
       return(invisible(NULL))
     }
   }
-
-  data.table::fwrite(
-    x = x,
-    file = file,
+  
+  widths <- tool_column_fwf_widths(
+    setdiff(names(x), ".__this_is_a_buffer_column_yo__.")
+  )
+  widths <- c(widths, 0L)
+  write_fwf(
+    x = x, 
+    widths = widths,
+    path = file,
     sep = ";",
     dec = ",",
-    quote = TRUE,
+    quote = FALSE,
     row.names = FALSE,
     col.names = FALSE,
     ...
@@ -209,10 +273,9 @@ read_tools_results <- function(
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- get_tools_working_dir()
+  dir <- get_tool_dir(tool.name = tool.name)
 
-  file_paths <- tool_output_file_paths(tool.name = tool.name,
-                                                dir = dir)
+  file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 
   output_list <- lapply(seq_along(file_paths), function(i) {
 
@@ -241,22 +304,13 @@ read_tools_results <- function(
     }
 
     if (identical(path_type, "is_table")) {
-      out <- read_table_without_header_and_footer(
-        file = file_path
+      out <- read_matching_table_rows(
+        file = file_path, 
+        pattern = "^[0-9]*;"
       )
-
       if (is.null(out) || nrow(out) == 0) {
         out <- data.frame(NULL)
       } else {
-        ## in write_tools_data a zero is added as padding to enable safe
-        ## reading into R. these steps handle this padding column.
-        last_col <- names(out)[ncol(out)]
-        if (is.character(last_col) && substr(out[[last_col]][1], 1, 2) == "0 ") {
-          ## this happens when IARC CRG Tools adds a text column.
-          out[[last_col]] <- substring(out[[last_col]], 3, 1e6L)
-        } else if (all(out[["last_col"]] == 0L)) {
-          out[[last_col]] <- NULL
-        }
 
         if (!is.null(input.col.nms)) {
 
@@ -276,7 +330,7 @@ read_tools_results <- function(
       out <- readLines(file_path)
     } else {
       raise_internal_error(
-        "file_path = ", deparse(file_path), " file path type was not defined. "
+        "file_path = ", deparse(file_path), " file type was not defined. "
       )
     }
     if (verbose) {
@@ -288,7 +342,7 @@ read_tools_results <- function(
     out
   })
   output_list[] <- lapply(output_list, function(obj) {
-    if (sum(nrow(obj)) == 0) {
+    if (is.data.frame(obj) && nrow(obj) == 0) {
       return(NULL)
     }
     obj
@@ -337,7 +391,7 @@ readlines_from_to <- function(
 guess_table_header_and_footer_sizes <- function(
   file,
   n.guessing.lines = 100,
-  data.regex = "^\"\\d{1,}\";"
+  data.regex = "^[0-9]+[;]"
 ) {
   assert_file_path(file)
   stopifnot(
@@ -379,6 +433,40 @@ guess_table_header_and_footer_sizes <- function(
 
 
 
+#' @importFrom data.table fread
+read_matching_table_rows <- function(
+  file,
+  pattern,
+  ...
+) {
+  assert_file_path(file)
+  stopifnot(
+    is.character(pattern), length(pattern) == 1L, !is.na(pattern)
+  )
+  
+  dir <- dir_of_path(file)
+  file_without_dir <- sub(
+    pattern = dir, replacement = "", x = file, fixed = TRUE
+  )
+  file_without_dir <- sub("^[\\/]+", "", file_without_dir)
+  cmd <- paste0(
+    "cd \"", dir,"\" && ",
+    "findstr /r \"", pattern, "\" \"", file_without_dir, "\""
+  )
+  dt <- tryCatch(
+    data.table::fread(cmd = cmd, ...),
+    error = function(e) e,
+    warning = function(w) w
+  )
+  if (inherits(dt, c("error", "warning"))) {
+    lines <- readLines(file)
+    do_read <- grepl(pattern, lines)
+    dt <- data.table::fread(text = lines[do_read], ...)
+  }
+  
+  return(dt[])
+}
+
 
 
 #' @importFrom data.table fread
@@ -414,7 +502,8 @@ read_table_without_header_and_footer <- function(
     file = file,
     sep = ";", dec = ",", header = FALSE, skip = n.header.lines,
     nrow = n_file_lines(file) - n.header.lines - n.footer.lines,
-    quote = '"'
+    quote = '"',
+    blank.lines.skip = TRUE
   )
   ddd <- list(...)
   arg_list[names(ddd)] <- ddd

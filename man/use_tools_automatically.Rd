@@ -10,9 +10,9 @@ use_tools_automatically(tools.data, tool.name, verbose = TRUE)
 \item{tools.data}{a \code{data.frame}; required columns depend on
 the IARC CRG Tools tool used}
 
-\item{tool.name}{`[character]` (mandatory, no default)
+\item{tool.name}{\verb{[character]} (mandatory, no default)
 
-name of tool to run; see output of `tool_clean_names()` for options}
+name of tool to run; see output of \code{tool_clean_names()} for options}
 
 \item{verbose}{if \code{TRUE}, this functions is chatty and gives messages
 durings its run; if \code{FALSE}, you will only see necessary messages}
@@ -31,7 +31,7 @@ You can test this using \code{\link{can_call_vbs}}.
 
 Before using this function for the first time you need to run
 \code{\link{use_tools_interactively}} to build a settings file for future
-use into the working directory set using \code{\link{set_tools_working_dir}}.
+use into the working directory set using \code{\link{set_tools_root_dir}}.
 This must be done for each tool separately. Read more about the
 settings files here: \code{\link{tools_settings_files}}.
 

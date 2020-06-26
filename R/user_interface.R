@@ -16,18 +16,20 @@ collect_tools_data <- function(
   optional_col_nms <- tool_colnameset(
     paste0("optional_", tool.name)
   )
-
+  
   used_set_name <- paste0("all_", tool.name)
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
     used_set_name <- paste0("mandatory_", tool.name)
-    message("Following optional columns were not found in data: ",
+    message("* collect_tools_data: ",
+            "the following optional columns were not found in data: ",
             deparse(miss_opt_col_nms),
-            ". The tool will still probably work.")
+            "; the tool will still probably work, but in a limited manner")
   }
   found_opt_col_nms <- setdiff(optional_col_nms, miss_opt_col_nms)
-
+  
   col_nms <- c(mandatory_col_nms, found_opt_col_nms)
+  col_nms <- intersect(tool_colnameset("all"), col_nms) # to sort them
   df <- data.table::setDF(mget(col_nms, as.environment(data)))
   data.table::setattr(df, "colnameset_name", used_set_name)
   df
@@ -48,27 +50,27 @@ use_tools <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
-  # assert_tool(tool.name)
-  # assert_tools_data(tools.data, tool.name)
+  assert_tool(tool.name)
+  assert_tools_data(tools.data, tool.name)
   assert_is_logical_nonNA_atom(clean)
-
+  
   df <- collect_tools_data(data = tools.data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
-
+  
   input_path <- tool_input_file_path(tool.name = tool.name)
-
+  
   if (verbose) {
     message("* use_tools: Writing table to '", input_path, "'...\n", sep = "")
   }
-
+  
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
                    verbose = verbose)
   col_nms <- names(df)
   rm("df")
-
+  
   switch(
     how,
     automatically = {
@@ -76,47 +78,51 @@ use_tools <- function(
       call_tool(
         tool.name = tool.name,
         tool.exe.path = get_tool_exe_path(),
-        working.dir = get_tools_working_dir(),
+        working.dir = get_tool_dir(tool.name),
         wait.check.interval = 30L,
         wait.max.time = 60L * 60L,
         verbose = verbose
       )
     },
     interactively = {
+      output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
       message("* use_tools: calling tools interactively...")
       message(
         "- open IARC CRG Tools\n",
         "- start the tool titled ", 
         deparse(tool_real_name_of_clean_name(tool.name)), "\n",
         "- supply this as input path: ", input_path, "\n",
-        "- supply this as output path", output_path, "\n",
+        "- supply this as output path: ", output_path, "\n",
         "- choose columns when prompted; the columns in the input file are ",
-        "  in order the following:\n  ", deparse(col_nms), "\n",
-        "- choose other settings as is appropriate for your dataset and run",
-        "  the tool\n",
-        "- once it has finished, (press OK in IARC CRG Tools and) supply ",
-        "  'yes' without quotes in the prompt below"
+        "in order the following:\n  ", deparse(col_nms), "\n",
+        "- if applicable, make sure you select ",
+        "\"Creates one record per type of error ",
+        "(ie the same case may appear several times).\"\n",
+        "- choose other settings as is appropriate for your dataset and run ",
+        "the tool\n",
+        "- once it has finished, (press OK in IARC CRG Tools and) select ",
+        "'yes' in the prompt below"
       )
       proceed <- ask_yes_no(
-        "- write 'yes' to proceed and read the results into R\n",
-        "  or cancel by selecting 'no' or 'cancel'."
+        "- select 'yes' to proceed and read the results into R ",
+        "or cancel by selecting 'no' or 'cancel'."
       )
-
+      
       if (!proceed) {
         stop("Cancelled.")
       }
     }
   )
-
+  
   if (verbose) {
     message("* use_tools: reading tools results")
   }
-
+  
   data_list <- read_tools_results(
     tool.name = tool.name,
     input.col.nms = col_nms
   )
-
+  
   if (clean) {
     if (verbose) {
       message("* use_tools: clean = TRUE, deleting input and output datasets ",
@@ -127,7 +133,7 @@ use_tools <- function(
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
   }
-
+  
   if (verbose) {
     message("* use_tools: finished")
   }
@@ -157,7 +163,7 @@ use_tools <- function(
 #'
 #' Before using this function for the first time you need to run
 #' \code{\link{use_tools_interactively}} to build a settings file for future
-#' use into the working directory set using \code{\link{set_tools_working_dir}}.
+#' use into the working directory set using \code{\link{set_tools_root_dir}}.
 #' This must be done for each tool separately. Read more about the
 #' settings files here: \code{\link{tools_settings_files}}.
 #'
@@ -203,7 +209,7 @@ use_tools_automatically <- function(
 #' less foolproof method.
 #'
 #' This function saves the supplied data in a format useful for IARC CRG Tools
-#' into the working directory set via \code{\link{set_tools_working_dir}},
+#' into the working directory set via \code{\link{set_tools_root_dir}},
 #' prompts you to use the intended IARC CRG Tools tool manually,
 #' and reads the data back into R once you give the OK that IARC CRG Tools
 #' has finished its computations.
@@ -212,9 +218,16 @@ use_tools_automatically <- function(
 use_tools_interactively <- function(
   tools.data,
   tool.name,
-  verbose
+  clean = FALSE,
+  verbose = FALSE
 ) {
-  use_tools(tools.data, tool.name, verbose = verbose, how = "interactively")
+  use_tools(
+    tools.data = tools.data, 
+    tool.name = tool.name, 
+    clean = clean, 
+    verbose = verbose, 
+    how = "interactively"
+  )
 }
 
 

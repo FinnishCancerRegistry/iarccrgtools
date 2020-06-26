@@ -13,12 +13,16 @@ tool_window_names <- function() {
   nms
 }
 
+
 tool_clean_names <- function() {
   get_internal_dataset("tools")[["clean_name"]]
 }
 
 tool_real_names <- function() {
-  get_internal_dataset("tools")[["real_name"]]
+  df <- get_internal_dataset("tools")
+  nms <- df[["real_name"]]
+  names(nms) <- df[["clean_name"]]
+  nms
 }
 
 tool_real_name_of_clean_name <- function(clean_name) {

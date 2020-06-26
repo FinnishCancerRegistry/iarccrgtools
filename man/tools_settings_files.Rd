@@ -28,7 +28,7 @@ Each tool must have its own settings file. The file extension will be
 either .dfi or .frm. The name of the file must be the name of the program
 (one of the items given by \code{\link{tool_names}}). E.g.
 \code{"iarc_check.dfi"}. The settings files must be stored in the
-working directory set by \code{\link{set_tools_working_dir}}.
+working directory set by \code{\link{set_tools_root_dir}}.
 
 This R package has pre-defined "sensible defaults" for certain tools,
 which you can fetch into a specific folder using

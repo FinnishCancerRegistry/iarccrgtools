@@ -92,7 +92,7 @@ raise_internal_error <- function(
 #' either .dfi or .frm. The name of the file must be the name of the program
 #' (one of the items given by \code{\link{tool_names}}). E.g.
 #' \code{"iarc_check.dfi"}. The settings files must be stored in the
-#' working directory set by \code{\link{set_tools_working_dir}}.
+#' working directory set by \code{\link{set_tools_root_dir}}.
 #'
 #' This R package has pre-defined "sensible defaults" for certain tools,
 #' which you can fetch into a specific folder using
@@ -140,15 +140,16 @@ normalize_path <- function(path, double.slash = FALSE) {
   )
   assert_is_logical_nonNA_atom(double.slash)
   path <- normalizePath(path = path, winslash = "\\", mustWork = FALSE)
-  path <- gsub("\\{2,}", "\\", path)
-
-  if (double.slash) {
-    path <- gsub("\\", "\\\\", path, fixed = TRUE)
-  }
 
   is_dir <- dir.exists(path)
   path[is_dir] <- paste0(path, "\\")
-
+  
+  if (double.slash) {
+    path <- gsub("[\\]+", "\\\\\\\\", path, fixed = FALSE)
+  } else {
+    path <- gsub("[\\]+", "\\\\", path, fixed = FALSE)
+  }
+  
   path
 
 }
