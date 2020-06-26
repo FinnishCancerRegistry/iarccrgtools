@@ -298,19 +298,19 @@ vbslines_exit_tools <- function() {
 
 
 
-tools_program_expr_list <- function(
+tool_expr_list <- function(
   program.name,
   input.path,
   output.path,
   verbose = TRUE
 ) {
-  assert_tools_program(program.name)
+  assert_tool(program.name)
   assert_write_file_path(input.path)
   input.path <- normalize_path(input.path, double.slash = TRUE)
   assert_write_file_path(output.path)
   output.path <- normalize_path(output.path, double.slash = TRUE)
 
-  commands <- tools_program_commands(program.name)
+  commands <- tool_commands(program.name)
 
   special_strings <- list(
 
@@ -334,7 +334,7 @@ tools_program_expr_list <- function(
     )
   }
 
-  wait_for_files <- tools_program_output_file_paths(program.name = program.name)
+  wait_for_files <- tool_output_file_paths(program.name = program.name)
   wait_for_files <- unname(wait_for_files)
 
   r_cmd_pool <- list(
@@ -387,7 +387,7 @@ tools_program_expr_list <- function(
   focus_tools <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
   )), list(FOCUS_TO = "IARC/IACR Cancer Registry Tools"))
-  prog_win_nm <- tools_program_window_name(program.name)
+  prog_win_nm <- tool_window_name(program.name)
   focus_popup <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
   )), list(FOCUS_TO = prog_win_nm))
@@ -411,9 +411,9 @@ tools_program_expr_list <- function(
 
 
 
-call_tools_program <- function(
+call_tool <- function(
   program.name = program.name,
-  program.exe.path = get_tools_program_exe_path(),
+  program.exe.path = get_tool_exe_path(),
   working.dir = get_tools_working_dir(),
   wait.check.interval = 30L,
   wait.max.time = 60L * 60L,
@@ -425,7 +425,7 @@ call_tools_program <- function(
   output_path <- paste0(get_tools_working_dir(), "\\", program.name,
                         "_output.txt")
 
-  expr_list <- tools_program_expr_list(
+  expr_list <- tool_expr_list(
     program.name = program.name,
     input.path = input_path,
     output.path = output_path,
@@ -441,7 +441,7 @@ call_tools_program <- function(
   stop("TODO: just call an exe with the settings file and press OK after waiting.")
   unused <- lapply(expr_list, function(expr) {
     if (verbose) {
-      message("* call_tools_program: executing this: ")
+      message("* call_tool: executing this: ")
     }
     if (is.language(expr)) {
       if (verbose) {

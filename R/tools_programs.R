@@ -9,7 +9,7 @@
 #' program names supported by this R package.
 #' @return A character string vector.
 #' @export
-tools_program_names <- function() {
+tool_names <- function() {
   stop("use program_clean_names() instead")
 }
 
@@ -17,8 +17,8 @@ tools_program_names <- function() {
 
 
 
-tools_program_commands <- function(program.name) {
-  assert_tools_program(program.name)
+tool_commands <- function(program.name) {
+  assert_tool(program.name)
   program_guides <- get_internal_dataset("program_guides")
   is_in_program <- program_guides$program_name == program.name
   ks <- program_guides[["command"]][is_in_program]
@@ -26,8 +26,8 @@ tools_program_commands <- function(program.name) {
   ks
 }
 
-tools_program_instructions <- function(program.name) {
-  assert_tools_program(program.name)
+tool_instructions <- function(program.name) {
+  assert_tool(program.name)
 
   program_guides <- get_internal_dataset("program_guides")
   is_in_program <- program_guides$program_name == program.name
@@ -48,8 +48,8 @@ NULL
 #' @describeIn column_names each column name set has its own name. This function
 #' returns all the names of the sets.
 #' @export
-tools_program_colnameset_names <- function() {
-  prog_nms <- tools_program_names()
+tool_colnameset_names <- function() {
+  prog_nms <- tool_names()
   prog_set_nms <- paste0(c("all_", "mandatory_", "optional_"),
                          rep(prog_nms, each = 3))
   c(prog_set_nms, "all")
@@ -58,9 +58,9 @@ tools_program_colnameset_names <- function() {
 #' @describeIn column_names returns a set of column name given the name of the
 #' set itself.
 #' @param set.nm string; name of a column set; only those returned by
-#' \code{tools_program_colnameset_names} are allowed
+#' \code{tool_colnameset_names} are allowed
 #' @export
-tools_program_colnameset <- function(
+tool_colnameset <- function(
   set.nm
   ) {
   assert_tools_colnameset_name(set.nm)
@@ -82,9 +82,9 @@ tools_program_colnameset <- function(
 #' @describeIn column_names returns the required class for each column by
 #' column name
 #' @param col.nms character string vector; names of columns; must be subset of
-#' items returned by \code{tools_program_colnameset("all")}
+#' items returned by \code{tool_colnameset("all")}
 #' @export
-tools_program_column_classes <- function(
+tool_column_classes <- function(
   col.nms
 ) {
   stopifnot(
@@ -102,7 +102,7 @@ tools_program_column_classes <- function(
 
 #' @describeIn column_names returns short plain English explanation of column
 #' @export
-tools_program_column_infos <- function(
+tool_column_infos <- function(
   col.nms
 ) {
   stopifnot(
@@ -141,7 +141,7 @@ get_tools_settings_template <- function(
   ) {
   assert_dir_path(dir.path)
   dir.path <- normalize_path(paste0(dir.path, "/"))
-  assert_tools_program(program.name)
+  assert_tool(program.name)
 
   file_paths_in_pkg <- paste0(program.name, ".", c("dfi", "frm"))
 
@@ -186,11 +186,11 @@ get_tools_settings_template <- function(
 
 
 
-tools_program_output_file_paths <- function(
+tool_output_file_paths <- function(
   dir = get_tools_working_dir(),
   program.name
 ) {
-  assert_tools_program(program.name)
+  assert_tool(program.name)
   assert_dir_path(dir)
 
   prog_files_df <- get_internal_dataset("program_output_files")
@@ -210,11 +210,11 @@ tools_program_output_file_paths <- function(
 
 
 
-tools_program_input_file_path <- function(
+tool_input_file_path <- function(
   dir = get_tools_working_dir(),
   program.name
 ) {
-  assert_tools_program(program.name)
+  assert_tool(program.name)
   assert_dir_path(dir)
 
   paste0(dir, "\\", program.name, "_input.txt")
@@ -225,10 +225,10 @@ tools_program_input_file_path <- function(
 
 
 
-tools_program_window_name <- function(
+tool_window_name <- function(
   program.name
 ) {
-  assert_tools_program(program.name)
+  assert_tool(program.name)
   pwn <- get_internal_dataset("program_window_names")
   pwn[pwn$program_name == program.name, "program_window_name"]
 }

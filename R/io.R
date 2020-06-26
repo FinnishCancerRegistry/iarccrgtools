@@ -43,7 +43,7 @@ get_data_template <- function(
     n.rows %% 1 == 0,
     n.rows > 0
   )
-  col_nms <- tools_program_colnameset(set.nm = set.nm)
+  col_nms <- tool_colnameset(set.nm = set.nm)
 
   df <- data.frame(
     subject_id = "0000000001",
@@ -123,12 +123,12 @@ wd_env$path <- FALSE
 #' @export
 write_tools_data <- function(
   x,
-  colnameset.nm = tools_program_colnameset_names()[1],
+  colnameset.nm = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
   ...
 ) {
   assert_dataframe(x)
-  col_nms <- tools_program_colnameset(colnameset.nm)
+  col_nms <- tool_colnameset(colnameset.nm)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
 
@@ -208,10 +208,10 @@ read_tools_results <- function(
   input.col.nms = NULL,
   verbose = TRUE
 ) {
-  assert_tools_program(program.name = program.name)
+  assert_tool(program.name = program.name)
   dir <- get_tools_working_dir()
 
-  file_paths <- tools_program_output_file_paths(program.name = program.name,
+  file_paths <- tool_output_file_paths(program.name = program.name,
                                                 dir = dir)
 
   output_list <- lapply(seq_along(file_paths), function(i) {

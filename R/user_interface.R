@@ -8,12 +8,12 @@ collect_tools_data <- function(
   data,
   program.name
 ) {
-  assert_tools_program(program.name)
+  assert_tool(program.name)
   assert_tools_data(data = data, program.name = program.name)
-  mandatory_col_nms <- tools_program_colnameset(
+  mandatory_col_nms <- tool_colnameset(
     paste0("mandatory_", program.name)
   )
-  optional_col_nms <- tools_program_colnameset(
+  optional_col_nms <- tool_colnameset(
     paste0("optional_", program.name)
   )
 
@@ -48,7 +48,7 @@ use_tools <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
-  # assert_tools_program(program.name)
+  # assert_tool(program.name)
   # assert_tools_data(tools.data, program.name)
   assert_is_logical_nonNA_atom(clean)
 
@@ -58,7 +58,7 @@ use_tools <- function(
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
 
-  input_path <- tools_program_input_file_path(program.name = program.name)
+  input_path <- tool_input_file_path(program.name = program.name)
 
   if (verbose) {
     message("* use_tools: Writing table to '", input_path, "'...\n", sep = "")
@@ -73,9 +73,9 @@ use_tools <- function(
     how,
     automatically = {
       message("* use_tools: calling tools automatically...")
-      call_tools_program(
+      call_tool(
         program.name = program.name,
-        program.exe.path = get_tools_program_exe_path(),
+        program.exe.path = get_tool_exe_path(),
         working.dir = get_tools_working_dir(),
         wait.check.interval = 30L,
         wait.max.time = 60L * 60L,
@@ -122,7 +122,7 @@ use_tools <- function(
       message("* use_tools: clean = TRUE, deleting input and output datasets ",
               "from disk")
     }
-    rm_files <- c(tools_program_output_file_paths(program.name = program.name),
+    rm_files <- c(tool_output_file_paths(program.name = program.name),
                   input_path)
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)

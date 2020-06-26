@@ -90,7 +90,7 @@ raise_internal_error <- function(
 #'
 #' Each program must have its own settings file. The file extension will be
 #' either .dfi or .frm. The name of the file must be the name of the program
-#' (one of the items given by \code{\link{tools_program_names}}). E.g.
+#' (one of the items given by \code{\link{tool_names}}). E.g.
 #' \code{"iarc_check.dfi"}. The settings files must be stored in the
 #' working directory set by \code{\link{set_tools_working_dir}}.
 #'
@@ -239,7 +239,7 @@ NULL
 #'
 #' as well as a number of logical (TRUE/FALSE) columns. The names of these
 #' logical columns follow the convention `"set_SETNAME"` where `SETNAME`
-#' is one of the items returned by \code{\link{tools_program_colnameset_names}}.
+#' is one of the items returned by \code{\link{tool_colnameset_names}}.
 #' Each such logical columns is `TRUE` when that column indicated in
 #' `column_name` is included in that set of column names.
 #'
@@ -411,7 +411,7 @@ wait_until_all_files_stop_growing <- function(
 
 
 
-tools_program_definition_files <- function(
+tool_definition_files <- function(
   colnameset.name
 ) {
   assert_tools_colnameset_name(colnameset.name)
