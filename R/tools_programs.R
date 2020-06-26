@@ -49,10 +49,10 @@ NULL
 #' returns all the names of the sets.
 #' @export
 tool_colnameset_names <- function() {
-  prog_nms <- tool_names()
-  prog_set_nms <- paste0(c("all_", "mandatory_", "optional_"),
-                         rep(prog_nms, each = 3))
-  c(prog_set_nms, "all")
+  tool_nms <- tool_clean_names()
+  tool_set_nms <- paste0(c("all_", "mandatory_", "optional_"),
+                         rep(tool_nms, each = 3))
+  c(tool_set_nms, "all")
 }
 
 #' @describeIn column_names returns a set of column name given the name of the
@@ -193,16 +193,16 @@ tool_output_file_paths <- function(
   assert_tool(tool.name)
   assert_dir_path(dir)
 
-  prog_files_df <- get_internal_dataset("tool_output_files")
-  is_in_tool <- prog_files_df$tool_name == tool.name
-  prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_tool]
-  prog_file_is_table <- prog_files_df$is_table[is_in_tool]
+  tool_files_df <- get_internal_dataset("tool_output_files")
+  is_in_tool <- tool_files_df$tool_name == tool.name
+  tool_file_suffixes <- tool_files_df$file_name_suffix[is_in_tool]
+  tool_file_is_table <- tool_files_df$is_table[is_in_tool]
 
-  file_paths <- paste0(dir, "\\", tool.name, prog_file_suffixes)
+  file_paths <- paste0(dir, "\\", tool.name, tool_file_suffixes)
   file_paths <- normalize_path(file_paths)
   names(file_paths) <- rep("is_not_table", length(file_paths))
-  names(file_paths)[prog_file_is_table] <- rep("is_table",
-                                               sum(prog_file_is_table))
+  names(file_paths)[tool_file_is_table] <- rep("is_table",
+                                               sum(tool_file_is_table))
   file_paths
 }
 

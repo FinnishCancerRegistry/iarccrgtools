@@ -116,10 +116,10 @@ assert_tool <- function(tool.name, tool.name.arg.nm = NULL) {
   if (length(tool.name) != 1L) {
     stop("Arg ", deparse(tool.name.arg.nm), " must be of length 1")
   }
-  prog_nms <- tool_names()
-  if (!tool.name %in% prog_nms) {
+  tool_nms <- tool_clean_names()
+  if (!tool.name %in% tool_nms) {
     stop("Arg ", deparse(tool.name.arg.nm), " must be one of these: ",
-         deparse(prog_nms))
+         deparse(tool_nms))
   }
   invisible(NULL)
 }

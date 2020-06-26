@@ -387,10 +387,10 @@ tool_expr_list <- function(
   focus_tools <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
   )), list(FOCUS_TO = "IARC/IACR Cancer Registry Tools"))
-  prog_win_nm <- tool_window_name(tool.name)
+  tool_win_nm <- tool_window_name(tool.name)
   focus_popup <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
-  )), list(FOCUS_TO = prog_win_nm))
+  )), list(FOCUS_TO = tool_win_nm))
 
   expr_list <- c(
     list(
