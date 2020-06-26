@@ -6,24 +6,24 @@
 #' @importFrom data.table setDF setattr
 collect_tools_data <- function(
   data,
-  program.name
+  tool.name
 ) {
-  assert_tool(program.name)
-  assert_tools_data(data = data, program.name = program.name)
+  assert_tool(tool.name)
+  assert_tools_data(data = data, tool.name = tool.name)
   mandatory_col_nms <- tool_colnameset(
-    paste0("mandatory_", program.name)
+    paste0("mandatory_", tool.name)
   )
   optional_col_nms <- tool_colnameset(
-    paste0("optional_", program.name)
+    paste0("optional_", tool.name)
   )
 
-  used_set_name <- paste0("all_", program.name)
+  used_set_name <- paste0("all_", tool.name)
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
-    used_set_name <- paste0("mandatory_", program.name)
+    used_set_name <- paste0("mandatory_", tool.name)
     message("Following optional columns were not found in data: ",
             deparse(miss_opt_col_nms),
-            ". The program will still probably work.")
+            ". The tool will still probably work.")
   }
   found_opt_col_nms <- setdiff(optional_col_nms, miss_opt_col_nms)
 
@@ -39,7 +39,7 @@ collect_tools_data <- function(
 
 use_tools <- function(
   tools.data,
-  program.name,
+  tool.name,
   how = c("interactively", "automatically")[1],
   clean = TRUE,
   verbose = TRUE
@@ -48,17 +48,17 @@ use_tools <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
-  # assert_tool(program.name)
-  # assert_tools_data(tools.data, program.name)
+  # assert_tool(tool.name)
+  # assert_tools_data(tools.data, tool.name)
   assert_is_logical_nonNA_atom(clean)
 
-  df <- collect_tools_data(data = tools.data, program.name = program.name)
+  df <- collect_tools_data(data = tools.data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
 
-  input_path <- tool_input_file_path(program.name = program.name)
+  input_path <- tool_input_file_path(tool.name = tool.name)
 
   if (verbose) {
     message("* use_tools: Writing table to '", input_path, "'...\n", sep = "")
@@ -74,8 +74,8 @@ use_tools <- function(
     automatically = {
       message("* use_tools: calling tools automatically...")
       call_tool(
-        program.name = program.name,
-        program.exe.path = get_tool_exe_path(),
+        tool.name = tool.name,
+        tool.exe.path = get_tool_exe_path(),
         working.dir = get_tools_working_dir(),
         wait.check.interval = 30L,
         wait.max.time = 60L * 60L,
@@ -87,7 +87,7 @@ use_tools <- function(
       message(
         "- open IARC CRG Tools\n",
         "- start the tool titled ", 
-        deparse(program_real_name_of_clean_name(program.name)), "\n",
+        deparse(tool_real_name_of_clean_name(tool.name)), "\n",
         "- supply this as input path: ", input_path, "\n",
         "- supply this as output path", output_path, "\n",
         "- choose columns when prompted; the columns in the input file are ",
@@ -113,7 +113,7 @@ use_tools <- function(
   }
 
   data_list <- read_tools_results(
-    program.name = program.name,
+    tool.name = tool.name,
     input.col.nms = col_nms
   )
 
@@ -122,7 +122,7 @@ use_tools <- function(
       message("* use_tools: clean = TRUE, deleting input and output datasets ",
               "from disk")
     }
-    rm_files <- c(tool_output_file_paths(program.name = program.name),
+    rm_files <- c(tool_output_file_paths(tool.name = tool.name),
                   input_path)
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
@@ -141,10 +141,10 @@ use_tools <- function(
 
 #' @title IARC CRG Tools R Interface
 #' @description
-#' Open IARC CRG Tools and simulate keystrokes to run the program from start
+#' Open IARC CRG Tools and simulate keystrokes to run the tool from start
 #' to finish.
 #' @template tools_data
-#' @template program_name
+#' @template tool_name
 #' @template verbose
 #' @details
 #'
@@ -158,18 +158,18 @@ use_tools <- function(
 #' Before using this function for the first time you need to run
 #' \code{\link{use_tools_interactively}} to build a settings file for future
 #' use into the working directory set using \code{\link{set_tools_working_dir}}.
-#' This must be done for each program separately. Read more about the
+#' This must be done for each tool separately. Read more about the
 #' settings files here: \code{\link{tools_settings_files}}.
 #'
-#' After the settings file is in place for the intended program, from then on
+#' After the settings file is in place for the intended tool, from then on
 #' you can run this function with the same working directory set and the
-#' program runs from start to finish automatically. The data is first
+#' tool runs from start to finish automatically. The data is first
 #' written into the set working directory, then IARC CRG Tools is run, and
 #' the resulting files are read into R.
 #'
 #' This function should not be considered fool-proof. Currently this function
 #' assumes that IARC CRG Tools has finished its computations when the
-#' file size of the program output has not increased in 30 seconds. In edge
+#' file size of the tool output has not increased in 30 seconds. In edge
 #' cases this may be incorrect. Additionally, no error-recovery logic
 #' has been written for this function in case IARC CRG Tools is interrupted
 #' or raises an error otherwise. Hence do not rely on this function for critical
@@ -179,10 +179,10 @@ use_tools <- function(
 #' @export
 use_tools_automatically <- function(
   tools.data,
-  program.name,
+  tool.name,
   verbose = TRUE
 ) {
-  use_tools(tools.data, program.name, verbose = verbose, how = "automatically")
+  use_tools(tools.data, tool.name, verbose = verbose, how = "automatically")
 }
 
 
@@ -195,7 +195,7 @@ use_tools_automatically <- function(
 #' format and reading the data into R when appropriate. However, you still need
 #' to use IARC CRG Tools manually.
 #' @template tools_data
-#' @template program_name
+#' @template tool_name
 #' @template verbose
 #' @details
 #'
@@ -204,17 +204,17 @@ use_tools_automatically <- function(
 #'
 #' This function saves the supplied data in a format useful for IARC CRG Tools
 #' into the working directory set via \code{\link{set_tools_working_dir}},
-#' prompts you to use the intended IARC CRG Tools program manually,
+#' prompts you to use the intended IARC CRG Tools tool manually,
 #' and reads the data back into R once you give the OK that IARC CRG Tools
 #' has finished its computations.
 #'
 #' @export
 use_tools_interactively <- function(
   tools.data,
-  program.name,
+  tool.name,
   verbose
 ) {
-  use_tools(tools.data, program.name, verbose = verbose, how = "interactively")
+  use_tools(tools.data, tool.name, verbose = verbose, how = "interactively")
 }
 
 

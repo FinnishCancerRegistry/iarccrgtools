@@ -88,7 +88,7 @@ raise_internal_error <- function(
 #' You need to have a pre-defined settings file for the IARC CRG Tools program
 #' you want to use before using \code{\link{use_tools_automatically}}.
 #'
-#' Each program must have its own settings file. The file extension will be
+#' Each tool must have its own settings file. The file extension will be
 #' either .dfi or .frm. The name of the file must be the name of the program
 #' (one of the items given by \code{\link{tool_names}}). E.g.
 #' \code{"iarc_check.dfi"}. The settings files must be stored in the
@@ -209,23 +209,23 @@ NULL
 #' - `real_name`: name of programme in IARC CRG Tools menu
 #' - `executable_name`: name of executable for corresponding programme
 #' - `window_name`: name of executable's window in Windows
-#' @family program_definition_data
+#' @family tool_definition_data
 "programs"
 
 #' @md
 #' @title Program Definitions
 #' @description data.frame specifying output files for each
-#' IARC CRG Tools program.
+#' IARC CRG Tools tool.
 #' @format
 #' A data.frame with these columns:
-#' - `program_name`: character string column; name of the program
+#' - `tool_name`: character string column; name of the program
 #' - `file_name_suffix`: character string column; suffix pasted to each output
 #'   file name; in other words the output files are assumed to have these
 #'   suffixes
 #' - `is_table`: logical column; `TRUE` if the output file is a table,
 #'   `FALSE` if it is non-tabular text (such as a log file)
-#' @family program_definition_data
-"program_output_files"
+#' @family tool_definition_data
+"tool_output_files"
 
 #' @md
 #' @title Program Definitions
@@ -243,7 +243,7 @@ NULL
 #' Each such logical columns is `TRUE` when that column indicated in
 #' `column_name` is included in that set of column names.
 #'
-#' @family program_definition_data
+#' @family tool_definition_data
 "column_specifications"
 
 

@@ -299,18 +299,18 @@ vbslines_exit_tools <- function() {
 
 
 tool_expr_list <- function(
-  program.name,
+  tool.name,
   input.path,
   output.path,
   verbose = TRUE
 ) {
-  assert_tool(program.name)
+  assert_tool(tool.name)
   assert_write_file_path(input.path)
   input.path <- normalize_path(input.path, double.slash = TRUE)
   assert_write_file_path(output.path)
   output.path <- normalize_path(output.path, double.slash = TRUE)
 
-  commands <- tool_commands(program.name)
+  commands <- tool_commands(tool.name)
 
   special_strings <- list(
 
@@ -334,7 +334,7 @@ tool_expr_list <- function(
     )
   }
 
-  wait_for_files <- tool_output_file_paths(program.name = program.name)
+  wait_for_files <- tool_output_file_paths(tool.name = tool.name)
   wait_for_files <- unname(wait_for_files)
 
   r_cmd_pool <- list(
@@ -387,7 +387,7 @@ tool_expr_list <- function(
   focus_tools <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
   )), list(FOCUS_TO = "IARC/IACR Cancer Registry Tools"))
-  prog_win_nm <- tool_window_name(program.name)
+  prog_win_nm <- tool_window_name(tool.name)
   focus_popup <- substitute(call_vbslines(vbslines_set_focus_to_window(
     FOCUS_TO
   )), list(FOCUS_TO = prog_win_nm))
@@ -412,21 +412,21 @@ tool_expr_list <- function(
 
 
 call_tool <- function(
-  program.name = program.name,
-  program.exe.path = get_tool_exe_path(),
+  tool.name = tool.name,
+  tool.exe.path = get_tool_exe_path(),
   working.dir = get_tools_working_dir(),
   wait.check.interval = 30L,
   wait.max.time = 60L * 60L,
   verbose = TRUE
 ) {
   assert_is_logical_nonNA_atom(verbose)
-  input_path <- paste0(get_tools_working_dir(), "\\", program.name,
+  input_path <- paste0(get_tools_working_dir(), "\\", tool.name,
                        "_input.txt")
-  output_path <- paste0(get_tools_working_dir(), "\\", program.name,
+  output_path <- paste0(get_tools_working_dir(), "\\", tool.name,
                         "_output.txt")
 
   expr_list <- tool_expr_list(
-    program.name = program.name,
+    tool.name = tool.name,
     input.path = input_path,
     output.path = output_path,
     verbose = verbose

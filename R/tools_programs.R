@@ -6,32 +6,32 @@
 #' @title IARC CRG Tools Program Names
 #' @description
 #' This function simply returns a haracter string vector of IARC CRG Tools
-#' program names supported by this R package.
+#' tool names supported by this R package.
 #' @return A character string vector.
 #' @export
 tool_names <- function() {
-  stop("use program_clean_names() instead")
+  stop("use tool_clean_names() instead")
 }
 
 
 
 
 
-tool_commands <- function(program.name) {
-  assert_tool(program.name)
-  program_guides <- get_internal_dataset("program_guides")
-  is_in_program <- program_guides$program_name == program.name
-  ks <- program_guides[["command"]][is_in_program]
-  names(ks) <- program_guides[["instruction"]][is_in_program]
+tool_commands <- function(tool.name) {
+  assert_tool(tool.name)
+  tool_guides <- get_internal_dataset("tool_guides")
+  is_in_tool <- tool_guides$tool_name == tool.name
+  ks <- tool_guides[["command"]][is_in_tool]
+  names(ks) <- tool_guides[["instruction"]][is_in_tool]
   ks
 }
 
-tool_instructions <- function(program.name) {
-  assert_tool(program.name)
+tool_instructions <- function(tool.name) {
+  assert_tool(tool.name)
 
-  program_guides <- get_internal_dataset("program_guides")
-  is_in_program <- program_guides$program_name == program.name
-  program_guides[["instruction"]][is_in_program]
+  tool_guides <- get_internal_dataset("tool_guides")
+  is_in_tool <- tool_guides$tool_name == tool.name
+  tool_guides[["instruction"]][is_in_tool]
 
 }
 
@@ -42,7 +42,7 @@ tool_instructions <- function(program.name) {
 #' @name column_names
 #' @description
 #' Utilities for handling sets of required column names for each
-#' IARC CRG Tools program.
+#' IARC CRG Tools tool.
 NULL
 
 #' @describeIn column_names each column name set has its own name. This function
@@ -127,7 +127,7 @@ tool_column_infos <- function(
 #' into a local directory. The settings may not be fully what they should
 #' be for your use-case.
 #' @template dir_path
-#' @template program_name
+#' @template tool_name
 #'
 #' @details
 #'
@@ -137,13 +137,13 @@ tool_column_infos <- function(
 #'
 get_tools_settings_template <- function(
   dir.path = get_tools_working_dir(),
-  program.name
+  tool.name
   ) {
   assert_dir_path(dir.path)
   dir.path <- normalize_path(paste0(dir.path, "/"))
-  assert_tool(program.name)
+  assert_tool(tool.name)
 
-  file_paths_in_pkg <- paste0(program.name, ".", c("dfi", "frm"))
+  file_paths_in_pkg <- paste0(tool.name, ".", c("dfi", "frm"))
 
   src_file_paths <- lapply(file_paths_in_pkg, function(file_path_in_pkg) {
     src_file_path <- system.file(
@@ -188,17 +188,17 @@ get_tools_settings_template <- function(
 
 tool_output_file_paths <- function(
   dir = get_tools_working_dir(),
-  program.name
+  tool.name
 ) {
-  assert_tool(program.name)
+  assert_tool(tool.name)
   assert_dir_path(dir)
 
-  prog_files_df <- get_internal_dataset("program_output_files")
-  is_in_program <- prog_files_df$program_name == program.name
-  prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_program]
-  prog_file_is_table <- prog_files_df$is_table[is_in_program]
+  prog_files_df <- get_internal_dataset("tool_output_files")
+  is_in_tool <- prog_files_df$tool_name == tool.name
+  prog_file_suffixes <- prog_files_df$file_name_suffix[is_in_tool]
+  prog_file_is_table <- prog_files_df$is_table[is_in_tool]
 
-  file_paths <- paste0(dir, "\\", program.name, prog_file_suffixes)
+  file_paths <- paste0(dir, "\\", tool.name, prog_file_suffixes)
   file_paths <- normalize_path(file_paths)
   names(file_paths) <- rep("is_not_table", length(file_paths))
   names(file_paths)[prog_file_is_table] <- rep("is_table",
@@ -212,12 +212,12 @@ tool_output_file_paths <- function(
 
 tool_input_file_path <- function(
   dir = get_tools_working_dir(),
-  program.name
+  tool.name
 ) {
-  assert_tool(program.name)
+  assert_tool(tool.name)
   assert_dir_path(dir)
 
-  paste0(dir, "\\", program.name, "_input.txt")
+  paste0(dir, "\\", tool.name, "_input.txt")
 
 }
 
@@ -226,11 +226,11 @@ tool_input_file_path <- function(
 
 
 tool_window_name <- function(
-  program.name
+  tool.name
 ) {
-  assert_tool(program.name)
-  pwn <- get_internal_dataset("program_window_names")
-  pwn[pwn$program_name == program.name, "program_window_name"]
+  assert_tool(tool.name)
+  pwn <- get_internal_dataset("tool_window_names")
+  pwn[pwn$tool_name == tool.name, "tool_window_name"]
 }
 
 

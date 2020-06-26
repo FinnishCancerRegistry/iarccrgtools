@@ -68,7 +68,7 @@ get_tools_install_dir_path <- function() {
 }
 
 #' @describeIn exe_path subdir of `get_tools_install_dir_path()` output where
-#' program-specfic executables live
+#' tool-specfic executables live
 #' @export
 get_tool_exe_dir_path <- function() {
   normalize_path(paste0(get_tools_install_dir_path(), "\\pgm\\"))

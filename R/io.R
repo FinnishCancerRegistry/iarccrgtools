@@ -185,7 +185,7 @@ n_file_lines <- function(path) {
 #' @md
 #' @title IARC CRG Tools Results
 #' @description Read IARC CRG Tools results into R.
-#' @template program_name
+#' @template tool_name
 #' @param input.col.nms `NULL` (default) or a character string vector of column
 #' names; when not `NULL`, allows setting column names on the tables that were
 #' read. See Details.
@@ -204,14 +204,14 @@ n_file_lines <- function(path) {
 #' @importFrom data.table setnames
 #' @export
 read_tools_results <- function(
-  program.name,
+  tool.name,
   input.col.nms = NULL,
   verbose = TRUE
 ) {
-  assert_tool(program.name = program.name)
+  assert_tool(tool.name = tool.name)
   dir <- get_tools_working_dir()
 
-  file_paths <- tool_output_file_paths(program.name = program.name,
+  file_paths <- tool_output_file_paths(tool.name = tool.name,
                                                 dir = dir)
 
   output_list <- lapply(seq_along(file_paths), function(i) {

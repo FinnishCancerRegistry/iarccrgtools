@@ -105,20 +105,20 @@ assert_write_file_path <- function(path, path.arg.nm = NULL) {
 
 
 
-assert_tool <- function(program.name, program.name.arg.nm = NULL) {
-  if (is.null(program.name.arg.nm)) {
-    program.name.arg.nm <- deparse(substitute(program.name))
+assert_tool <- function(tool.name, tool.name.arg.nm = NULL) {
+  if (is.null(tool.name.arg.nm)) {
+    tool.name.arg.nm <- deparse(substitute(tool.name))
   }
 
-  if (!is.character(program.name)) {
-    stop("Arg ", deparse(program.name.arg.nm), " must be of class 'character'")
+  if (!is.character(tool.name)) {
+    stop("Arg ", deparse(tool.name.arg.nm), " must be of class 'character'")
   }
-  if (length(program.name) != 1L) {
-    stop("Arg ", deparse(program.name.arg.nm), " must be of length 1")
+  if (length(tool.name) != 1L) {
+    stop("Arg ", deparse(tool.name.arg.nm), " must be of length 1")
   }
   prog_nms <- tool_names()
-  if (!program.name %in% prog_nms) {
-    stop("Arg ", deparse(program.name.arg.nm), " must be one of these: ",
+  if (!tool.name %in% prog_nms) {
+    stop("Arg ", deparse(tool.name.arg.nm), " must be one of these: ",
          deparse(prog_nms))
   }
   invisible(NULL)
@@ -129,15 +129,15 @@ assert_tool <- function(program.name, program.name.arg.nm = NULL) {
 
 assert_tools_data <- function(
   data,
-  program.name,
+  tool.name,
   data.arg.nm = NULL,
-  program.name.arg.nm = NULL
+  tool.name.arg.nm = NULL
 ) {
   if (is.null(data.arg.nm)) {
     data.arg.nm <- deparse(substitute(data))
   }
-  if (is.null(program.name.arg.nm)) {
-    program.name.arg.nm <- deparse(substitute(program.name))
+  if (is.null(tool.name.arg.nm)) {
+    tool.name.arg.nm <- deparse(substitute(tool.name))
   }
 
   if (!is.data.frame(data)) {
@@ -148,11 +148,11 @@ assert_tools_data <- function(
   }
 
   mandatory_col_nms <- tool_colnameset(
-    paste0("mandatory_", program.name)
+    paste0("mandatory_", tool.name)
   )
   miss_col_nms <- setdiff(mandatory_col_nms, names(data))
   if (length(miss_col_nms)) {
-    stop("To use with ", program.name.arg.nm, " = ", deparse(program.name),
+    stop("To use with ", tool.name.arg.nm, " = ", deparse(tool.name),
          ", data.frame passed to arg ", deparse(data.arg.nm), " must have ",
          "these columns: ", deparse(miss_col_nms))
   }
