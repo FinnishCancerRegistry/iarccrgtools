@@ -4,13 +4,14 @@
 \alias{get_tools_settings_template}
 \title{IARC CRG Tools Settings Templates}
 \usage{
-get_tools_settings_template(dir.path = get_tools_working_dir(),
-  program.name)
+get_tools_settings_template(dir.path = get_tools_working_dir(), tool.name)
 }
 \arguments{
 \item{dir.path}{a character string; a path to a directory (that must exist)}
 
-\item{program.name}{character string; name of program to run}
+\item{tool.name}{`[character]` (mandatory, no default)
+
+name of tool to run; see output of `tool_clean_names()` for options}
 }
 \description{
 Copy a settings file template

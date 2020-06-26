@@ -3,7 +3,6 @@
 \docType{package}
 \name{iarccrgtools}
 \alias{iarccrgtools}
-\alias{iarccrgtools-package}
 \title{iarccrgtools: Using IARC CRG Tools via R}
 \description{
 Contains functions to make using IARC CRG Tools easier with R,

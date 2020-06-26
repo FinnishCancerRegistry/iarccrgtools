@@ -4,7 +4,8 @@
 \name{column_specifications}
 \alias{column_specifications}
 \title{Program Definitions}
-\format{A data.frame with character string columns
+\format{
+A data.frame with character string columns
 \itemize{
 \item \code{column_name} name of column
 \item \code{class} expected class of column when using functions in this package
@@ -13,9 +14,10 @@
 
 as well as a number of logical (TRUE/FALSE) columns. The names of these
 logical columns follow the convention \code{"set_SETNAME"} where \code{SETNAME}
-is one of the items returned by \code{\link{tools_program_colnameset_names}}.
+is one of the items returned by \code{\link{tool_colnameset_names}}.
 Each such logical columns is \code{TRUE} when that column indicated in
-\code{column_name} is included in that set of column names.}
+\code{column_name} is included in that set of column names.
+}
 \usage{
 column_specifications
 }
@@ -24,8 +26,9 @@ data.frame of specifications for columns used in various
 functions
 }
 \seealso{
-Other program_definition_data: \code{\link{program_guides}},
-  \code{\link{program_output_files}}
+Other tool_definition_data: 
+\code{\link{tool_output_files}},
+\code{\link{tools}}
 }
-\concept{program_definition_data}
+\concept{tool_definition_data}
 \keyword{datasets}

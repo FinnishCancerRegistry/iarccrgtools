@@ -4,19 +4,21 @@
 \alias{use_tools_automatically}
 \title{IARC CRG Tools R Interface}
 \usage{
-use_tools_automatically(tools.data, program.name, verbose = TRUE)
+use_tools_automatically(tools.data, tool.name, verbose = TRUE)
 }
 \arguments{
 \item{tools.data}{a \code{data.frame}; required columns depend on
-the IARC CRG Tools program used}
+the IARC CRG Tools tool used}
 
-\item{program.name}{character string; name of program to run}
+\item{tool.name}{`[character]` (mandatory, no default)
+
+name of tool to run; see output of `tool_clean_names()` for options}
 
 \item{verbose}{if \code{TRUE}, this functions is chatty and gives messages
 durings its run; if \code{FALSE}, you will only see necessary messages}
 }
 \description{
-Open IARC CRG Tools and simulate keystrokes to run the program from start
+Open IARC CRG Tools and simulate keystrokes to run the tool from start
 to finish.
 }
 \details{
@@ -30,18 +32,18 @@ You can test this using \code{\link{can_call_vbs}}.
 Before using this function for the first time you need to run
 \code{\link{use_tools_interactively}} to build a settings file for future
 use into the working directory set using \code{\link{set_tools_working_dir}}.
-This must be done for each program separately. Read more about the
+This must be done for each tool separately. Read more about the
 settings files here: \code{\link{tools_settings_files}}.
 
-After the settings file is in place for the intended program, from then on
+After the settings file is in place for the intended tool, from then on
 you can run this function with the same working directory set and the
-program runs from start to finish automatically. The data is first
+tool runs from start to finish automatically. The data is first
 written into the set working directory, then IARC CRG Tools is run, and
 the resulting files are read into R.
 
 This function should not be considered fool-proof. Currently this function
 assumes that IARC CRG Tools has finished its computations when the
-file size of the program output has not increased in 30 seconds. In edge
+file size of the tool output has not increased in 30 seconds. In edge
 cases this may be incorrect. Additionally, no error-recovery logic
 has been written for this function in case IARC CRG Tools is interrupted
 or raises an error otherwise. Hence do not rely on this function for critical

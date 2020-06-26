@@ -4,15 +4,18 @@
 \alias{write_tools_data}
 \title{Write File to Use as IARC CRG Tools Input}
 \usage{
-write_tools_data(x, colnameset.nm = tools_program_colnameset_names()[1],
+write_tools_data(
+  x,
+  colnameset.nm = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_working_dir()),
-  ...)
+  ...
+)
 }
 \arguments{
 \item{x}{a data.frame}
 
 \item{colnameset.nm}{one of the items returned by 
-\code{\link{tools_program_colnameset_names}}}
+\code{\link{tool_colnameset_names}}}
 
 \item{file}{string; where file will be saved to}
 

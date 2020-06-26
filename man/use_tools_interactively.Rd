@@ -4,13 +4,15 @@
 \alias{use_tools_interactively}
 \title{IARC CRG Tools R Interface}
 \usage{
-use_tools_interactively(tools.data, program.name, verbose)
+use_tools_interactively(tools.data, tool.name, verbose)
 }
 \arguments{
 \item{tools.data}{a \code{data.frame}; required columns depend on
-the IARC CRG Tools program used}
+the IARC CRG Tools tool used}
 
-\item{program.name}{character string; name of program to run}
+\item{tool.name}{`[character]` (mandatory, no default)
+
+name of tool to run; see output of `tool_clean_names()` for options}
 
 \item{verbose}{if \code{TRUE}, this functions is chatty and gives messages
 durings its run; if \code{FALSE}, you will only see necessary messages}
@@ -26,7 +28,7 @@ less foolproof method.
 
 This function saves the supplied data in a format useful for IARC CRG Tools
 into the working directory set via \code{\link{set_tools_working_dir}},
-prompts you to use the intended IARC CRG Tools program manually,
+prompts you to use the intended IARC CRG Tools tool manually,
 and reads the data back into R once you give the OK that IARC CRG Tools
 has finished its computations.
 }

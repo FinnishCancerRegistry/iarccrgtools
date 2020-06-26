@@ -2,42 +2,42 @@
 % Please edit documentation in R/tools_programs.R
 \name{column_names}
 \alias{column_names}
-\alias{tools_program_colnameset_names}
-\alias{tools_program_colnameset}
-\alias{tools_program_column_classes}
-\alias{tools_program_column_infos}
+\alias{tool_colnameset_names}
+\alias{tool_colnameset}
+\alias{tool_column_classes}
+\alias{tool_column_infos}
 \title{Column Names}
 \usage{
-tools_program_colnameset_names()
+tool_colnameset_names()
 
-tools_program_colnameset(set.nm)
+tool_colnameset(set.nm)
 
-tools_program_column_classes(col.nms)
+tool_column_classes(col.nms)
 
-tools_program_column_infos(col.nms)
+tool_column_infos(col.nms)
 }
 \arguments{
 \item{set.nm}{string; name of a column set; only those returned by
-\code{tools_program_colnameset_names} are allowed}
+\code{tool_colnameset_names} are allowed}
 
 \item{col.nms}{character string vector; names of columns; must be subset of
-items returned by \code{tools_program_colnameset("all")}}
+items returned by \code{tool_colnameset("all")}}
 }
 \description{
 Utilities for handling sets of required column names for each
-IARC CRG Tools program.
+IARC CRG Tools tool.
 }
 \section{Functions}{
 \itemize{
-\item \code{tools_program_colnameset_names}: each column name set has its own name. This function
+\item \code{tool_colnameset_names}: each column name set has its own name. This function
 returns all the names of the sets.
 
-\item \code{tools_program_colnameset}: returns a set of column name given the name of the
+\item \code{tool_colnameset}: returns a set of column name given the name of the
 set itself.
 
-\item \code{tools_program_column_classes}: returns the required class for each column by
+\item \code{tool_column_classes}: returns the required class for each column by
 column name
 
-\item \code{tools_program_column_infos}: returns short plain English explanation of column
+\item \code{tool_column_infos}: returns short plain English explanation of column
 }}
 

@@ -4,12 +4,21 @@
 \alias{exe_path}
 \alias{set_tools_exe_path}
 \alias{get_tools_exe_path}
+\alias{guess_tools_exe_dir_path}
+\alias{get_tools_install_dir_path}
+\alias{get_tool_exe_dir_path}
 \alias{guess_tools_exe_path}
 \title{IARC CRG Tools Executable Path}
 \usage{
 set_tools_exe_path(path)
 
 get_tools_exe_path()
+
+guess_tools_exe_dir_path()
+
+get_tools_install_dir_path()
+
+get_tool_exe_dir_path()
 
 guess_tools_exe_path()
 }
@@ -33,6 +42,14 @@ If this package is somehow unloaded or reloaded, the setting will reset.
 
 \item \code{get_tools_exe_path}: gets currently saved path to .exe;
 value will be \code{NA_character_} if no path has been set yet.
+
+\item \code{guess_tools_exe_dir_path}: tries to guess where the executable is
+
+\item \code{get_tools_install_dir_path}: gets currently saved path to directory where
+IARC CRG Tools is installed
+
+\item \code{get_tool_exe_dir_path}: subdir of `get_tools_install_dir_path()` output where
+tool-specfic executables live
 
 \item \code{guess_tools_exe_path}: tries to guess where the executable is based on
 typical installation directories

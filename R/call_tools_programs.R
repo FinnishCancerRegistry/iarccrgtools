@@ -1,28 +1,28 @@
 
 tool_executable_names <- function() {
-  dt <- get_internal_dataset("programs")
+  dt <- get_internal_dataset("tools")
   nms <- dt[["executable_name"]]
   names(nms) <- dt[["clean_name"]]
   nms
 }
 
 tool_window_names <- function() {
-  dt <- get_internal_dataset("programs")
+  dt <- get_internal_dataset("tools")
   nms <- dt[["window_name"]]
   names(nms) <- dt[["clean_name"]]
   nms
 }
 
 tool_clean_names <- function() {
-  get_internal_dataset("programs")[["clean_name"]]
+  get_internal_dataset("tools")[["clean_name"]]
 }
 
 tool_real_names <- function() {
-  get_internal_dataset("programs")[["real_name"]]
+  get_internal_dataset("tools")[["real_name"]]
 }
 
 tool_real_name_of_clean_name <- function(clean_name) {
-  df <- get_internal_dataset("programs")
+  df <- get_internal_dataset("tools")
   if (!clean_name %in% df[["clean_name"]]) {
     raise_internal_error("clean_name = ", clean_name, " not in allowed clean ",
                          "names: ", deparse(df[["clean_name"]]))

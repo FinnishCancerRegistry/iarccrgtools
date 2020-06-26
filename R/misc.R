@@ -72,7 +72,7 @@ raise_internal_error <- function(
 #' @name tools_settings_files
 #' @description
 #' IARC CRG Tools can use settings defined on an earlier run of one of its
-#' programs. This page documents the relationship of these settings files
+#' tools. This page documents the relationship of these settings files
 #' with this R package.
 #'
 #' @section Manual use:
@@ -94,7 +94,7 @@ raise_internal_error <- function(
 #' \code{"iarc_check.dfi"}. The settings files must be stored in the
 #' working directory set by \code{\link{set_tools_working_dir}}.
 #'
-#' This R package has pre-defined "sensible defaults" for certain programs,
+#' This R package has pre-defined "sensible defaults" for certain tools,
 #' which you can fetch into a specific folder using
 #' \code{\link{get_tools_settings_template}}.
 #'
@@ -204,13 +204,13 @@ NULL
 #' 
 #' @format
 #' A data.frame with these character string columns:
-#' - `clean_name`: name of programme as understood by the functions in this 
+#' - `clean_name`: name of tool as understood by the functions in this 
 #'   package
-#' - `real_name`: name of programme in IARC CRG Tools menu
-#' - `executable_name`: name of executable for corresponding programme
+#' - `real_name`: name of tool in IARC CRG Tools menu
+#' - `executable_name`: name of executable for corresponding tool
 #' - `window_name`: name of executable's window in Windows
 #' @family tool_definition_data
-"programs"
+"tools"
 
 #' @md
 #' @title Program Definitions
