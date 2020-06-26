@@ -1,6 +1,6 @@
 "column_name";"class";"fwf_width";"info";"set_all_check";"set_mandatory_check";"set_optional_check";"set_all_multiple_primary";"set_mandatory_multiple_primary";"set_optional_multiple_primary";"set_all_icdo3_to_icd10";"set_mandatory_icdo3_to_icd10";"set_optional_icdo3_to_icd10";"set_all"
 "subject_id";"integer";15;"Subject identification number";FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE
-"record_id";"integer";15;"Record identification number (subject can have multiple records)";TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;TRUE
+"record_id";"integer";15;"Record identification number (subject can have multiple records)";TRUE;TRUE;TRUE;TRUE;TRUE;TRUE;TRUE;TRUE;TRUE;TRUE
 "record_order";"integer";3;"Order number of record for given subject";FALSE;FALSE;FALSE;TRUE;TRUE;FALSE;FALSE;FALSE;FALSE;TRUE
 "sex";"integer";1;"Sex, 1 = male, 2 = female";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
 "icdo3_topography";"character";3;"ICD-O-3 topography code";TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE;TRUE;FALSE;TRUE
