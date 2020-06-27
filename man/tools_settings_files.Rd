@@ -11,7 +11,7 @@ with this R package.
 \section{Manual use}{
 
 
-This mainly pertains to using \code{\link{use_tools_interactively}}.
+This mainly pertains to using \code{\link{interact_with_tool}}.
 When using IARC CRG Tools manually, settings files are not mandatory.
 They just make your life easier. Inspect the help pages of IARC CRG Tools
 for more information.
@@ -20,9 +20,9 @@ for more information.
 \section{Automatic use}{
 
 
-This pertains to using \code{\link{use_tools_automatically}}.
+This pertains to using \code{\link{automate_tool}}.
 You need to have a pre-defined settings file for the IARC CRG Tools program
-you want to use before using \code{\link{use_tools_automatically}}.
+you want to use before using \code{\link{automate_tool}}.
 
 Each tool must have its own settings file. The file extension will be
 either .dfi or .frm. The name of the file must be the name of the program

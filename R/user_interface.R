@@ -37,10 +37,56 @@ collect_tools_data <- function(
 
 
 
+#' @title IARC CRG Tools R Interface
+#' @description
+#' Open IARC CRG Tools and simulate keystrokes to run the tool from start
+#' to finish.
+#' @template tools_data
+#' @template tool_name
+#' @template verbose
+#' @details
+#'
+#' See \code{\link{interact_with_tool}} for the manual but more foolproof
+#' method.
+#'
+#' This function requires that you are able to execute .vbs scripts.
+#' IARC CRG Tools is opened and keystrokes are sent using such scripts.
+#' You can test this using \code{\link{can_call_vbs}}.
+#'
+#' Before using this function for the first time you need to run
+#' \code{\link{interact_with_tool}} to build a settings file for future
+#' use into the working directory set using \code{\link{set_tools_root_dir}}.
+#' This must be done for each tool separately. Read more about the
+#' settings files here: \code{\link{tools_settings_files}}.
+#'
+#' After the settings file is in place for the intended tool, from then on
+#' you can run this function with the same working directory set and the
+#' tool runs from start to finish automatically. The data is first
+#' written into the set working directory, then IARC CRG Tools is run, and
+#' the resulting files are read into R.
+#'
+#' This function should not be considered fool-proof. Currently this function
+#' assumes that IARC CRG Tools has finished its computations when the
+#' file size of the tool output has not increased in 30 seconds. In edge
+#' cases this may be incorrect. Additionally, no error-recovery logic
+#' has been written for this function in case IARC CRG Tools is interrupted
+#' or raises an error otherwise. Hence do not rely on this function for critical
+#' processes. However the approach used here appears to work
+#' fine in practice when IARC CRG Tools is not interrupted.
+#' @seealso \code{\link{interact_with_tool}}
+#' @name interface_with_tool
 
 
-use_tools <- function(
-  tools.data,
+#' @rdname interface_with_tool
+#' @export
+#' @param how `[character]` (mandatory, default `"interactively"`)
+#' - `"interactively"`: the user must open IARC CRG Tools manually and interact
+#'   with it according to instructions, but the dataset is written to disk
+#'   and read back into R by this function
+#' - `"automatically"`: like `"interactively"`, but the appropriate tool
+#'   is attempted to be called without any user interaction
+interface_with_tool <- function(
+  data,
   tool.name,
   how = c("interactively", "automatically")[1],
   clean = TRUE,
@@ -50,11 +96,14 @@ use_tools <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
+  if (how == "automatically") {
+    stop("how = 'automatically' under development")
+  }
   assert_tool(tool.name)
-  assert_tools_data(tools.data, tool.name)
+  assert_tools_data(data, tool.name)
   assert_is_logical_nonNA_atom(clean)
   
-  df <- collect_tools_data(data = tools.data, tool.name = tool.name)
+  df <- collect_tools_data(data = data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
@@ -63,9 +112,9 @@ use_tools <- function(
   input_path <- tool_input_file_path(tool.name = tool.name)
   
   if (verbose) {
-    message("* use_tools: selected columns; first five row of working table: ")
+    message("* interface_with_tool: selected columns; first five row of working table: ")
     print(head(df))
-    message("* use_tools: Writing table to '", input_path, "'...")
+    message("* interface_with_tool: Writing table to '", input_path, "'...")
   }
   
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
@@ -76,7 +125,7 @@ use_tools <- function(
   switch(
     how,
     automatically = {
-      message("* use_tools: calling tools automatically...")
+      message("* interface_with_tool: calling tools automatically...")
       call_tool(
         tool.name = tool.name,
         tool.exe.path = get_tool_exe_path(),
@@ -88,7 +137,7 @@ use_tools <- function(
     },
     interactively = {
       output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
-      message("* use_tools: calling tools interactively...")
+      message("* interface_with_tool: calling tools interactively...")
       message(
         "- open IARC CRG Tools\n",
         "- start the tool titled ", 
@@ -118,7 +167,7 @@ use_tools <- function(
   )
   
   if (verbose) {
-    message("* use_tools: reading tools results")
+    message("* interface_with_tool: reading tools results")
   }
   
   data_list <- read_tools_results(
@@ -128,7 +177,7 @@ use_tools <- function(
   
   if (clean) {
     if (verbose) {
-      message("* use_tools: clean = TRUE, deleting input and output datasets ",
+      message("* interface_with_tool: clean = TRUE, deleting input and output datasets ",
               "from disk")
     }
     rm_files <- c(tool_output_file_paths(tool.name = tool.name),
@@ -138,7 +187,7 @@ use_tools <- function(
   }
   
   if (verbose) {
-    message("* use_tools: finished")
+    message("* interface_with_tool: finished")
   }
   
   data_list
@@ -147,85 +196,37 @@ use_tools <- function(
 
 
 
-
-#' @title IARC CRG Tools R Interface
-#' @description
-#' Open IARC CRG Tools and simulate keystrokes to run the tool from start
-#' to finish.
-#' @template tools_data
-#' @template tool_name
-#' @template verbose
-#' @details
-#'
-#' See \code{\link{use_tools_interactively}} for the manual but more foolproof
-#' method.
-#'
-#' This function requires that you are able to execute .vbs scripts.
-#' IARC CRG Tools is opened and keystrokes are sent using such scripts.
-#' You can test this using \code{\link{can_call_vbs}}.
-#'
-#' Before using this function for the first time you need to run
-#' \code{\link{use_tools_interactively}} to build a settings file for future
-#' use into the working directory set using \code{\link{set_tools_root_dir}}.
-#' This must be done for each tool separately. Read more about the
-#' settings files here: \code{\link{tools_settings_files}}.
-#'
-#' After the settings file is in place for the intended tool, from then on
-#' you can run this function with the same working directory set and the
-#' tool runs from start to finish automatically. The data is first
-#' written into the set working directory, then IARC CRG Tools is run, and
-#' the resulting files are read into R.
-#'
-#' This function should not be considered fool-proof. Currently this function
-#' assumes that IARC CRG Tools has finished its computations when the
-#' file size of the tool output has not increased in 30 seconds. In edge
-#' cases this may be incorrect. Additionally, no error-recovery logic
-#' has been written for this function in case IARC CRG Tools is interrupted
-#' or raises an error otherwise. Hence do not rely on this function for critical
-#' processes. However the approach used here appears to work
-#' fine in practice when IARC CRG Tools is not interrupted.
-#' @seealso \code{\link{use_tools_interactively}}
+#' @rdname interface_with_tool
 #' @export
-use_tools_automatically <- function(
-  tools.data,
+automate_tool <- function(
+  data,
   tool.name,
+  clean = FALSE,
   verbose = TRUE
 ) {
-  use_tools(tools.data, tool.name, verbose = verbose, how = "automatically")
+  interface_with_tool(
+    data = data, 
+    tool.name = tool.name, 
+    clean = clean,
+    verbose = verbose, 
+    how = "automatically"
+  )
 }
 
 
 
 
 
-#' @title IARC CRG Tools R Interface
-#' @description
-#' Simplifies using IARC CRG Tools by preparing the data in a suitable
-#' format and reading the data into R when appropriate. However, you still need
-#' to use IARC CRG Tools manually.
-#' @template tools_data
-#' @template tool_name
-#' @template verbose
-#' @details
-#'
-#' See \code{\link{use_tools_automatically}} for the automatic but
-#' less foolproof method.
-#'
-#' This function saves the supplied data in a format useful for IARC CRG Tools
-#' into the working directory set via \code{\link{set_tools_root_dir}},
-#' prompts you to use the intended IARC CRG Tools tool manually,
-#' and reads the data back into R once you give the OK that IARC CRG Tools
-#' has finished its computations.
-#'
+#' @rdname interface_with_tool
 #' @export
-use_tools_interactively <- function(
-  tools.data,
+interact_with_tool <- function(
+  data,
   tool.name,
   clean = FALSE,
   verbose = FALSE
 ) {
-  use_tools(
-    tools.data = tools.data, 
+  interface_with_tool(
+    data = data, 
     tool.name = tool.name, 
     clean = clean, 
     verbose = verbose, 
