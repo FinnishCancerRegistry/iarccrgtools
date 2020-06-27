@@ -4,6 +4,7 @@
 \alias{interface_with_tool}
 \alias{automate_tool}
 \alias{interact_with_tool}
+\alias{connect_tool_results_to_observations}
 \title{IARC CRG Tools R Interface}
 \usage{
 interface_with_tool(
@@ -17,6 +18,8 @@ interface_with_tool(
 automate_tool(data, tool.name, clean = FALSE, verbose = FALSE)
 
 interact_with_tool(data, tool.name, clean = FALSE, verbose = FALSE)
+
+connect_tool_results_to_observations(record.ids, tool.results)
 }
 \arguments{
 \item{data}{a \code{data.frame}; required columns depend on
@@ -48,6 +51,16 @@ from disk after the results have been read into R
 tell at what stage the is process and can be helpful in debugging
 \item \code{FALSE}: only necessary messages are emitted
 }}
+
+\item{record.ids}{\verb{[integer]} (mandatory, no default)
+
+IDs of records for which to retrieve any record-specific results from
+\code{tool.results}}
+
+\item{tool.results}{\verb{[list]} (mandatory, no default)
+
+list of tables and/or log texts as output by one of the interface functions
+to IARC CRG Tools (e.g. \link{interact_with_tool})}
 }
 \description{
 Open IARC CRG Tools and simulate keystrokes to run the tool from start

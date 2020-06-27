@@ -31,5 +31,5 @@ used as the set of column names for any tables that are read by this
 function. You should supply the same column names that were in the file
 saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
 to the ones you had in input data, that column will gain the name
-\code{"tools_text"} automatically.
+\code{"tool_text"} automatically.
 }

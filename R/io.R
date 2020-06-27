@@ -308,7 +308,7 @@ n_file_lines <- function(path) {
 #' function. You should supply the same column names that were in the file
 #' saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
 #' to the ones you had in input data, that column will gain the name
-#' `"tools_text"` automatically.
+#' `"tool_text"` automatically.
 #' @importFrom data.table setnames
 #' @export
 read_tools_results <- function(
@@ -359,7 +359,7 @@ read_tools_results <- function(
         if (!is.null(input.col.nms)) {
 
           if (ncol(out) == length(input.col.nms)+1L) {
-            input.col.nms <- c(input.col.nms, "tools_text")
+            input.col.nms <- c(input.col.nms, "tool_text")
           }
 
           if (length(input.col.nms) == ncol(out)) {

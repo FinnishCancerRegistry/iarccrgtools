@@ -246,7 +246,65 @@ interact_with_tool <- function(
 
 
 
-
+#' @importFrom data.table data.table setkeyv setDT :=
+#' @export
+#' @rdname interface_with_tool
+#' @param record.ids `[integer]` (mandatory, no default)
+#' 
+#' IDs of records for which to retrieve any record-specific results from
+#' `tool.results`
+#' @param tool.results `[list]` (mandatory, no default)
+#' 
+#' list of tables and/or log texts as output by one of the interface functions
+#' to IARC CRG Tools (e.g. [interact_with_tool])
+connect_tool_results_to_observations <- function(
+  record.ids,
+  tool.results
+) {
+  stopifnot(
+    is.integer(record.ids),
+    
+    inherits(tool.results, "list")
+  )
+  
+  is_usable_df <- vapply(tool.results, function(x) {
+    is.data.frame(x) && all(c("record_id", "tool_text") %in% names(x))
+  }, logical(1L))
+  if (!any(is_usable_df)) {
+    stop("none of the elements of tool.results is a data.frame with the ",
+         "columns 'record_id' and 'tool_text'; ",
+         "most likely there are no results to process")
+  }
+  wh_usable_df <- which(is_usable_df)
+  dt <- data.table::data.table(record_id = record.ids)
+  data.table::setkeyv(dt, "record_id")
+  
+  lapply(wh_usable_df, function(df_no) {
+    df <- tool.results[[df_no]]
+    result_dt <- data.table::setDT(list(
+      record_id = df[["record_id"]],
+      text = df[["tool_text"]]
+    ))
+    if (all(is.na(result_dt[["text"]]))) {
+      return(NULL)
+    }
+    if (any(duplicated(result_dt, by = "record_id"))) {
+      result_dt <- result_dt[
+        j = list(text = paste0(text, collapse = "; ")),
+        keyby = "record_id"
+      ]
+    }
+    text_col_nm <- names(tool.results)[df_no]
+    i.text <- NULL # to appease R CMD CHECK
+    dt[
+      i = result_dt,
+      on = "record_id",
+      j = (text_col_nm) := i.text
+    ]
+    NULL
+  })
+  return(dt[])
+}
 
 
 
