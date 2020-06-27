@@ -85,12 +85,22 @@ collect_tools_data <- function(
 #'   and read back into R by this function
 #' - `"automatically"`: like `"interactively"`, but the appropriate tool
 #'   is attempted to be called without any user interaction
+#' @param clean `[logical]` (optional, default `FALSE`)
+#' 
+#' - `TRUE`: all input and output files for IARC CRG Tools will be removed
+#'   from disk after the results have been read into R
+#' - `FALSE`: all files are let to be in peace
+#' @param verbose `[logical]` (optional, default `FALSE`)
+#' 
+#' - `TRUE`: emit messages which are not needed for correct usage but which
+#'   tell at what stage the is process and can be helpful in debugging
+#' - `FALSE`: only necessary messages are emitted
 interface_with_tool <- function(
   data,
   tool.name,
   how = c("interactively", "automatically")[1],
-  clean = TRUE,
-  verbose = TRUE
+  clean = FALSE,
+  verbose = FALSE
 ) {
   stopifnot(
     length(how) == 1,
@@ -202,7 +212,7 @@ automate_tool <- function(
   data,
   tool.name,
   clean = FALSE,
-  verbose = TRUE
+  verbose = FALSE
 ) {
   interface_with_tool(
     data = data, 

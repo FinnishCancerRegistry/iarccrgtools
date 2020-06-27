@@ -115,6 +115,7 @@ wd_env$path <- FALSE
 
 #' @describeIn work_dir gets current 
 #' @export
+#' @template tool_name
 get_tool_dir <- function(tool.name) {
   assert_tool(tool.name = tool.name)
   root_dir <- get_tools_root_dir()

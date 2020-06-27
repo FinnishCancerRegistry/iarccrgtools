@@ -10,11 +10,11 @@ interface_with_tool(
   data,
   tool.name,
   how = c("interactively", "automatically")[1],
-  clean = TRUE,
-  verbose = TRUE
+  clean = FALSE,
+  verbose = FALSE
 )
 
-automate_tool(data, tool.name, clean = FALSE, verbose = TRUE)
+automate_tool(data, tool.name, clean = FALSE, verbose = FALSE)
 
 interact_with_tool(data, tool.name, clean = FALSE, verbose = FALSE)
 }
@@ -35,8 +35,19 @@ and read back into R by this function
 is attempted to be called without any user interaction
 }}
 
-\item{verbose}{if \code{TRUE}, this functions is chatty and gives messages
-durings its run; if \code{FALSE}, you will only see necessary messages}
+\item{clean}{\verb{[logical]} (optional, default \code{FALSE})
+\itemize{
+\item \code{TRUE}: all input and output files for IARC CRG Tools will be removed
+from disk after the results have been read into R
+\item \code{FALSE}: all files are let to be in peace
+}}
+
+\item{verbose}{\verb{[logical]} (optional, default \code{FALSE})
+\itemize{
+\item \code{TRUE}: emit messages which are not needed for correct usage but which
+tell at what stage the is process and can be helpful in debugging
+\item \code{FALSE}: only necessary messages are emitted
+}}
 }
 \description{
 Open IARC CRG Tools and simulate keystrokes to run the tool from start

@@ -15,6 +15,10 @@ get_tool_dir(tool.name)
 }
 \arguments{
 \item{dir}{string; path to a directory}
+
+\item{tool.name}{\verb{[character]} (mandatory, no default)
+
+name of tool to run; see output of \code{tool_clean_names()} for options}
 }
 \description{
 Get and set directory where input and output files of IARC CRG Tools
