@@ -546,22 +546,34 @@ get_internal_dataset <- function(dataset.name) {
     is.character(dataset.name),
     !is.na(dataset.name)
   )
-  pkg_env <- as.environment("package:iarccrgtools")
-  object_nms <- getNamespaceExports("iarccrgtools")
-
-  dataset_nms <- object_nms[vapply(object_nms, function(object_nm) {
-    is.data.frame(pkg_env[[object_nm]])
-  }, logical(1))]
-
-  if (!dataset.name %in% dataset_nms) {
+  expr <- paste0("iarccrgtools:::", dataset.name)
+  result <- tryCatch(
+    eval(parse(text = expr)),
+    error = function(e) e
+  )
+  if (inherits(result, "try-error")) {
     raise_internal_error(
       "Requested internal dataset ",
-      deparse(dataset.name), " is not one of ",
-      deparse(dataset_nms), ". "
+      deparse(dataset.name), " is not found. "
     )
   }
-
-  pkg_env[[dataset.name]]
+  return(result[])
+  # pkg_env <- as.environment("package:iarccrgtools")
+  # object_nms <- getNamespaceExports("iarccrgtools")
+  # 
+  # dataset_nms <- object_nms[vapply(object_nms, function(object_nm) {
+  #   is.data.frame(pkg_env[[object_nm]])
+  # }, logical(1))]
+  # 
+  # if (!dataset.name %in% dataset_nms) {
+  #   raise_internal_error(
+  #     "Requested internal dataset ",
+  #     deparse(dataset.name), " is not one of ",
+  #     deparse(dataset_nms), ". "
+  #   )
+  # }
+  # 
+  # pkg_env[[dataset.name]]
 }
 
 
