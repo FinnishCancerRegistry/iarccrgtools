@@ -414,15 +414,15 @@ tool_expr_list <- function(
 call_tool <- function(
   tool.name,
   tool.exe.path = get_tool_exe_path(),
-  working.dir = get_tool_dir(tool.name),
+  working.dir = get_tool_work_dir(tool.name),
   wait.check.interval = 30L,
   wait.max.time = 60L * 60L,
   verbose = TRUE
 ) {
   assert_is_logical_nonNA_atom(verbose)
-  input_path <- paste0(get_tool_dir(tool.name), "\\", tool.name,
+  input_path <- paste0(get_tool_work_dir(tool.name), "\\", tool.name,
                        "_input.txt")
-  output_path <- paste0(get_tool_dir(tool.name), "\\", tool.name,
+  output_path <- paste0(get_tool_work_dir(tool.name), "\\", tool.name,
                         "_output.txt")
 
   expr_list <- tool_expr_list(

@@ -7,7 +7,7 @@
 write_tools_data(
   x,
   colnameset.nm = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
   ...

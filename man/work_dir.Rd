@@ -3,15 +3,15 @@
 \name{work_dir}
 \alias{work_dir}
 \alias{set_tools_work_dir}
-\alias{get_tools_root_dir}
-\alias{get_tool_dir}
+\alias{get_tools_work_dir}
+\alias{get_tool_work_dir}
 \title{IARC CRG Tools Working Directory}
 \usage{
 set_tools_work_dir(dir)
 
-get_tools_root_dir()
+get_tools_work_dir()
 
-get_tool_dir(tool.name)
+get_tool_work_dir(tool.name)
 }
 \arguments{
 \item{dir}{string; path to a directory}
@@ -24,12 +24,25 @@ name of tool to run; see output of \code{tool_clean_names()} for options}
 Get and set directory where input and output files of IARC CRG Tools
 are stored.
 }
+\details{
+The working directory is where files for IARC CRG Tools and created by
+IARC CRG Tools should live. This is not the same directory where the
+executable for IARC CRG Tools is. Instead, the working directory is
+recommended to be created by you manually in advance. You may also use a
+temporary directory if you don't want to store any results
+(see \link[base:tempfile]{base::tempdir}).
+
+The tools working directory set by \code{set_tools_work_dir} will itself be
+populated by tool-specific directories, e.g. \code{"my_dir/check/"} will contain
+results for the "check" tool.
+}
 \section{Functions}{
 \itemize{
 \item \code{set_tools_work_dir}: sets working directory
 
-\item \code{get_tools_root_dir}: gets current root working directory as string
+\item \code{get_tools_work_dir}: gets current root working directory as string
 
-\item \code{get_tool_dir}: gets current
+\item \code{get_tool_work_dir}: gets the working directory of an individual tool under
+the main working directory set by \code{set_tools_work_dir}
 }}
 

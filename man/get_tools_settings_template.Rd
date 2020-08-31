@@ -4,7 +4,7 @@
 \alias{get_tools_settings_template}
 \title{IARC CRG Tools Settings Templates}
 \usage{
-get_tools_settings_template(dir.path = get_tool_dir(tool.name), tool.name)
+get_tools_settings_template(dir.path = get_tool_work_dir(tool.name), tool.name)
 }
 \arguments{
 \item{dir.path}{a character string; a path to a directory (that must exist)}

@@ -87,6 +87,17 @@ create_example <- function(
 #' @description
 #' Get and set directory where input and output files of IARC CRG Tools
 #' are stored.
+#' @details
+#' The working directory is where files for IARC CRG Tools and created by
+#' IARC CRG Tools should live. This is not the same directory where the
+#' executable for IARC CRG Tools is. Instead, the working directory is 
+#' recommended to be created by you manually in advance. You may also use a 
+#' temporary directory if you don't want to store any results 
+#' (see [base::tempdir]).
+#' 
+#' The tools working directory set by `set_tools_work_dir` will itself be
+#' populated by tool-specific directories, e.g. `"my_dir/check/"` will contain
+#' results for the "check" tool.
 NULL
 
 #' @describeIn work_dir sets working directory
@@ -100,7 +111,7 @@ set_tools_work_dir <- function(dir) {
 
 #' @describeIn work_dir gets current root working directory as string
 #' @export
-get_tools_root_dir <- function() {
+get_tools_work_dir <- function() {
   if (identical(wd_env$path, FALSE)) {
     stop("Working directory for IARC CRG Tools not set --- ",
          "see ?set_tools_work_dir")
@@ -113,13 +124,14 @@ get_tools_root_dir <- function() {
 wd_env <- new.env(parent = emptyenv())
 wd_env$path <- FALSE
 
-#' @describeIn work_dir gets current 
+#' @describeIn work_dir gets the working directory of an individual tool under
+#' the main working directory set by `set_tools_work_dir`
 #' @export
 #' @template tool_name
-get_tool_dir <- function(tool.name) {
+get_tool_work_dir <- function(tool.name) {
   assert_tool(tool.name = tool.name)
-  root_dir <- get_tools_root_dir()
-  dir <- normalize_path(paste0(root_dir, "\\", tool.name))
+  work_dir <- get_tools_work_dir()
+  dir <- normalize_path(paste0(work_dir, "\\", tool.name))
   if (!dir.exists(dir)) {
     dir.create(dir)
   }
@@ -161,7 +173,7 @@ get_tool_dir <- function(tool.name) {
 write_tools_data <- function(
   x,
   colnameset.nm = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = get_tools_root_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
   ...
@@ -317,7 +329,7 @@ read_tools_results <- function(
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- get_tool_dir(tool.name = tool.name)
+  dir <- get_tool_work_dir(tool.name = tool.name)
 
   file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 

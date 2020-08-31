@@ -120,7 +120,7 @@ tool_column_infos <- function(
 #' or not.
 #'
 get_tools_settings_template <- function(
-  dir.path = get_tool_dir(tool.name),
+  dir.path = get_tool_work_dir(tool.name),
   tool.name
   ) {
   assert_dir_path(dir.path)
@@ -171,7 +171,7 @@ get_tools_settings_template <- function(
 
 
 tool_output_file_paths <- function(
-  dir = get_tool_dir(tool.name),
+  dir = get_tool_work_dir(tool.name),
   tool.name
 ) {
   assert_tool(tool.name)
@@ -195,7 +195,7 @@ tool_output_file_paths <- function(
 
 
 tool_input_file_path <- function(
-  dir = get_tool_dir(tool.name),
+  dir = get_tool_work_dir(tool.name),
   tool.name
 ) {
   assert_tool(tool.name)
