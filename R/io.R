@@ -92,7 +92,7 @@ NULL
 #' @describeIn work_dir sets working directory
 #' @param dir string; path to a directory
 #' @export
-set_tools_root_dir <- function(dir) {
+set_tools_work_dir <- function(dir) {
   assert_dir_path(dir)
   dir <- normalize_path(dir)
   assign(x = "path", value = dir, envir = wd_env)
@@ -103,10 +103,10 @@ set_tools_root_dir <- function(dir) {
 get_tools_root_dir <- function() {
   if (identical(wd_env$path, FALSE)) {
     stop("Working directory for IARC CRG Tools not set --- ",
-         "see ?set_tools_root_dir")
+         "see ?set_tools_work_dir")
   } else if (!dir.exists(wd_env$path)) {
     stop("Supplied IARC CRG Tools root working directory does not exist: ",
-         deparse(wd_env$path), "; see ?set_tools_root_dir")
+         deparse(wd_env$path), "; see ?set_tools_work_dir")
   }
   wd_env$path
 }

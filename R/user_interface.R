@@ -55,7 +55,7 @@ collect_tools_data <- function(
 #'
 #' Before using this function for the first time you need to run
 #' \code{\link{interact_with_tool}} to build a settings file for future
-#' use into the working directory set using \code{\link{set_tools_root_dir}}.
+#' use into the working directory set using \code{\link{set_tools_work_dir}}.
 #' This must be done for each tool separately. Read more about the
 #' settings files here: \code{\link{tools_settings_files}}.
 #'

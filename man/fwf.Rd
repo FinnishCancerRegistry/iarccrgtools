@@ -50,7 +50,7 @@ width of field to be written}
 
 \item{...}{additional arguments passed to
 \itemize{
-\item \code{write_fwf}: \link[data:table:fwrite]{data:table::fwrite}
+\item \code{write_fwf}: \link[data.table:fwrite]{data.table::fwrite}
 \item \code{read_fwf}: \link[data.table:fread]{data.table::fread}
 }}
 }

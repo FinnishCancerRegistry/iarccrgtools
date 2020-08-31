@@ -61,7 +61,7 @@ format_fwf.Date <- function(x, width) {
 #' @param ...
 #' 
 #' additional arguments passed to
-#' - `write_fwf`: [data:table::fwrite]
+#' - `write_fwf`: [data.table::fwrite]
 #' - `read_fwf`: [data.table::fread]
 write_fwf <- function(x, path, widths = NULL, ...) {
   assert_dataframe(x)

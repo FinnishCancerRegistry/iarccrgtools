@@ -2,12 +2,12 @@
 % Please edit documentation in R/io.R
 \name{work_dir}
 \alias{work_dir}
-\alias{set_tools_root_dir}
+\alias{set_tools_work_dir}
 \alias{get_tools_root_dir}
 \alias{get_tool_dir}
 \title{IARC CRG Tools Working Directory}
 \usage{
-set_tools_root_dir(dir)
+set_tools_work_dir(dir)
 
 get_tools_root_dir()
 
@@ -26,7 +26,7 @@ are stored.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_tools_root_dir}: sets working directory
+\item \code{set_tools_work_dir}: sets working directory
 
 \item \code{get_tools_root_dir}: gets current root working directory as string
 
