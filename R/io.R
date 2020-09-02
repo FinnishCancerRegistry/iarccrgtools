@@ -34,6 +34,19 @@ dir_is_writable <- function(
 
 
 
+#' @title Example Datasets
+#' @description
+#' Create example datasets with correct column names and column data types
+#' and nonsense contents.
+#' @param set.nm `[character]` (mandatory, no default)
+#' 
+#' one of the values given in the output of `[tool_colnameset_names]`
+#' @param n.rows `[integer]` (mandatory, default `10L`)
+#' 
+#' number of rows to have in the created example dataset; only one row has been
+#' defined and that is repeated this many times; the purpose of having a larger
+#' example dataset of this kind is mainly to test memory use
+#' @export
 create_example <- function(
   set.nm,
   n.rows = 10L
