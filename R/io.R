@@ -40,7 +40,8 @@ dir_is_writable <- function(
 #' and nonsense contents.
 #' @param set.nm `[character]` (mandatory, no default)
 #' 
-#' one of the values given in the output of `[tool_colnameset_names]`
+#' one of the values given in the output of 
+#' `[iarccrgtools::tool_colnameset_names()]`
 #' @param n.rows `[integer]` (mandatory, default `10L`)
 #' 
 #' number of rows to have in the created example dataset; only one row has been

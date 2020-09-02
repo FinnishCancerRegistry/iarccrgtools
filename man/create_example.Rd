@@ -9,7 +9,8 @@ create_example(set.nm, n.rows = 10L)
 \arguments{
 \item{set.nm}{\verb{[character]} (mandatory, no default)
 
-one of the values given in the output of \verb{[tool_colnameset_names]}}
+one of the values given in the output of
+\verb{[iarccrgtools::tool_colnameset_names()]}}
 
 \item{n.rows}{\verb{[integer]} (mandatory, default \code{10L})
 
