@@ -37,64 +37,13 @@ collect_tools_data <- function(
 
 
 
-#' @title IARC CRG Tools R Interface
-#' @description
-#' Open IARC CRG Tools and simulate keystrokes to run the tool from start
-#' to finish.
-#' @template tools_data
-#' @template tool_name
-#' @template verbose
-#' @details
-#'
-#' See \code{\link{interact_with_tool}} for the manual but more foolproof
-#' method.
-#'
-#' This function requires that you are able to execute .vbs scripts.
-#' IARC CRG Tools is opened and keystrokes are sent using such scripts.
-#' You can test this using \code{\link{can_call_vbs}}.
-#'
-#' Before using this function for the first time you need to run
-#' \code{\link{interact_with_tool}} to build a settings file for future
-#' use into the working directory set using \code{\link{set_tools_work_dir}}.
-#' This must be done for each tool separately. Read more about the
-#' settings files here: \code{\link{tools_settings_files}}.
-#'
-#' After the settings file is in place for the intended tool, from then on
-#' you can run this function with the same working directory set and the
-#' tool runs from start to finish automatically. The data is first
-#' written into the set working directory, then IARC CRG Tools is run, and
-#' the resulting files are read into R.
-#'
-#' This function should not be considered fool-proof. Currently this function
-#' assumes that IARC CRG Tools has finished its computations when the
-#' file size of the tool output has not increased in 30 seconds. In edge
-#' cases this may be incorrect. Additionally, no error-recovery logic
-#' has been written for this function in case IARC CRG Tools is interrupted
-#' or raises an error otherwise. Hence do not rely on this function for critical
-#' processes. However the approach used here appears to work
-#' fine in practice when IARC CRG Tools is not interrupted.
-#' @seealso \code{\link{interact_with_tool}}
-#' @name interface_with_tool
 
-
-#' @rdname interface_with_tool
-#' @export
-#' @param how `[character]` (mandatory, default `"interactively"`)
-#' - `"interactively"`: the user must open IARC CRG Tools manually and interact
-#'   with it according to instructions, but the dataset is written to disk
-#'   and read back into R by this function
-#' - `"automatically"`: like `"interactively"`, but the appropriate tool
-#'   is attempted to be called without any user interaction
-#' @param clean `[logical]` (optional, default `FALSE`)
-#' 
-#' - `TRUE`: all input and output files for IARC CRG Tools will be removed
-#'   from disk after the results have been read into R
-#' - `FALSE`: all files are let to be in peace
-#' @param verbose `[logical]` (optional, default `FALSE`)
-#' 
-#' - `TRUE`: emit messages which are not needed for correct usage but which
-#'   tell at what stage the is process and can be helpful in debugging
-#' - `FALSE`: only necessary messages are emitted
+# @param how `[character]` (mandatory, default `"interactively"`)
+# - `"interactively"`: the user must open IARC CRG Tools manually and interact
+#   with it according to instructions, but the dataset is written to disk
+#   and read back into R by this function
+# - `"automatically"`: like `"interactively"`, but the appropriate tool
+#   is attempted to be called without any user interaction
 interface_with_tool <- function(
   data,
   tool.name,
@@ -206,8 +155,6 @@ interface_with_tool <- function(
 
 
 
-#' @rdname interface_with_tool
-#' @export
 automate_tool <- function(
   data,
   tool.name,
@@ -227,7 +174,18 @@ automate_tool <- function(
 
 
 
-#' @rdname interface_with_tool
+#' @title IARC CRG Tools R Interface
+#' @description
+#' Write data for IARC CRG Tools and read it back into R after the run 
+#' has finished.
+#' @template tools_data
+#' @template tool_name
+#' @param clean `[logical]` (optional, default `FALSE`)
+#' 
+#' - `TRUE`: all input and output files for IARC CRG Tools will be removed
+#'   from disk after the results have been read into R
+#' - `FALSE`: all files are left to be in peace
+#' @template verbose
 #' @export
 interact_with_tool <- function(
   data,
@@ -248,7 +206,7 @@ interact_with_tool <- function(
 
 #' @importFrom data.table data.table setkeyv setDT :=
 #' @export
-#' @rdname interface_with_tool
+#' @rdname interact_with_tool
 #' @param record.ids `[integer]` (mandatory, no default)
 #' 
 #' IDs of records for which to retrieve any record-specific results from
