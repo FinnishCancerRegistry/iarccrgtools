@@ -273,13 +273,33 @@ write_tools_data <- function(
     message("* write_tools_data: writing...")
     t_write <- proc.time()
   }
-  widths <- tool_column_fwf_widths(
+  
+  expected_widths <- tool_column_fwf_widths(
     setdiff(names(x), ".__this_is_a_buffer_column_yo__.")
   )
-  widths <- c(widths, 0L)
+  expected_widths <- c(expected_widths, 0L)
+  observed_max_widths <- vapply(x, function(col) max(nchar(col)), integer(1L))
+  names(expected_widths) <- names(x)
+  names(observed_max_widths) <- names(x)
+  lapply(names(x), function(col_nm) {
+    if (observed_max_widths[col_nm] > expected_widths[col_nm]) {
+      stop("column ", deparse(col_nm), " is wider (has more characters; ",
+           "see ?nchar) than expected: expected ", expected_widths[col_nm],
+           " but the longest value as a string in the column was of length ",
+           observed_max_widths[col_nm], 
+           ". as an example of this misspecification, the column 'basis' must ",
+           "only have single-digit values, and if your data contains multi-",
+           "digit values for 'basis', then column 'basis' would cause the ",
+           "current error. (the actual violating column was given above ",
+           "and may or may not be 'basis'). please modify your column ",
+           deparse(col_nm), " and try again.")
+    }
+    NULL
+  })
+  
   write_fwf(
     x = x, 
-    widths = widths,
+    widths = expected_widths,
     path = file,
     sep = ";",
     dec = ",",
