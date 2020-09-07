@@ -3,3 +3,5 @@
 ^\.Rproj\.user$
 ^man-roxygen$
 ^iarc_test$
+^appveyor\.yml$
+^\.travis\.yml$
