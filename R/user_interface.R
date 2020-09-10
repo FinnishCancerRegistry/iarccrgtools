@@ -16,7 +16,7 @@ collect_tools_data <- function(
   optional_col_nms <- tool_colnameset(
     paste0("optional_", tool.name)
   )
-  
+
   used_set_name <- paste0("all_", tool.name)
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
@@ -27,7 +27,7 @@ collect_tools_data <- function(
             "; the tool will still probably work, but in a limited manner")
   }
   found_opt_col_nms <- setdiff(optional_col_nms, miss_opt_col_nms)
-  
+
   col_nms <- c(mandatory_col_nms, found_opt_col_nms)
   col_nms <- intersect(tool_colnameset("all"), col_nms) # to sort them
   df <- data.table::setDF(mget(col_nms, as.environment(data)))
@@ -61,26 +61,26 @@ interface_with_tool <- function(
   assert_tool(tool.name)
   assert_tools_data(data, tool.name)
   assert_is_logical_nonNA_atom(clean)
-  
+
   df <- collect_tools_data(data = data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
-  
+
   input_path <- tool_input_file_path(tool.name = tool.name)
-  
+
   if (verbose) {
     message("* interface_with_tool: selected columns; first five row of working table: ")
     print(head(df))
     message("* interface_with_tool: Writing table to '", input_path, "'...")
   }
-  
+
   write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
                    verbose = verbose)
   col_nms <- names(df)
   rm("df")
-  
+
   switch(
     how,
     automatically = {
@@ -99,7 +99,7 @@ interface_with_tool <- function(
       message("* interface_with_tool: calling tools interactively...")
       message(
         "- open IARC CRG Tools\n",
-        "- start the tool titled ", 
+        "- start the tool titled ",
         deparse(tool_real_name_of_clean_name(tool.name)), "\n",
         "- supply this as input path: ", input_path, "\n",
         "- supply this as output path: ", output_path, "\n",
@@ -118,22 +118,22 @@ interface_with_tool <- function(
         "- select 'yes' to proceed and read the results into R ",
         "or cancel by selecting 'no' or 'cancel'."
       )
-      
+
       if (!proceed) {
         stop("Cancelled.")
       }
     }
   )
-  
+
   if (verbose) {
     message("* interface_with_tool: reading tools results")
   }
-  
+
   data_list <- read_tools_results(
     tool.name = tool.name,
     input.col.nms = col_nms
   )
-  
+
   if (clean) {
     if (verbose) {
       message("* interface_with_tool: clean = TRUE, deleting input and output datasets ",
@@ -144,11 +144,11 @@ interface_with_tool <- function(
     rm_files <- rm_files[file.exists(rm_files)]
     file.remove(rm_files)
   }
-  
+
   if (verbose) {
     message("* interface_with_tool: finished")
   }
-  
+
   data_list
 }
 
@@ -162,10 +162,10 @@ automate_tool <- function(
   verbose = FALSE
 ) {
   interface_with_tool(
-    data = data, 
-    tool.name = tool.name, 
+    data = data,
+    tool.name = tool.name,
     clean = clean,
-    verbose = verbose, 
+    verbose = verbose,
     how = "automatically"
   )
 }
@@ -176,12 +176,12 @@ automate_tool <- function(
 
 #' @title IARC CRG Tools R Interface
 #' @description
-#' Write data for IARC CRG Tools and read it back into R after the run 
+#' Write data for IARC CRG Tools and read it back into R after the run
 #' has finished.
 #' @template tools_data
 #' @template tool_name
 #' @param clean `[logical]` (optional, default `FALSE`)
-#' 
+#'
 #' - `TRUE`: all input and output files for IARC CRG Tools will be removed
 #'   from disk after the results have been read into R
 #' - `FALSE`: all files are left to be in peace
@@ -194,10 +194,10 @@ interact_with_tool <- function(
   verbose = FALSE
 ) {
   interface_with_tool(
-    data = data, 
-    tool.name = tool.name, 
-    clean = clean, 
-    verbose = verbose, 
+    data = data,
+    tool.name = tool.name,
+    clean = clean,
+    verbose = verbose,
     how = "interactively"
   )
 }
@@ -208,23 +208,34 @@ interact_with_tool <- function(
 #' @export
 #' @rdname interact_with_tool
 #' @param record.ids `[integer]` (mandatory, no default)
-#' 
+#'
 #' IDs of records for which to retrieve any record-specific results from
 #' `tool.results`
 #' @param tool.results `[list]` (mandatory, no default)
-#' 
+#'
 #' list of tables and/or log texts as output by one of the interface functions
 #' to IARC CRG Tools (e.g. [interact_with_tool])
+#' @details
+#' - `connect_tool_results_to_observations` returns a `data.table` with
+#'   `length(record.ids)` rows; it has column
+#'   `record_id` and additional columns depending on results in
+#'   `tool.results`; this function goes through each object in `tool.results`
+#'   and if an object is a `data.table` with columns `record_id` and `tool_text`,
+#'   each record appearing in that `data.table` is marked in the output
+#'   `data.table` in a logical column (e.g. ` in_multiple_primary_input.exl`)
+#'   and any text in `tool_text` is collected into a separate column
+#'   (e.g. `multiple_primary_input.exl`); therefore the columns in the output of
+#'   `connect_tool_results_to_observations` vary by tool used.
 connect_tool_results_to_observations <- function(
   record.ids,
   tool.results
 ) {
   stopifnot(
     is.integer(record.ids),
-    
+
     inherits(tool.results, "list")
   )
-  
+
   is_usable_df <- vapply(tool.results, function(x) {
     is.data.frame(x) && all(c("record_id", "tool_text") %in% names(x))
   }, logical(1L))
@@ -236,16 +247,13 @@ connect_tool_results_to_observations <- function(
   wh_usable_df <- which(is_usable_df)
   dt <- data.table::data.table(record_id = record.ids)
   data.table::setkeyv(dt, "record_id")
-  
+
   lapply(wh_usable_df, function(df_no) {
     df <- tool.results[[df_no]]
     result_dt <- data.table::setDT(list(
       record_id = df[["record_id"]],
       text = df[["tool_text"]]
     ))
-    if (all(is.na(result_dt[["text"]]))) {
-      return(NULL)
-    }
     if (any(duplicated(result_dt, by = "record_id"))) {
       result_dt <- result_dt[
         j = list(text = paste0(text, collapse = "; ")),
@@ -253,6 +261,13 @@ connect_tool_results_to_observations <- function(
       ]
     }
     text_col_nm <- names(tool.results)[df_no]
+    in_result_set_col_nm <- paste0("in_", text_col_nm)
+    dt[, (in_result_set_col_nm) := FALSE]
+    dt[
+      i = result_dt,
+      on = "record_id",
+      j = (in_result_set_col_nm) := TRUE
+    ]
     i.text <- NULL # to appease R CMD CHECK
     dt[
       i = result_dt,

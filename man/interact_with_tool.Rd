@@ -41,3 +41,17 @@ to IARC CRG Tools (e.g. \link{interact_with_tool})}
 Write data for IARC CRG Tools and read it back into R after the run
 has finished.
 }
+\details{
+\itemize{
+\item \code{connect_tool_results_to_observations} returns a \code{data.table} with
+\code{length(record.ids)} rows; it has column
+\code{record_id} and additional columns depending on results in
+\code{tool.results}; this function goes through each object in \code{tool.results}
+and if an object is a \code{data.table} with columns \code{record_id} and \code{tool_text},
+each record appearing in that \code{data.table} is marked in the output
+\code{data.table} in a logical column (e.g. \code{ in_multiple_primary_input.exl})
+and any text in \code{tool_text} is collected into a separate column
+(e.g. \code{multiple_primary_input.exl}); therefore the columns in the output of
+\code{connect_tool_results_to_observations} vary by tool used.
+}
+}
