@@ -6,12 +6,12 @@ Author: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Maintainer: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Description: Utilities for using IARC CRG Tools on Windows via R.
 Imports:
-    data.table
+    data.table,
+    digest
 Depends:
     R (>= 2.10)
 Suggests:
     utils,
-    digest,
     testthat
 License: MIT + file LICENCE
 Encoding: UTF-8
