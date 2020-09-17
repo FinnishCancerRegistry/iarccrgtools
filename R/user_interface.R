@@ -92,6 +92,7 @@ interface_with_tool <- function(
     read_cached_results <- ask_yes_no()
   }
   
+  col_nms <- names(df)
   if (!read_cached_results) {
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
@@ -102,7 +103,6 @@ interface_with_tool <- function(
                      verbose = verbose)
     writeLines(current_sha, sha_file_path)
     
-    col_nms <- names(df)
     rm(list = "df")
     switch(
       how,
