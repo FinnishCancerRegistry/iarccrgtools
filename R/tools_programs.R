@@ -211,7 +211,7 @@ tool_cache_sha_file_path <- function(
 ) {
   assert_tool(tool.name)
   assert_dir_path(dir)
-  paste0(dir, "\\", tool.name, "input_cache_sha.txt")
+  paste0(dir, "\\", tool.name, "_input_cache_sha.txt")
 }
 
 
