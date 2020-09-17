@@ -83,7 +83,8 @@ interface_with_tool <- function(
   if (identical(cache_sha, current_sha)) {
     message("* iarccrgtools::interface_with_tool: looks like a dataset ",
             "identical to the one you have supplied already exists in ", 
-            deparse(input_path), ". would you like to skip using IARC CRG ",
+            deparse(input_path),
+            ". would you like to skip using IARC CRG Tools",
             "and read in the output files that resulted from your previous ",
             "time? select 'yes' to read the previous results into R without ",
             "using IARC CRG Tools, 'no' to proceed with writing the input ",
