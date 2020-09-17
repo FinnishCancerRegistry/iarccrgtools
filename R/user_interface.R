@@ -44,6 +44,7 @@ collect_tools_data <- function(
 #   and read back into R by this function
 # - `"automatically"`: like `"interactively"`, but the appropriate tool
 #   is attempted to be called without any user interaction
+#' @importFrom digest digest
 interface_with_tool <- function(
   data,
   tool.name,
@@ -70,60 +71,84 @@ interface_with_tool <- function(
 
   input_path <- tool_input_file_path(tool.name = tool.name)
 
-  if (verbose) {
-    message("* interface_with_tool: selected columns; first five row of working table: ")
-    print(head(df))
-    message("* interface_with_tool: Writing table to '", input_path, "'...")
+  
+  sha_file_path <- tool_cache_sha_file_path(tool.name = tool.name)
+  if (file.exists(sha_file_path)) {
+    cache_sha <- readLines(sha_file_path, n = 1L)
+  } else {
+    cache_sha <- digest::digest(runif(n = 1L), algo = "sha256")
   }
-
-  write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
-                   verbose = verbose)
-  col_nms <- names(df)
-  rm("df")
-
-  switch(
-    how,
-    automatically = {
-      message("* interface_with_tool: calling tools automatically...")
-      call_tool(
-        tool.name = tool.name,
-        tool.exe.path = get_tool_exe_path(),
-        working.dir = get_tool_dir(tool.name),
-        wait.check.interval = 30L,
-        wait.max.time = 60L * 60L,
-        verbose = verbose
-      )
-    },
-    interactively = {
-      output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
-      message("* interface_with_tool: calling tools interactively...")
-      message(
-        "- open IARC CRG Tools\n",
-        "- start the tool titled ",
-        deparse(tool_real_name_of_clean_name(tool.name)), "\n",
-        "- supply this as input path: ", input_path, "\n",
-        "- supply this as output path: ", output_path, "\n",
-        "- choose columns when prompted; the columns in the input file are ",
-        "in order the following:\n  ", deparse(col_nms), "\n",
-        "- if applicable, make sure you select ",
-        "\"Creates one record per type of error ",
-        "(ie the same case may appear several times).\" or any other setting",
-        "with the same effect\n",
-        "- choose other settings as is appropriate for your dataset and run ",
-        "the tool\n",
-        "- once it has finished, (press OK in IARC CRG Tools and) select ",
-        "'yes' in the prompt below"
-      )
-      proceed <- ask_yes_no(
-        "- select 'yes' to proceed and read the results into R ",
-        "or cancel by selecting 'no' or 'cancel'."
-      )
-
-      if (!proceed) {
-        stop("Cancelled.")
-      }
+  current_sha <- digest::digest(df, algo = "sha256")
+  read_cached_results <- FALSE
+  if (identical(cache_sha, current_sha)) {
+    message("* iarccrgtools::interface_with_tool: looks like a dataset ",
+            "to the one you have supplied already exists in ", 
+            deparse(input_path), ". would you like to skip using IARC CRG ",
+            "and read in the output files that resulted from your previous ",
+            "time? select 'yes' to read the previous results into R without ",
+            "using IARC CRG Tools, 'no' to proceed with writing the input ",
+            "on the hard drive and running IARC CRG Tools, or 'cancel' ",
+            "to abort this program.")
+    read_cached_results <- ask_yes_no()
+  }
+  
+  if (!read_cached_results) {
+    if (verbose) {
+      message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
+      print(head(df))
+      message("* iarccrgtools::interface_with_tool: Writing table to '", input_path, "'...")
     }
-  )
+    write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
+                     verbose = verbose)
+    writeLines(current_sha, sha_file_path)
+    
+    col_nms <- names(df)
+    rm(list = "df")
+    switch(
+      how,
+      automatically = {
+        message("* interface_with_tool: calling tools automatically...")
+        call_tool(
+          tool.name = tool.name,
+          tool.exe.path = get_tool_exe_path(),
+          working.dir = get_tool_dir(tool.name),
+          wait.check.interval = 30L,
+          wait.max.time = 60L * 60L,
+          verbose = verbose
+        )
+      },
+      interactively = {
+        output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
+        message("* interface_with_tool: calling tools interactively...")
+        message(
+          "- open IARC CRG Tools\n",
+          "- start the tool titled ",
+          deparse(tool_real_name_of_clean_name(tool.name)), "\n",
+          "- supply this as input path: ", input_path, "\n",
+          "- supply this as output path: ", output_path, "\n",
+          "- choose columns when prompted; the columns in the input file are ",
+          "in order the following:\n  ", deparse(col_nms), "\n",
+          "- if applicable, make sure you select ",
+          "\"Creates one record per type of error ",
+          "(ie the same case may appear several times).\" or any other setting",
+          "with the same effect\n",
+          "- choose other settings as is appropriate for your dataset and run ",
+          "the tool\n",
+          "- once it has finished, (press OK in IARC CRG Tools and) select ",
+          "'yes' in the prompt below"
+        )
+        proceed <- ask_yes_no(
+          "- select 'yes' to proceed and read the results into R ",
+          "or cancel by selecting 'no' or 'cancel'."
+        )
+        
+        if (!proceed) {
+          stop("Cancelled.")
+        }
+      }
+    )
+  }
+  
 
   if (verbose) {
     message("* interface_with_tool: reading tools results")
