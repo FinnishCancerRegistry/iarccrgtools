@@ -34,6 +34,19 @@ tool_real_name_of_clean_name <- function(clean_name) {
   df[["real_name"]][df[["clean_name"]] == clean_name]
 }
 
+tool_menu_name <- function(clean.name) {
+  dt <- get_internal_dataset("tools")
+  stopifnot(
+    length(clean.name) == 1L,
+    is.character(clean.name),
+    clean.name %in% dt[["clean_name"]]
+  )
+  
+  menu_nms <- dt[["menu_name"]]
+  names(menu_nms) <- dt[["clean_name"]]
+  unname(menu_nms[clean.name])
+}
+
 call_tool_executable <- function(tool_name) {
   assert_is_character_nonNA_atom(tool_name)
   stopifnot(

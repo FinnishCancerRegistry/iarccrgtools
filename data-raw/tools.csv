@@ -1,13 +1,13 @@
-clean_name,real_name,executable_name,window_name
-icd9_to_icdo2,ICD-9 -> ICD-O-2,9toO2.EXE,9toO2
-icd9_and_icdo1_to_icdo2,ICD-9+ICD-O-1 -> ICD-O-2,9O1toO2.EXE,9O1toO2
-icd10_to_icdo2,ICD-10 -> ICD-O-2,10toO2.EXE,10toO2
-icd10_and_icdo2_to_icdo2,ICD-10+ICD-O-2 -> ICD-O-2,10O2toO2.EXE,10O2toO2
-icdo1_to_icdo2,ICD-O-1 -> ICD-O-2,O1toO2.EXE,O1toO2
-icdo1fte_to_icdo2,ICD-O-1(FTE) -> ICD-O-2,FTEtoO2.EXE,FTEtoO2
-icdo2_to_icdo3,ICD-O-2 -> ICD-O-3,O2toO3.EXE,O2toO3
-icdo2_to_icd9,ICD-O-2 -> ICD-9,O2to9.EXE,O2to9
-icdo2_to_icd10,ICD-O-2 -> ICD-10,O2to10.EXE,O2to10
-icdo3_to_icd10,ICD-O-3 -> ICD-10,O3to10.EXE,O3to10
-check,IARC/IACR Check,IARCcheck.EXE,IARC/IACR check
-multiple_primary,IARC/IACR Multiple Primary,Multiple.EXE,Multiple
+menu_name,clean_name,real_name,executable_name,window_name
+Conversions,icd9_to_icdo2,ICD-9 -> ICD-O-2,9toO2.EXE,9toO2
+Conversions,icd9_and_icdo1_to_icdo2,ICD-9+ICD-O-1 -> ICD-O-2,9O1toO2.EXE,9O1toO2
+Conversions,icd10_to_icdo2,ICD-10 -> ICD-O-2,10toO2.EXE,10toO2
+Conversions,icd10_and_icdo2_to_icdo2,ICD-10+ICD-O-2 -> ICD-O-2,10O2toO2.EXE,10O2toO2
+Conversions,icdo1_to_icdo2,ICD-O-1 -> ICD-O-2,O1toO2.EXE,O1toO2
+Conversions,icdo1fte_to_icdo2,ICD-O-1(FTE) -> ICD-O-2,FTEtoO2.EXE,FTEtoO2
+Conversions,icdo2_to_icdo3,ICD-O-2 -> ICD-O-3,O2toO3.EXE,O2toO3
+Conversions,icdo2_to_icd9,ICD-O-2 -> ICD-9,O2to9.EXE,O2to9
+Conversions,icdo2_to_icd10,ICD-O-2 -> ICD-10,O2to10.EXE,O2to10
+Conversions,icdo3_to_icd10,ICD-O-3 -> ICD-10,O3to10.EXE,O3to10
+Tools,check,IARC/IACR Check,IARCcheck.EXE,IARC/IACR check
+Tools,multiple_primary,IARC/IACR Multiple Primary,Multiple.EXE,Multiple

@@ -123,7 +123,8 @@ interface_with_tool <- function(
         message("* interface_with_tool: calling tools interactively...")
         message(
           "- open IARC CRG Tools\n",
-          "- start the tool titled ",
+          "- start ",
+          deparse(tool_menu_name(tool.name)), " -> ",
           deparse(tool_real_name_of_clean_name(tool.name)), "\n",
           "- supply this as input path: ", input_path, "\n",
           "- supply this as output path: ", output_path, "\n",
@@ -132,7 +133,7 @@ interface_with_tool <- function(
           "- if applicable, make sure you select ",
           "\"Creates one record per type of error ",
           "(ie the same case may appear several times).\" or any other setting",
-          "with the same effect\n",
+          " with the same effect\n",
           "- choose other settings as is appropriate for your dataset and run ",
           "the tool\n",
           "- once it has finished, (press OK in IARC CRG Tools and) select ",
