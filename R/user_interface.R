@@ -21,7 +21,7 @@ collect_tools_data <- function(
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
     used_set_name <- paste0("mandatory_", tool.name)
-    message("* collect_tools_data: ",
+    message("* iarccrgtools::collect_tools_data: ",
             "the following optional columns were not found in data: ",
             deparse(miss_opt_col_nms),
             "; the tool will still probably work, but in a limited manner")
@@ -108,7 +108,8 @@ interface_with_tool <- function(
     switch(
       how,
       automatically = {
-        message("* interface_with_tool: calling tools automatically...")
+        message("* iarccrgtools::interface_with_tool: calling tools ",
+                "automatically...")
         call_tool(
           tool.name = tool.name,
           tool.exe.path = get_tool_exe_path(),
@@ -120,7 +121,8 @@ interface_with_tool <- function(
       },
       interactively = {
         output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
-        message("* interface_with_tool: calling tools interactively...")
+        message("* iarccrgtools::interface_with_tool: calling tools ",
+                "interactively...")
         message(
           "- open IARC CRG Tools\n",
           "- start ",
@@ -153,7 +155,7 @@ interface_with_tool <- function(
   
 
   if (verbose) {
-    message("* interface_with_tool: reading tools results")
+    message("* iarccrgtools::interface_with_tool: reading tools results")
   }
 
   data_list <- read_tools_results(
@@ -163,8 +165,8 @@ interface_with_tool <- function(
 
   if (clean) {
     if (verbose) {
-      message("* interface_with_tool: clean = TRUE, deleting input and output datasets ",
-              "from disk")
+      message("* iarccrgtools::interface_with_tool: clean = TRUE, deleting ",
+              "input and output datasets from disk")
     }
     rm_files <- c(tool_output_file_paths(tool.name = tool.name),
                   input_path)
@@ -173,7 +175,7 @@ interface_with_tool <- function(
   }
 
   if (verbose) {
-    message("* interface_with_tool: finished")
+    message("* iarccrgtools::interface_with_tool: finished")
   }
 
   data_list

@@ -207,14 +207,16 @@ write_tools_data <- function(
     ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
                      " already exists. overwrite?")
     if (!ow) {
-      message("* write_tools_data: Cancelled writing table to ",
+      message("* iarccrgtools::write_tools_data: Cancelled writing table to ",
               deparse(file), ".")
       return(invisible(NULL))
     }
   }
   
   if (verbose) {
-    message("* write_tools_data: collecting and transforming data...")
+    message(
+      "* iarccrgtools::write_tools_data: collecting and transforming data..."
+    )
   }
   x <- data.table::setDT(mget(col_nms, as.environment(x)))
   
@@ -264,13 +266,13 @@ write_tools_data <- function(
   )
   
   if (verbose) {
-    message("* write_tools_data: ready to write to disk; first five rows ",
-            "of current dataset:")
+    message("* iarccrgtools::write_tools_data: ready to write to disk; ",
+            "first five rows of current dataset:")
     print(head(x))
   }
   
   if (verbose) {
-    message("* write_tools_data: writing...")
+    message("* iarccrgtools::write_tools_data: writing...")
     t_write <- proc.time()
   }
   
@@ -310,7 +312,8 @@ write_tools_data <- function(
   )
   if (verbose) {
     message(
-      "* write_tools_data: done writing; ", data.table::timetaken(t_write)
+      "* iarccrgtools::write_tools_data: done writing; ", 
+      data.table::timetaken(t_write)
     )
   }
   invisible(NULL)
@@ -374,13 +377,14 @@ read_tools_results <- function(
     path_type <- names(file_paths)[i]
 
     if (verbose) {
-      message("* read_tools_results: attempting to read file from ",
+      message("* iarccrgtools::read_tools_results: attempting to read file from ",
               deparse(unname(file_path)))
     }
 
     if (!file.exists(file_path)) {
       if (verbose) {
-        message("* read_tools_results: file '", file_path, "' did not exist; ",
+        message("* iarccrgtools::read_tools_results: file '", file_path, 
+                "' did not exist; ",
                 "returning NULL")
       }
       return(NULL)
@@ -388,7 +392,8 @@ read_tools_results <- function(
     n_lines <- n_file_lines(path = file_path)
     if (n_lines == 0) {
       if (verbose) {
-        message("* read_tools_results: file '", file_path, "' had zero rows; ",
+        message("* iarccrgtools::read_tools_results: file '", file_path, 
+                "' had zero rows; ",
                 "returning NULL")
       }
       return(NULL)
@@ -425,7 +430,7 @@ read_tools_results <- function(
       )
     }
     if (verbose) {
-      message("* read_tools_results: file successfully read ")
+      message("* iarccrgtools::read_tools_results: file successfully read ")
     }
 
 

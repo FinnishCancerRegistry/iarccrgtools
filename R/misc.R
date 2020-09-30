@@ -325,7 +325,7 @@ wait_until_all_files_stop_growing <- function(
   assert_is_logical_nonNA_atom(wait.until.writable)
 
   if (verbose) {
-    message("* wait_until_all_files_stop_growing: waiting for ",
+    message("* iarccrgtools::wait_until_all_files_stop_growing: waiting for ",
             initial.wait, " seconds before starting to inspect file sizes...")
   }
   Sys.sleep(initial.wait)
@@ -339,7 +339,8 @@ wait_until_all_files_stop_growing <- function(
   sec_elapsed <- 0L
   if (verbose) {
     message(
-      "* wait_until_all_files_stop_growing: starting to wait for these ",
+      "* iarccrgtools::wait_until_all_files_stop_growing: starting to wait ",
+      "for these ",
       "files:\n", paste0("   '", unname(file.paths), "'", collapse = "\n")
     )
   }
@@ -364,7 +365,8 @@ wait_until_all_files_stop_growing <- function(
     tick <- tick + 1L
     if (verbose) {
       msg <- paste0(
-        "* wait_until_all_files_stop_growing: iteration ",tick, " done. ",
+        "* iarccrgtools::wait_until_all_files_stop_growing: iteration ",tick, 
+        " done. ",
         "In total ", round(sec_elapsed), " seconds have elapsed."
       )
       if (any(file_grew)) {

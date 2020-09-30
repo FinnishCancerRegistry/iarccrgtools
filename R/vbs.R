@@ -441,7 +441,7 @@ call_tool <- function(
   stop("TODO: just call an exe with the settings file and press OK after waiting.")
   unused <- lapply(expr_list, function(expr) {
     if (verbose) {
-      message("* call_tool: executing this: ")
+      message("* iarccrgtools::call_tool: executing this: ")
     }
     if (is.language(expr)) {
       if (verbose) {
