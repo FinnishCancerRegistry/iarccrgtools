@@ -44,7 +44,6 @@ collect_tools_data <- function(
 #   and read back into R by this function
 # - `"automatically"`: like `"interactively"`, but the appropriate tool
 #   is attempted to be called without any user interaction
-#' @importFrom digest digest
 interface_with_tool <- function(
   data,
   tool.name,
