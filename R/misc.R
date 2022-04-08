@@ -84,13 +84,13 @@ raise_internal_error <- function(
 #'
 #' @section Automatic use:
 #'
-#' This pertains to using \code{\link{automate_tool}}.
+#' This pertains to using \code{automate_tool}.
 #' You need to have a pre-defined settings file for the IARC CRG Tools program
-#' you want to use before using \code{\link{automate_tool}}.
+#' you want to use before using \code{automate_tool}.
 #'
 #' Each tool must have its own settings file. The file extension will be
-#' either .dfi or .frm. The name of the file must be the name of the program
-#' (one of the items given by \code{\link{tool_names}}). E.g.
+#' either .dfi or .frm. The name of the file must be the name of the program.
+#' E.g.
 #' \code{"iarc_check.dfi"}. The settings files must be stored in the
 #' working directory set by \code{\link{set_tools_work_dir}}.
 #'
@@ -184,12 +184,7 @@ file_ext <- function(file) {
 #' Contains functions to make using IARC CRG Tools easier with R,
 #' including writing and reading IARC CRG Tools input/output files and
 #' guided or automatic use of IARC CRG Tools itself.
-#' @details
-#'
-#' Main attractions include
-#' \code{\link{automate_tool}} and
-#' \code{\link{interact_with_tool}} for calling IARC CRG Tools directly
-#' from R and for helping with input/output from and to R.
+#' See \code{\link{interact_with_tool}}.
 #'
 NULL
 
@@ -201,7 +196,7 @@ NULL
 #' @md
 #' @title Program Definitions
 #' @description
-#'
+#' Program definitions dataset.
 #' @format
 #' A data.frame with these character string columns:
 #' - `clean_name`: name of tool as understood by the functions in this

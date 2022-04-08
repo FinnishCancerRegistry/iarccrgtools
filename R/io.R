@@ -124,7 +124,8 @@ set_tools_work_dir <- function(dir) {
   assign(x = "path", value = dir, envir = wd_env)
 }
 
-#' @describeIn work_dir gets current root working directory as string
+#' @describeIn work_dir gets current root working directory as string;
+#' e.g. `"C:\\iarc\\"`
 #' @export
 get_tools_work_dir <- function() {
   if (identical(wd_env$path, FALSE)) {
@@ -140,14 +141,15 @@ wd_env <- new.env(parent = emptyenv())
 wd_env$path <- FALSE
 
 #' @describeIn work_dir gets the working directory of an individual tool and
-#' dataset under the main working directory set by `set_tools_work_dir`
+#' dataset under the main working directory set by `set_tools_work_dir`;
+#' e.g. `"C:\\iarc\\check\\hash_213io3\\"`
 #' @export
 #' @template tool_name
 #' @param hash `[character]` (no default)
 #'
 #' Hash of an input dataset; get working directory for `tool.name` and this
 #' dataset.
-get_tool_work_dir <- function(tool.name) {
+get_tool_work_dir <- function(tool.name, hash) {
   assert_tool(tool.name = tool.name)
   stopifnot(
     is.null(hash) ||is.character(hash),

@@ -20,13 +20,13 @@ for more information.
 \section{Automatic use}{
 
 
-This pertains to using \code{\link{automate_tool}}.
+This pertains to using \code{automate_tool}.
 You need to have a pre-defined settings file for the IARC CRG Tools program
-you want to use before using \code{\link{automate_tool}}.
+you want to use before using \code{automate_tool}.
 
 Each tool must have its own settings file. The file extension will be
-either .dfi or .frm. The name of the file must be the name of the program
-(one of the items given by \code{\link{tool_names}}). E.g.
+either .dfi or .frm. The name of the file must be the name of the program.
+E.g.
 \code{"iarc_check.dfi"}. The settings files must be stored in the
 working directory set by \code{\link{set_tools_work_dir}}.
 

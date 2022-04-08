@@ -11,7 +11,7 @@ set_tools_work_dir(dir)
 
 get_tools_work_dir()
 
-get_tool_work_dir(tool.name)
+get_tool_work_dir(tool.name, hash)
 }
 \arguments{
 \item{dir}{string; path to a directory}
@@ -45,9 +45,11 @@ results for the "check" tool.
 \itemize{
 \item \code{set_tools_work_dir}: sets working directory
 
-\item \code{get_tools_work_dir}: gets current root working directory as string
+\item \code{get_tools_work_dir}: gets current root working directory as string;
+e.g. \code{"C:\\\\iarc\\\\"}
 
 \item \code{get_tool_work_dir}: gets the working directory of an individual tool and
-dataset under the main working directory set by \code{set_tools_work_dir}
+dataset under the main working directory set by \code{set_tools_work_dir};
+e.g. \code{"C:\\\\iarc\\\\check\\\\hash_213io3\\\\"}
 }}
 

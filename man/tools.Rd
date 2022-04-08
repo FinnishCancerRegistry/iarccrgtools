@@ -18,7 +18,7 @@ package
 tools
 }
 \description{
-
+Program definitions dataset.
 }
 \seealso{
 Other tool_definition_data: 
