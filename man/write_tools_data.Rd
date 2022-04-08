@@ -6,7 +6,7 @@
 \usage{
 write_tools_data(
   x,
-  colnameset.nm = tool_colnameset_names()[1],
+  colnameset.name = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
@@ -16,7 +16,7 @@ write_tools_data(
 \arguments{
 \item{x}{a data.frame}
 
-\item{colnameset.nm}{one of the items returned by
+\item{colnameset.name}{one of the items returned by
 \code{\link{tool_colnameset_names}}}
 
 \item{file}{\verb{[character]} (mandatory, no default)

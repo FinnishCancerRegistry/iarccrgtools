@@ -104,67 +104,6 @@ tool_column_infos <- function(
 
 
 
-#' @export
-#' @title IARC CRG Tools Settings Templates
-#' @description Copy a settings file template
-#' (see \code{\link{tools_settings_files}})
-#' into a local directory. The settings may not be fully what they should
-#' be for your use-case.
-#' @template dir_path
-#' @template tool_name
-#'
-#' @details
-#'
-#' If a file with the same name as the one copied by this function already
-#' exists in the directory, this function will ask whether to overwrite it
-#' or not.
-#'
-get_tools_settings_template <- function(
-  dir.path,
-  tool.name
-  ) {
-  assert_dir_path(dir.path)
-  dir.path <- normalize_path(paste0(dir.path, "/"))
-  assert_tool(tool.name)
-
-  file_paths_in_pkg <- paste0(tool.name, ".", c("dfi", "frm"))
-
-  src_file_paths <- lapply(file_paths_in_pkg, function(file_path_in_pkg) {
-    src_file_path <- system.file(
-      file_path_in_pkg,
-      package = "iarccrgtools"
-    )
-    if (src_file_path == "") {
-      src_file_path <- NULL
-    }
-    src_file_path
-  })
-  names(src_file_paths) <- file_paths_in_pkg
-  src_file_paths <- unlist(src_file_paths)
-
-  file_names <- names(src_file_paths)
-  tgt_file_paths <- paste0(dir.path, file_names)
-
-  names(src_file_paths) <- names(tgt_file_paths) <- file_names
-
-  lapply(file_names, function(file_name) {
-    tgt <- tgt_file_paths[file_name]
-    if (file.exists(tgt)) {
-      ow <- ask_yes_no(
-        "Target file ", deparse(tgt), " already exists. Overwrite?"
-      )
-      if (!ow) {
-        return(NULL)
-      }
-    }
-    file.copy(from = src_file_paths[file_name],
-              to = tgt_file_paths[file_name],
-              overwrite = TRUE)
-    NULL
-  })
-
-  invisible(NULL)
-}
 
 
 

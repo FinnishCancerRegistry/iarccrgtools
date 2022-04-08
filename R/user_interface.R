@@ -99,15 +99,23 @@ interface_with_tool <- function(
       print(head(df))
       message("* iarccrgtools::interface_with_tool: Writing table to '", input_file_path, "'...")
     }
-    write_tools_data(x = df, file = input_file_path, colnameset.nm = colnameset_name,
+    write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
                      verbose = verbose)
     cache_metadata_append_or_replace(
       hash = current_hash,
       working.dir = dir_path,
       input.file.path = input_file_path
     )
+    if (tool_settings_are_available(colnameset_name)) {
+      tool_settings_copy(tgt.dir.path = dir_path,
+                         colnameset.name = colnameset_name)
+    }
 
     rm(list = "df")
+
+    # settings -----------------------------------------------------------------
+
+
     switch(
       how,
       automatically = {
@@ -166,7 +174,8 @@ interface_with_tool <- function(
 
   data_list <- read_tools_results(
     tool.name = tool.name,
-    input.col.nms = col_nms
+    input.col.nms = col_nms,
+    hash = current_hash
   )
 
   if (clean) {

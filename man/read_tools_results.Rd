@@ -4,12 +4,15 @@
 \alias{read_tools_results}
 \title{IARC CRG Tools Results}
 \usage{
-read_tools_results(tool.name, input.col.nms = NULL, verbose = TRUE)
+read_tools_results(tool.name, hash, input.col.nms = NULL, verbose = TRUE)
 }
 \arguments{
 \item{tool.name}{\verb{[character]} (mandatory, no default)
 
 name of tool to run; see output of \code{tool_clean_names()} for options}
+
+\item{hash}{\verb{[character]} (no default)
+Hash of input dataset to read into R. See \verb{[iarccrgtools::cache_hash]}.}
 
 \item{input.col.nms}{\code{NULL} (default) or a character string vector of column
 names; when not \code{NULL}, allows setting column names on the tables that were

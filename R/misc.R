@@ -96,7 +96,7 @@ raise_internal_error <- function(
 #'
 #' This R package has pre-defined "sensible defaults" for certain tools,
 #' which you can fetch into a specific folder using
-#' \code{\link{get_tools_settings_template}}.
+#' \code{\link{tool_settings_copy}}.
 #'
 
 NULL
@@ -148,6 +148,9 @@ normalize_path <- function(path, double.slash = FALSE) {
   if (double.slash) {
     path <- gsub("[\\/]+", "\\\\\\\\", path, fixed = FALSE)
   }
+
+  # e.g. \\\\solaris\\drive\\dir\\
+  path <- ifelse(substr(path, 1, 1) == "\\", paste0("\\", path), path)
 
   path
 

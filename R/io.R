@@ -152,8 +152,9 @@ wd_env$path <- FALSE
 get_tool_work_dir <- function(tool.name, hash) {
   assert_tool(tool.name = tool.name)
   stopifnot(
-    is.null(hash) ||is.character(hash),
-    length(hash) %in% 0:1
+    is.character(hash),
+    length(hash) == 1,
+    !is.na(hash)
   )
   dir_path <- iarccrgtools::get_tools_work_dir()
   dir_path <- normalize_path(paste0(dir_path, "\\", tool.name))
@@ -203,7 +204,7 @@ get_tool_work_dir <- function(tool.name, hash) {
 #' @export
 write_tools_data <- function(
   x,
-  colnameset.nm = tool_colnameset_names()[1],
+  colnameset.name = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
@@ -211,7 +212,7 @@ write_tools_data <- function(
 ) {
   assert_is_logical_nonNA_atom(verbose)
   assert_dataframe(x)
-  col_nms <- tool_colnameset(colnameset.nm)
+  col_nms <- tool_colnameset(colnameset.name)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
 
@@ -360,6 +361,8 @@ n_file_lines <- function(path) {
 #' @title IARC CRG Tools Results
 #' @description Read IARC CRG Tools results into R.
 #' @template tool_name
+#' @param hash `[character]` (no default)
+#' Hash of input dataset to read into R. See `[iarccrgtools::cache_hash]`.
 #' @param input.col.nms `NULL` (default) or a character string vector of column
 #' names; when not `NULL`, allows setting column names on the tables that were
 #' read. See Details.
@@ -379,11 +382,12 @@ n_file_lines <- function(path) {
 #' @export
 read_tools_results <- function(
   tool.name,
+  hash,
   input.col.nms = NULL,
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- get_tool_work_dir(tool.name = tool.name)
+  dir <- get_tool_work_dir(tool.name = tool.name, hash = hash)
 
   file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 

@@ -32,6 +32,6 @@ working directory set by \code{\link{set_tools_work_dir}}.
 
 This R package has pre-defined "sensible defaults" for certain tools,
 which you can fetch into a specific folder using
-\code{\link{get_tools_settings_template}}.
+\code{\link{tool_settings_copy}}.
 }
 
