@@ -143,13 +143,12 @@ normalize_path <- function(path, double.slash = FALSE) {
 
   is_dir <- dir.exists(path)
   path[is_dir] <- paste0(path, "\\")
-  
+
+  path <- gsub("[\\/]+", "\\\\", path, fixed = FALSE)
   if (double.slash) {
-    path <- gsub("[\\]+", "\\\\\\\\", path, fixed = FALSE)
-  } else {
-    path <- gsub("[\\]+", "\\\\", path, fixed = FALSE)
+    path <- gsub("[\\/]+", "\\\\\\\\", path, fixed = FALSE)
   }
-  
+
   path
 
 }
@@ -201,11 +200,11 @@ NULL
 
 #' @md
 #' @title Program Definitions
-#' @description 
-#' 
+#' @description
+#'
 #' @format
 #' A data.frame with these character string columns:
-#' - `clean_name`: name of tool as understood by the functions in this 
+#' - `clean_name`: name of tool as understood by the functions in this
 #'   package
 #' - `real_name`: name of tool in IARC CRG Tools menu
 #' - `executable_name`: name of executable for corresponding tool
@@ -365,7 +364,7 @@ wait_until_all_files_stop_growing <- function(
     tick <- tick + 1L
     if (verbose) {
       msg <- paste0(
-        "* iarccrgtools::wait_until_all_files_stop_growing: iteration ",tick, 
+        "* iarccrgtools::wait_until_all_files_stop_growing: iteration ",tick,
         " done. ",
         "In total ", round(sec_elapsed), " seconds have elapsed."
       )
@@ -469,21 +468,21 @@ group_indices <- function(x) {
 
 run_executable <- function(exe_path) {
   assert_file_path(exe_path)
-  
+
   dir <- dir_of_path(exe_path)
-  
+
   bat_lines <- c(
     paste0("cd ", dir),
     basename(exe_path)
   )
-  
+
   tf <- tempfile(pattern = "tmp_exe_call_", fileext = ".bat")
-  
+
   on.exit({
     if (file.exists(tf)) file.remove(tf)
   })
   writeLines(bat_lines, tf)
-  
+
   e <- environment()
   warn_fun <- function(w) {
     assign(x = "warn", value = w, envir = e)
@@ -497,7 +496,7 @@ run_executable <- function(exe_path) {
     ),
     warning = warn_fun
   ))
-  
+
   out <- FALSE
   if (grepl("timed out after 1s", warn[["message"]], fixed = TRUE)) {
     out <- TRUE
@@ -562,11 +561,11 @@ get_internal_dataset <- function(dataset.name) {
   return(result[])
   # pkg_env <- as.environment("package:iarccrgtools")
   # object_nms <- getNamespaceExports("iarccrgtools")
-  # 
+  #
   # dataset_nms <- object_nms[vapply(object_nms, function(object_nm) {
   #   is.data.frame(pkg_env[[object_nm]])
   # }, logical(1))]
-  # 
+  #
   # if (!dataset.name %in% dataset_nms) {
   #   raise_internal_error(
   #     "Requested internal dataset ",
@@ -574,7 +573,7 @@ get_internal_dataset <- function(dataset.name) {
   #     deparse(dataset_nms), ". "
   #   )
   # }
-  # 
+  #
   # pkg_env[[dataset.name]]
 }
 

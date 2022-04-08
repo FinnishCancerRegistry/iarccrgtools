@@ -56,7 +56,7 @@ interface_with_tool <- function(
     how %in% c("interactively", "automatically")
   )
   if (how == "automatically") {
-    stop("how = 'automatically' under development")
+    stop("how = 'automatically' not implemented")
   }
   assert_tool(tool.name)
   assert_tools_data(data, tool.name)
@@ -68,21 +68,21 @@ interface_with_tool <- function(
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
 
-  input_path <- tool_input_file_path(tool.name = tool.name)
-
-  
-  sha_file_path <- tool_cache_sha_file_path(tool.name = tool.name)
-  if (file.exists(sha_file_path)) {
-    cache_sha <- readLines(sha_file_path, n = 1L)
-  } else {
-    cache_sha <- digest::digest(runif(n = 1L), algo = "sha256")
-  }
-  current_sha <- digest::digest(df, algo = "sha256")
+  current_hash <- cache_hash(data)
+  dir_path <- get_tool_work_dir(tool.name, current_hash)
+  input_file_path <- tool_input_file_path(
+    dir = dir_path,
+    tool.name = tool.name
+  )
+  cache_metadata <- cache_metadata_read()
+  cache_hash <- cache_metadata[["hash"]][
+    cache_metadata[["input_file_path"]] == input_file_path
+  ]
   read_cached_results <- FALSE
-  if (identical(cache_sha, current_sha)) {
+  if (identical(cache_hash, current_hash)) {
     message("* iarccrgtools::interface_with_tool: looks like a dataset ",
-            "identical to the one you have supplied already exists in ", 
-            deparse(input_path),
+            "identical to the one you have supplied already exists in ",
+            deparse(input_file_path),
             ". would you like to skip using IARC CRG Tools",
             "and read in the output files that resulted from your previous ",
             "time? select 'yes' to read the previous results into R without ",
@@ -91,18 +91,22 @@ interface_with_tool <- function(
             "to abort this program.")
     read_cached_results <- ask_yes_no()
   }
-  
+
   col_nms <- names(df)
   if (!read_cached_results) {
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
       print(head(df))
-      message("* iarccrgtools::interface_with_tool: Writing table to '", input_path, "'...")
+      message("* iarccrgtools::interface_with_tool: Writing table to '", input_file_path, "'...")
     }
-    write_tools_data(x = df, file = input_path, colnameset.nm = colnameset_name,
+    write_tools_data(x = df, file = input_file_path, colnameset.nm = colnameset_name,
                      verbose = verbose)
-    writeLines(current_sha, sha_file_path)
-    
+    cache_metadata_append_or_replace(
+      hash = current_hash,
+      working.dir = dir_path,
+      input.file.path = input_file_path
+    )
+
     rm(list = "df")
     switch(
       how,
@@ -119,7 +123,10 @@ interface_with_tool <- function(
         )
       },
       interactively = {
-        output_path <- tool_output_file_paths(tool.name = tool.name)[1L]
+        output_path <- tool_output_file_paths(
+          tool.name = tool.name,
+          dir = get_tool_work_dir(tool.name, hash = current_hash)
+        )[1L]
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "interactively...")
         message(
@@ -127,7 +134,7 @@ interface_with_tool <- function(
           "- start ",
           deparse(tool_menu_name(tool.name)), " -> ",
           deparse(tool_real_name_of_clean_name(tool.name)), "\n",
-          "- supply this as input path: ", input_path, "\n",
+          "- supply this as input path: ", input_file_path, "\n",
           "- supply this as output path: ", output_path, "\n",
           "- choose columns when prompted; the columns in the input file are ",
           "in order the following:\n  ", deparse(col_nms), "\n",
@@ -144,14 +151,14 @@ interface_with_tool <- function(
           "- select 'yes' to proceed and read the results into R ",
           "or cancel by selecting 'no' or 'cancel'."
         )
-        
+
         if (!proceed) {
           stop("Cancelled.")
         }
       }
     )
   }
-  
+
 
   if (verbose) {
     message("* iarccrgtools::interface_with_tool: reading tools results")
@@ -164,13 +171,10 @@ interface_with_tool <- function(
 
   if (clean) {
     if (verbose) {
-      message("* iarccrgtools::interface_with_tool: clean = TRUE, deleting ",
-              "input and output datasets from disk")
+      message("* iarccrgtools::interface_with_tool: clean = TRUE. Deleting ",
+              "dir ", deparse(dir_path))
     }
-    rm_files <- c(tool_output_file_paths(tool.name = tool.name),
-                  input_path)
-    rm_files <- rm_files[file.exists(rm_files)]
-    file.remove(rm_files)
+    cache_clean_hash(current_hash)
   }
 
   if (verbose) {

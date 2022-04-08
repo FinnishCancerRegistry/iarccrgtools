@@ -414,7 +414,7 @@ tool_expr_list <- function(
 call_tool <- function(
   tool.name,
   tool.exe.path = get_tool_exe_path(),
-  working.dir = get_tool_work_dir(tool.name),
+  working.dir,
   wait.check.interval = 30L,
   wait.max.time = 60L * 60L,
   verbose = TRUE

@@ -76,11 +76,11 @@ tool_column_fwf_widths <- function(
     is.character(col.nms)
   )
   col_specs <- get_internal_dataset("column_specifications")
-  
+
   cn <- col_specs[["column_name"]]
   wi <- as.integer(col_specs[["fwf_width"]])
-  
-  
+
+
   wi[match(col.nms, cn, nomatch = NA_integer_)]
 }
 
@@ -120,7 +120,7 @@ tool_column_infos <- function(
 #' or not.
 #'
 get_tools_settings_template <- function(
-  dir.path = get_tool_work_dir(tool.name),
+  dir.path,
   tool.name
   ) {
   assert_dir_path(dir.path)
@@ -171,7 +171,7 @@ get_tools_settings_template <- function(
 
 
 tool_output_file_paths <- function(
-  dir = get_tool_work_dir(tool.name),
+  dir,
   tool.name
 ) {
   assert_tool(tool.name)
@@ -195,18 +195,17 @@ tool_output_file_paths <- function(
 
 
 tool_input_file_path <- function(
-  dir = get_tool_work_dir(tool.name),
+  dir,
   tool.name
 ) {
   assert_tool(tool.name)
   assert_dir_path(dir)
 
-  paste0(dir, "\\", tool.name, "_input.txt")
-
+  normalize_path(paste0(dir, "\\", tool.name, "_input.txt"))
 }
 
 tool_cache_sha_file_path <- function(
-  dir = get_tool_work_dir(tool.name),
+  dir,
   tool.name
 ) {
   assert_tool(tool.name)

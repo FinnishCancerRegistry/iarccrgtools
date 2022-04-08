@@ -19,6 +19,11 @@ get_tool_work_dir(tool.name)
 \item{tool.name}{\verb{[character]} (mandatory, no default)
 
 name of tool to run; see output of \code{tool_clean_names()} for options}
+
+\item{hash}{\verb{[character]} (no default)
+
+Hash of an input dataset; get working directory for \code{tool.name} and this
+dataset.}
 }
 \description{
 Get and set directory where input and output files of IARC CRG Tools
@@ -42,7 +47,7 @@ results for the "check" tool.
 
 \item \code{get_tools_work_dir}: gets current root working directory as string
 
-\item \code{get_tool_work_dir}: gets the working directory of an individual tool under
-the main working directory set by \code{set_tools_work_dir}
+\item \code{get_tool_work_dir}: gets the working directory of an individual tool and
+dataset under the main working directory set by \code{set_tools_work_dir}
 }}
 

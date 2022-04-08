@@ -39,11 +39,11 @@ dir_is_writable <- function(
 #' Create example datasets with correct column names and column data types
 #' and nonsense contents.
 #' @param set.nm `[character]` (mandatory, no default)
-#' 
-#' one of the values given in the output of 
+#'
+#' one of the values given in the output of
 #' `[iarccrgtools::tool_colnameset_names()]`
 #' @param n.rows `[integer]` (mandatory, default `10L`)
-#' 
+#'
 #' number of rows to have in the created example dataset; only one row has been
 #' defined and that is repeated this many times; the purpose of having a larger
 #' example dataset of this kind is mainly to test memory use
@@ -105,11 +105,11 @@ create_example <- function(
 #' @details
 #' The working directory is where files for IARC CRG Tools and created by
 #' IARC CRG Tools should live. This is not the same directory where the
-#' executable for IARC CRG Tools is. Instead, the working directory is 
-#' recommended to be created by you manually in advance. You may also use a 
-#' temporary directory if you don't want to store any results 
+#' executable for IARC CRG Tools is. Instead, the working directory is
+#' recommended to be created by you manually in advance. You may also use a
+#' temporary directory if you don't want to store any results
 #' (see [base::tempdir]).
-#' 
+#'
 #' The tools working directory set by `set_tools_work_dir` will itself be
 #' populated by tool-specific directories, e.g. `"my_dir/check/"` will contain
 #' results for the "check" tool.
@@ -139,18 +139,32 @@ get_tools_work_dir <- function() {
 wd_env <- new.env(parent = emptyenv())
 wd_env$path <- FALSE
 
-#' @describeIn work_dir gets the working directory of an individual tool under
-#' the main working directory set by `set_tools_work_dir`
+#' @describeIn work_dir gets the working directory of an individual tool and
+#' dataset under the main working directory set by `set_tools_work_dir`
 #' @export
 #' @template tool_name
+#' @param hash `[character]` (no default)
+#'
+#' Hash of an input dataset; get working directory for `tool.name` and this
+#' dataset.
 get_tool_work_dir <- function(tool.name) {
   assert_tool(tool.name = tool.name)
-  work_dir <- get_tools_work_dir()
-  dir <- normalize_path(paste0(work_dir, "\\", tool.name))
-  if (!dir.exists(dir)) {
-    dir.create(dir)
+  stopifnot(
+    is.null(hash) ||is.character(hash),
+    length(hash) %in% 0:1
+  )
+  dir_path <- iarccrgtools::get_tools_work_dir()
+  dir_path <- normalize_path(paste0(dir_path, "\\", tool.name))
+  if (!dir.exists(dir_path)) {
+    dir.create(dir_path)
   }
-  return(dir)
+  dir_path <- normalize_path(
+    paste0(dir_path, "/", "hash_", substring(hash, 1, 6))
+  )
+  if (!dir.exists(dir_path)) {
+    dir.create(dir_path)
+  }
+  return(dir_path)
 }
 
 
@@ -162,27 +176,27 @@ get_tool_work_dir <- function(tool.name) {
 #' @param x a data.frame
 #' @template colnameset_name
 #' @param file `[character]` (mandatory, no default)
-#' 
+#'
 #' path where `x` will be written to; if the file already exists, this
 #' function prompts you whether to overwrite or not; in non-interactive
 #' use
 #' @param overwrite `[NULL, logical]` (optional, default `NULL`)
-#' 
+#'
 #' - `NULL`: if `file` already exists, user is prompted whether to overwrite;
 #'   in non-interactive mode (see `?interactive`) a pre-existing file causes
 #'   an error
 #' - `TRUE`: any pre-existing file is overwritten without prompting
 #' - `FALSE` any pre-existing file is overwritten causes an error
 #' @param verbose `[logical]` (mandatory, no default)
-#' 
+#'
 #' if `TRUE`, the function emits messages during it's run to let you know
 #' what's happening
-#' @param ... 
-#' 
+#' @param ...
+#'
 #' arguments passed to [write_fwf];
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 #' use when writing
-#' 
+#'
 #' @importFrom data.table fwrite setDF
 #' @export
 write_tools_data <- function(
@@ -198,7 +212,7 @@ write_tools_data <- function(
   col_nms <- tool_colnameset(colnameset.nm)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
-  
+
   if (file.exists(file) && is.null(overwrite)) {
     if (!interactive()) {
       stop("* write_tools_data: File ", deparse(file), " already existed ",
@@ -212,14 +226,14 @@ write_tools_data <- function(
       return(invisible(NULL))
     }
   }
-  
+
   if (verbose) {
     message(
       "* iarccrgtools::write_tools_data: collecting and transforming data..."
     )
   }
   x <- data.table::setDT(mget(col_nms, as.environment(x)))
-  
+
   is_Date_col <- vapply(x, inherits, logical(1L), what = "Date")
   date_col_nms <- names(x)[is_Date_col]
   lapply(date_col_nms, function(col_nm) {
@@ -228,16 +242,16 @@ write_tools_data <- function(
       x,
       j = col_nm,
       value = NULL
-    )    
+    )
     data.table::set(
       x,
       j = col_nm,
       value = format(col, "%Y%m%d")
     )
     invisible(NULL)
-    
+
   })
-  
+
   is_double_col <- vapply(x, is.double, logical(1L))
   is_double_col <- is_double_col & vapply(x, is.numeric, logical(1L))
   double_col_nms <- names(x)[is_double_col]
@@ -247,7 +261,7 @@ write_tools_data <- function(
       x,
       j = col_nm,
       value = NULL
-    )    
+    )
     data.table::set(
       x,
       j = col_nm,
@@ -264,18 +278,18 @@ write_tools_data <- function(
     j = ".__this_is_a_buffer_column_yo__.",
     value = ""
   )
-  
+
   if (verbose) {
     message("* iarccrgtools::write_tools_data: ready to write to disk; ",
             "first five rows of current dataset:")
     print(head(x))
   }
-  
+
   if (verbose) {
     message("* iarccrgtools::write_tools_data: writing...")
     t_write <- proc.time()
   }
-  
+
   expected_widths <- tool_column_fwf_widths(
     setdiff(names(x), ".__this_is_a_buffer_column_yo__.")
   )
@@ -288,7 +302,7 @@ write_tools_data <- function(
       stop("column ", deparse(col_nm), " is wider (has more characters; ",
            "see ?nchar) than expected: expected ", expected_widths[col_nm],
            " but the longest value as a string in the column was of length ",
-           observed_max_widths[col_nm], 
+           observed_max_widths[col_nm],
            ". as an example of this misspecification, the column 'basis' must ",
            "only have single-digit values, and if your data contains multi-",
            "digit values for 'basis', then column 'basis' would cause the ",
@@ -298,9 +312,9 @@ write_tools_data <- function(
     }
     NULL
   })
-  
+
   write_fwf(
-    x = x, 
+    x = x,
     widths = expected_widths,
     path = file,
     sep = ";",
@@ -312,7 +326,7 @@ write_tools_data <- function(
   )
   if (verbose) {
     message(
-      "* iarccrgtools::write_tools_data: done writing; ", 
+      "* iarccrgtools::write_tools_data: done writing; ",
       data.table::timetaken(t_write)
     )
   }
@@ -383,7 +397,7 @@ read_tools_results <- function(
 
     if (!file.exists(file_path)) {
       if (verbose) {
-        message("* iarccrgtools::read_tools_results: file '", file_path, 
+        message("* iarccrgtools::read_tools_results: file '", file_path,
                 "' did not exist; ",
                 "returning NULL")
       }
@@ -392,7 +406,7 @@ read_tools_results <- function(
     n_lines <- n_file_lines(path = file_path)
     if (n_lines == 0) {
       if (verbose) {
-        message("* iarccrgtools::read_tools_results: file '", file_path, 
+        message("* iarccrgtools::read_tools_results: file '", file_path,
                 "' had zero rows; ",
                 "returning NULL")
       }
@@ -401,7 +415,7 @@ read_tools_results <- function(
 
     if (identical(path_type, "is_table")) {
       out <- read_matching_table_rows(
-        file = file_path, 
+        file = file_path,
         pattern = "^[0-9]*;"
       )
       if (is.null(out) || nrow(out) == 0) {
@@ -539,7 +553,7 @@ read_matching_table_rows <- function(
   stopifnot(
     is.character(pattern), length(pattern) == 1L, !is.na(pattern)
   )
-  
+
   dir <- dir_of_path(file)
   file_without_dir <- sub(
     pattern = dir, replacement = "", x = file, fixed = TRUE
@@ -559,7 +573,7 @@ read_matching_table_rows <- function(
     do_read <- grepl(pattern, lines)
     dt <- data.table::fread(text = lines[do_read], ...)
   }
-  
+
   return(dt[])
 }
 
