@@ -156,7 +156,7 @@ assert_tools_data <- function(
          ", data.frame passed to arg ", deparse(data.arg.nm), " must have ",
          "these columns: ", deparse(miss_col_nms))
   }
-  
+
   col_nms <- intersect(tool_colnameset(paste0("all_", tool.name)), names(data))
   col_classes <- tool_column_classes(col_nms)
   lapply(seq_along(col_nms), function(col_no) {
@@ -165,12 +165,12 @@ assert_tools_data <- function(
     has_class <- inherits(data[[col_nm]], col_class)
     if (!has_class) {
       stop("column ", deparse(col_nm), " was expected to have class ",
-           deparse(col_class), "; instead it had class(es) ", 
+           deparse(col_class), "; instead it had class(es) ",
            deparse(class(data[[col_nm]])))
     }
     NULL
   })
-  
+
   invisible(NULL)
 }
 
@@ -179,21 +179,21 @@ assert_tools_data <- function(
 
 
 
-assert_tools_colnameset_name <- function(set.nm, set.nm.arg.nm = NULL) {
-  if (is.null(set.nm.arg.nm)) {
-    set.nm.arg.nm <- deparse(substitute(set.nm))
+assert_tools_colnameset_name <- function(colnameset.name, colnameset.name.arg.nm = NULL) {
+  if (is.null(colnameset.name.arg.nm)) {
+    colnameset.name.arg.nm <- deparse(substitute(colnameset.name))
   }
   allowed <- tool_colnameset_names()
 
-  if (length(set.nm) != 1) {
-    stop("Arg ", deparse(set.nm.arg.nm), " must be of length 1")
+  if (length(colnameset.name) != 1) {
+    stop("Arg ", deparse(colnameset.name.arg.nm), " must be of length 1")
   }
-  if (!is.character(set.nm)) {
-    stop("Arg ", deparse(set.nm.arg.nm), " must be of class 'character'")
+  if (!is.character(colnameset.name)) {
+    stop("Arg ", deparse(colnameset.name.arg.nm), " must be of class 'character'")
   }
-  if (!set.nm %in% allowed) {
-    stop("Arg ", deparse(set.nm.arg.nm), " must be one of the following: ",
-         deparse(allowed), "; Got instead: ", deparse(set.nm))
+  if (!colnameset.name %in% allowed) {
+    stop("Arg ", deparse(colnameset.name.arg.nm), " must be one of the following: ",
+         deparse(allowed), "; Got instead: ", deparse(colnameset.name))
   }
   invisible(NULL)
 }
@@ -205,7 +205,7 @@ assert_is_logical_nonNA_atom <- function(arg, arg.nm = NULL) {
   if (is.null(arg.nm)) {
     arg.nm <- deparse(substitute(arg))
   }
-  
+
   pass <- TRUE
   m <- paste0("Arg ", deparse(arg.nm), " was %%BAD&&, but expected %%GOOD%%")
   if (!is.logical(arg)) {
@@ -235,7 +235,7 @@ assert_is_character_nonNA_atom <- function(arg, arg.nm = NULL) {
   if (is.null(arg.nm)) {
     arg.nm <- deparse(substitute(arg))
   }
-  
+
   pass <- TRUE
   m <- paste0("Arg ", deparse(arg.nm), " was %%BAD&&, but expected %%GOOD%%")
   if (!is.character(arg)) {

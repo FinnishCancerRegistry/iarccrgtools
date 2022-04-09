@@ -4,10 +4,10 @@
 \alias{create_example}
 \title{Example Datasets}
 \usage{
-create_example(set.nm, n.rows = 10L)
+create_example(colnameset.name, n.rows = 10L)
 }
 \arguments{
-\item{set.nm}{\verb{[character]} (mandatory, no default)
+\item{colnameset.name}{\verb{[character]} (mandatory, no default)
 
 one of the values given in the output of
 \verb{[iarccrgtools::tool_colnameset_names()]}}

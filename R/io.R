@@ -9,7 +9,7 @@
 #' @description
 #' Create example datasets with correct column names and column data types
 #' and nonsense contents.
-#' @param set.nm `[character]` (mandatory, no default)
+#' @param colnameset.name `[character]` (mandatory, no default)
 #'
 #' one of the values given in the output of
 #' `[iarccrgtools::tool_colnameset_names()]`
@@ -20,7 +20,7 @@
 #' example dataset of this kind is mainly to test memory use
 #' @export
 create_example <- function(
-  set.nm,
+  colnameset.name,
   n.rows = 10L
 ) {
   stopifnot(
@@ -28,7 +28,7 @@ create_example <- function(
     n.rows %% 1 == 0,
     n.rows > 0
   )
-  col_nms <- tool_colnameset(set.nm = set.nm)
+  col_nms <- tool_colnameset(colnameset.name)
 
   df <- data.frame(
     subject_id = 1L,
