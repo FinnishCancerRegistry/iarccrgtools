@@ -256,7 +256,7 @@ write_tools_data <- function(
   if (verbose) {
     message("* iarccrgtools::write_tools_data: ready to write to disk; ",
             "first five rows of current dataset:")
-    print(head(x))
+    print(utils::head(x))
   }
 
   if (verbose) {

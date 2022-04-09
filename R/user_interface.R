@@ -97,7 +97,7 @@ interface_with_tool <- function(
     # write --------------------------------------------------------------------
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
-      print(head(df))
+      print(utils::head(df))
       message("* iarccrgtools::interface_with_tool: Writing table to '", input_file_path, "'...")
     }
     write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
