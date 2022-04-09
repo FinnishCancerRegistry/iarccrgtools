@@ -51,7 +51,7 @@ tool_settings_availability <- function() {
   file_names <- dir(src_dir_path)
   file_paths <- filesystem_path_normalise(paste0(src_dir_path, "\\", file_names))
   tool_colnameset_names <- sub("[.].+$", "", file_names)
-  tool_names <- sub("(^all_)|(^mandatory_)", "", tool_colnameset_names)
+  tool_names <- tool_colnameset_name_to_tool_name(tool_colnameset_names)
   data.table::data.table(
     file_name = file_names,
     file_path = file_paths,

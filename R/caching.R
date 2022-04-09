@@ -37,16 +37,19 @@ cache_metadata_file_path <- function() {
 #' zero rows if no file found.
 cache_metadata_read <- function() {
   file_path <- cache_metadata_file_path()
+  default_out <- data.table::data.table(
+    dir_path = character(0L),
+    input_file_path = character(0L),
+    cache_metadata_time = Sys.time()[0],
+    hash = character(0L)
+  )
   if (file.exists(file_path)) {
-    data.table::fread(file_path)
-  } else {
-    data.table::data.table(
-      dir_path = character(0L),
-      input_file_path = character(0L),
-      cache_metadata_time = Sys.time()[0],
-      hash = character(0L)
-    )
+    out <- data.table::fread(file_path)
   }
+  if (nrow(out) == 0L) {
+    out <- default_out
+  }
+  return(out)
 }
 
 #' @rdname cache_metadata

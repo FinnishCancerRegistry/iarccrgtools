@@ -26,6 +26,11 @@ tool_names <- tool_clean_names <- function() {
   get_internal_dataset("tools")[["clean_name"]]
 }
 
+tool_colnameset_name_to_tool_name <- function(x) {
+  lapply(x, assert_tools_colnameset_name)
+  sub("(^all_)|(^optional_)|(^mandatory_)", "", x)
+}
+
 
 
 

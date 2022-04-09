@@ -55,9 +55,6 @@ interface_with_tool <- function(
     length(how) == 1,
     how %in% c("interactively", "automatically")
   )
-  if (how == "automatically") {
-    stop("how = 'automatically' not implemented")
-  }
   assert_tool(tool.name)
   assert_tools_data(data, tool.name)
   assert_is_logical_nonNA_atom(clean)
@@ -101,6 +98,7 @@ interface_with_tool <- function(
     }
     write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
                      verbose = verbose)
+    rm(list = "df")
     cache_metadata_append_or_replace(
       hash = current_hash,
       working.dir = dir_path,
@@ -111,24 +109,16 @@ interface_with_tool <- function(
                          colnameset.name = colnameset_name)
     }
 
-    rm(list = "df")
-
-    # settings -----------------------------------------------------------------
-
-
     switch(
       how,
       automatically = {
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "automatically...")
-        call_tool(
-          tool.name = tool.name,
-          tool.exe.path = get_tool_exe_path(),
-          working.dir = get_tool_dir(tool.name),
-          wait.check.interval = 30L,
-          wait.max.time = 60L * 60L,
-          verbose = verbose
-        )
+        parameter_file_write(parameter_file_contents(
+          colnameset.name = colnameset_name,
+          tool.work.dir = dir_path
+        ))
+        tool_exe_call(tool.name = tool.name)
       },
       interactively = {
         output_path <- tool_output_file_paths(

@@ -32,15 +32,36 @@ parameter_file_read <- function() {
 }
 
 
-parameter_file_write <- function(text) {
-  writeLines(text = text, con = parameter_file_path())
+parameter_file_write <- function(x) {
+  writeLines(text = x, con = parameter_file_path())
 }
 
-
 parameter_file_contents <- function(
-
+  colnameset.name,
+  tool.work.dir
 ) {
-  stop("TODO")
+  assert_tools_colnameset_name(colnameset.name)
+  assert_dir_path(tool.work.dir)
+  tpc <- get_internal_dataset("tool_parameter_contents")
+  if (!colnameset.name %in% tpc[["colnameset_name"]]) {
+    stop("Parameter file contents not implemented for ",
+         deparse(colnameset.name), "; column name sets for which this is ",
+         "implemented: ", paste0(tpc[["colnameset_name"]], collapse = ", "))
+  }
+  tool_name <- tool_colnameset_name_to_tool_name(colnameset.name)
+  input_file_path <- tool_input_file_path(
+    dir = tool.work.dir,
+    tool.name = tool_name
+  )
+  output_file_paths <- tool_output_file_paths(
+    dir = tool.work.dir,
+    tool.name = tool_name
+  )
+  output_file_path <- output_file_paths[grepl("output.txt$", output_file_paths)]
+  parameter_line <- tpc[["parameter_line"]][
+    tpc[["colnameset_name"]] == colnameset.name
+  ]
+  return(c(input_file_path, output_file_path, parameter_line))
 }
 
 
