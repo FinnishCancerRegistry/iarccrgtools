@@ -3,35 +3,6 @@
 
 
 
-dir_is_writable <- function(
-  dir.path
-) {
-  assert_dir_path(dir.path)
-
-  tf <- tempfile(pattern = "file_", tmpdir = dir.path, fileext = ".tmp")
-
-  on.exit({
-    if (file.exists(tf)) {
-      file.remove(tf)
-    }
-  })
-
-  test <- tryCatch(
-    {
-      writeLines("test string", con = tf)
-      TRUE
-    },
-    error = function(e) e,
-    warning = function(w) w
-  )
-
-  if (!identical(test, TRUE)) {
-    test <- FALSE
-  }
-  test
-}
-
-
 
 
 #' @title Example Datasets

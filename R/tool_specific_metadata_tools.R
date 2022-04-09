@@ -1,6 +1,30 @@
 
 
+tool_menu_name <- function(clean.name) {
+  dt <- get_internal_dataset("tools")
+  stopifnot(
+    length(clean.name) == 1L,
+    is.character(clean.name),
+    clean.name %in% dt[["clean_name"]]
+  )
 
+  menu_nms <- dt[["menu_name"]]
+  names(menu_nms) <- dt[["clean_name"]]
+  unname(menu_nms[clean.name])
+}
+
+tool_real_name_of_clean_name <- function(clean_name) {
+  df <- get_internal_dataset("tools")
+  if (!clean_name %in% df[["clean_name"]]) {
+    raise_internal_error("clean_name = ", clean_name, " not in allowed clean ",
+                         "names: ", deparse(df[["clean_name"]]))
+  }
+  df[["real_name"]][df[["clean_name"]] == clean_name]
+}
+
+tool_names <- tool_clean_names <- function() {
+  get_internal_dataset("tools")[["clean_name"]]
+}
 
 
 
