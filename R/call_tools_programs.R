@@ -6,14 +6,6 @@ tool_executable_names <- function() {
   nms
 }
 
-tool_window_names <- function() {
-  dt <- get_internal_dataset("tools")
-  nms <- dt[["window_name"]]
-  names(nms) <- dt[["clean_name"]]
-  nms
-}
-
-
 tool_clean_names <- function() {
   get_internal_dataset("tools")[["clean_name"]]
 }
@@ -41,7 +33,7 @@ tool_menu_name <- function(clean.name) {
     is.character(clean.name),
     clean.name %in% dt[["clean_name"]]
   )
-  
+
   menu_nms <- dt[["menu_name"]]
   names(menu_nms) <- dt[["clean_name"]]
   unname(menu_nms[clean.name])
@@ -52,7 +44,7 @@ call_tool_executable <- function(tool_name) {
   stopifnot(
     tool_name %in% tool_clean_names()
   )
-  
+
   exe_dir_path <- normalize_path(get_tools_exe_dir_path())
   exe_nm <- tool_executable_names()[tool_name]
   exe_path <- normalize_path(paste0(exe_dir_path, "\\pgm\\", exe_nm))

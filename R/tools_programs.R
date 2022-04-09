@@ -143,29 +143,6 @@ tool_input_file_path <- function(
   normalize_path(paste0(dir, "\\", tool.name, "_input.txt"))
 }
 
-tool_cache_sha_file_path <- function(
-  dir,
-  tool.name
-) {
-  assert_tool(tool.name)
-  assert_dir_path(dir)
-  paste0(dir, "\\", tool.name, "_input_cache_sha.txt")
-}
-
-
-
-
-tool_window_name <- function(
-  tool.name
-) {
-  assert_tool(tool.name)
-  pwn <- get_internal_dataset("tool_window_names")
-  pwn[pwn$tool_name == tool.name, "tool_window_name"]
-}
-
-
-
-
 
 
 
