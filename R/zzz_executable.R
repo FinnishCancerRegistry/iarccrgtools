@@ -71,7 +71,7 @@ get_tools_install_dir_path <- function() {
 #' tool-specfic executables live
 #' @export
 get_tool_exe_dir_path <- function() {
-  normalize_path(paste0(get_tools_install_dir_path(), "\\pgm\\"))
+  filesystem_path_normalise(paste0(get_tools_install_dir_path(), "\\pgm\\"))
 }
 
 #' @describeIn exe_path tries to guess where the executable is based on
@@ -88,7 +88,7 @@ guess_tools_exe_path <- function() {
   }
 
   exe_path <- paste0(dir, "\\", exe_nm)
-  exe_path <- normalize_path(exe_path)
+  exe_path <- filesystem_path_normalise(exe_path)
   exe_path
 }
 

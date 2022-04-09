@@ -25,7 +25,7 @@ cache_metadata_file_name <- function() {
 cache_metadata_file_path <- function() {
   dir_path <- iarccrgtools::get_tools_work_dir()
   file_path <- paste0(dir_path, "/", cache_metadata_file_name())
-  normalize_path(file_path)
+  filesystem_path_normalise(file_path)
 }
 
 #' @rdname cache_metadata

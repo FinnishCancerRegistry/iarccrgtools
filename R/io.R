@@ -91,7 +91,7 @@ NULL
 #' @export
 set_tools_work_dir <- function(dir) {
   assert_dir_path(dir)
-  dir <- normalize_path(dir)
+  dir <- filesystem_path_normalise(dir)
   assign(x = "path", value = dir, envir = wd_env)
 }
 
@@ -128,11 +128,11 @@ get_tool_work_dir <- function(tool.name, hash) {
     !is.na(hash)
   )
   dir_path <- iarccrgtools::get_tools_work_dir()
-  dir_path <- normalize_path(paste0(dir_path, "\\", tool.name))
+  dir_path <- filesystem_path_normalise(paste0(dir_path, "\\", tool.name))
   if (!dir.exists(dir_path)) {
     dir.create(dir_path)
   }
-  dir_path <- normalize_path(
+  dir_path <- filesystem_path_normalise(
     paste0(dir_path, "/", "hash_", substring(hash, 1, 6))
   )
   if (!dir.exists(dir_path)) {
@@ -531,7 +531,7 @@ read_matching_table_rows <- function(
     is.character(pattern), length(pattern) == 1L, !is.na(pattern)
   )
 
-  dir <- dir_of_path(file)
+  dir <- filesystem_dir_of_path(file)
   file_without_dir <- sub(
     pattern = dir, replacement = "", x = file, fixed = TRUE
   )

@@ -87,7 +87,7 @@ assert_write_dir_path <- function(path, path.arg.nm = NULL) {
     path.arg.nm <- deparse(substitute(path))
   }
   assert_path(path = path, path.arg.nm = path.arg.nm, path.type = "dir")
-  if (!dir_is_writable(path)) {
+  if (!filesystem_dir_path_is_writable(path)) {
     stop("Directory ", deparse(path), " exists but is not writable; ensure ",
          "you have writing permissions there.")
   }

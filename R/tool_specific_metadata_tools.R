@@ -146,7 +146,7 @@ tool_output_file_paths <- function(
   tool_file_is_table <- tool_files_df$is_table[is_in_tool]
 
   file_paths <- paste0(dir, "\\", tool.name, tool_file_suffixes)
-  file_paths <- normalize_path(file_paths)
+  file_paths <- filesystem_path_normalise(file_paths)
   names(file_paths) <- rep("is_not_table", length(file_paths))
   names(file_paths)[tool_file_is_table] <- rep("is_table",
                                                sum(tool_file_is_table))
@@ -164,7 +164,7 @@ tool_input_file_path <- function(
   assert_tool(tool.name)
   assert_dir_path(dir)
 
-  normalize_path(paste0(dir, "\\", tool.name, "_input.txt"))
+  filesystem_path_normalise(paste0(dir, "\\", tool.name, "_input.txt"))
 }
 
 

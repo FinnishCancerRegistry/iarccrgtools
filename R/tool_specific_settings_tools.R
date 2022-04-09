@@ -29,7 +29,7 @@ tool_settings_source_dir_path <- function() {
          "Complain to the package maintainter if you see this. ",
          "This is what system.file gave: ", deparse(dir_path))
   }
-  return(normalize_path(dir_path))
+  return(filesystem_path_normalise(dir_path))
 }
 
 #' @export
@@ -49,7 +49,7 @@ tool_settings_source_dir_path <- function() {
 tool_settings_availability <- function() {
   src_dir_path <- tool_settings_source_dir_path()
   file_names <- dir(src_dir_path)
-  file_paths <- normalize_path(paste0(src_dir_path, "\\", file_names))
+  file_paths <- filesystem_path_normalise(paste0(src_dir_path, "\\", file_names))
   tool_colnameset_names <- sub("[.].+$", "", file_names)
   tool_names <- sub("(^all_)|(^mandatory_)", "", tool_colnameset_names)
   data.table::data.table(
@@ -101,7 +101,7 @@ tool_settings_copy <- function(
   verbose = TRUE
 ) {
   assert_dir_path(tgt.dir.path)
-  tgt.dir.path <- normalize_path(paste0(tgt.dir.path, "\\"))
+  tgt.dir.path <- filesystem_path_normalise(paste0(tgt.dir.path, "\\"))
   assert_tools_colnameset_name(colnameset.name)
 
   tsa <- tool_settings_availability()
@@ -109,8 +109,8 @@ tool_settings_copy <- function(
   lapply(seq_along(tsa[[1]]), function(i) {
     src_file_path <- tsa[["file_path"]][i]
     tool_name <- tsa[["tool_name"]][i]
-    tgt_file_path <- normalize_path(paste0(
-      tgt.dir.path, "\\", tool_name, "_input.", file_ext(src_file_path)
+    tgt_file_path <- filesystem_path_normalise(paste0(
+      tgt.dir.path, "\\", tool_name, "_input.", filesystem_file_path_extension(src_file_path)
     ))
     if (file.exists(tgt_file_path)) {
       if (verbose) {

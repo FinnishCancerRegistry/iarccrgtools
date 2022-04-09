@@ -1,6 +1,6 @@
 
 
-dir_of_path <- function(path) {
+filesystem_dir_of_path <- function(path) {
   ## - if is existing dir, return path
   ## - if is existing (non-directory) file path, return dir of this file
   ## - if looks like file path, return implied dir
@@ -28,7 +28,7 @@ dir_of_path <- function(path) {
 
 
 
-normalize_path <- function(path, double.slash = FALSE) {
+filesystem_path_normalise <- function(path, double.slash = FALSE) {
   stopifnot(
     is.character(path)
   )
@@ -52,14 +52,14 @@ normalize_path <- function(path, double.slash = FALSE) {
 
 
 
-file_ext <- function(file) {
+filesystem_file_path_extension <- function(file) {
   str_extract(file, pattern = "(?<=\\.)\\w{1,}$", perl = TRUE)
 }
 
 
 
 
-is_writable <- function(
+filesystem_file_path_is_writable <- function(
     file.paths
 ) {
   vapply(file.paths, function(file_path) {
@@ -93,7 +93,7 @@ is_writable <- function(
 
 
 
-dir_is_writable <- function(
+filesystem_dir_path_is_writable <- function(
     dir.path
 ) {
   assert_dir_path(dir.path)

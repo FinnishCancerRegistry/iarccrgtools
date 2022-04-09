@@ -4,42 +4,42 @@
 
 
 parameter_file_path <- function() {
-  if (is_writable(iarccrgtools::get_tools_install_dir_path())) {
-    path <- paste0(iarccrgtools::get_tools_install_dir_path(),
-                   "/pgm/parameter.dat")
-  } else {
-    path <- paste0(
+  dir_path <- iarccrgtools::get_tool_exe_dir_path()
+  if (!dir.exists(dir_path) || !filesystem_dir_path_is_writable(dir_path)) {
+    virtual_dir_path <- filesystem_path_normalise(paste0(
       Sys.getenv("LOCALAPPDATA"),
-      "/Program Files (x86)/IARCcrgTools/pgm/"
-    )
-    if (!dir.exists(path)) {
-      stop("Could not determine location of parameter.dat --- ",
-           deparse(path), " does not exist and ",
-           deparse(iarccrgtools::get_tools_install_dir_path()),
+      "\\VirtualStore\\Program Files (x86)\\IARCcrgTools\\pgm\\"
+    ))
+    if (!dir.exists(virtual_dir_path)) {
+      stop("Could not determine location of parameter.dat --- dir ",
+           deparse(virtual_dir_path), " does not exist and ",
+           deparse(dir_path),
            " is not writeable; ",
            "this is an internal error, if you see this you should complain to ",
            "the package maintainer; a work-around may be to run R as an admin")
     }
-    path <- paste0(parameter.dat, "parameter.dat")
+    dir_path <- virtual_dir_path
   }
-  path <- normalize_path(path)
-  path
+  file_path <- filesystem_path_normalise(paste0(dir_path, "\\parameter.dat"))
+  return(file_path)
 }
 
 
 
-read_parameter_file <- function() {
+parameter_file_read <- function() {
   path <- parameter_file_path()
   readLines(path)
 }
 
 
-write_parameter_file <- function(text) {
+parameter_file_write <- function(text) {
   writeLines(text = text, con = parameter_file_path())
 }
 
 
-create_parameter_contents <- function() {
+parameter_file_contents <- function(
+
+) {
   stop("TODO")
 }
 
