@@ -45,8 +45,10 @@ cache_metadata_read <- function() {
   )
   if (file.exists(file_path)) {
     out <- data.table::fread(file_path)
-  }
-  if (nrow(out) == 0L) {
+    if (nrow(out) == 0L) {
+      out <- default_out
+    }
+  } else {
     out <- default_out
   }
   return(out)

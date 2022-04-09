@@ -23,7 +23,21 @@ tool_exe_path <- function(tool.name) {
 
 tool_exe_call <- function(tool.name) {
   assert_is_character_nonNA_atom(tool.name)
-  system2(tool_exe_path(tool.name), stdout = TRUE, stderr = TRUE)
+  std_out_file_path <- tempfile(fileext = "std_out.txt")
+  std_err_file_path <- tempfile(fileext = "std_err.txt")
+  on.exit(file.remove(c(std_out_file_path, std_err_file_path)))
+  tool_exe_path <- tool_exe_path(tool.name)
+  status_code <- system2(tool_exe_path,
+                         stdout = std_out_file_path,
+                         stderr = std_err_file_path)
+  std_err <- readLines(std_err_file_path)
+  std_out <- readLines(std_out_file_path)
+  if (!status_code %in% c(0L, 13L)) {
+    stop("Calling ", deparse(tool_exe_path), " resulted in status code ",
+         status_code, ", but 0 or 13 was expected. stderr was: ",
+         deparse(std_err), ". stdout was: ", deparse(std_out))
+  }
+  return(mget(c("status_code", "std_err", "std_out")))
 }
 
 

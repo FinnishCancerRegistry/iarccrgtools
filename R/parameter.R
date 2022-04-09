@@ -32,8 +32,22 @@ parameter_file_read <- function() {
 }
 
 
-parameter_file_write <- function(x) {
-  writeLines(text = x, con = parameter_file_path())
+parameter_file_write <- function(x, verbose = TRUE) {
+  file_path <- parameter_file_path()
+  if (verbose) {
+    message(
+      "* iarccrgtools::parameter_file_write: writing these contents to ",
+      deparse(file_path), ":\n",
+      paste0("  ", x, collapse = "\n")
+    )
+  }
+  writeLines(text = x, con = file_path)
+}
+
+parameter_contents_are_available <- function(colnameset.name) {
+  assert_tools_colnameset_name(colnameset.name)
+  tpc <- get_internal_dataset("tool_parameter_contents")
+  return(colnameset.name %in% tpc[["colnameset_name"]])
 }
 
 parameter_file_contents <- function(

@@ -5,8 +5,8 @@
 
 #' @importFrom data.table setDF setattr
 collect_tools_data <- function(
-  data,
-  tool.name
+    data,
+    tool.name
 ) {
   assert_tool(tool.name)
   assert_tools_data(data = data, tool.name = tool.name)
@@ -45,12 +45,13 @@ collect_tools_data <- function(
 # - `"automatically"`: like `"interactively"`, but the appropriate tool
 #   is attempted to be called without any user interaction
 interface_with_tool <- function(
-  data,
-  tool.name,
-  how = c("interactively", "automatically")[1],
-  clean = FALSE,
-  verbose = FALSE
+    data,
+    tool.name,
+    how = c("interactively", "automatically")[1],
+    clean = FALSE,
+    verbose = FALSE
 ) {
+  # assertions -----------------------------------------------------------------
   stopifnot(
     length(how) == 1,
     how %in% c("interactively", "automatically")
@@ -59,12 +60,14 @@ interface_with_tool <- function(
   assert_tools_data(data, tool.name)
   assert_is_logical_nonNA_atom(clean)
 
+  # data -----------------------------------------------------------------------
   df <- collect_tools_data(data = data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
   }
 
+  # cache ----------------------------------------------------------------------
   current_hash <- cache_hash(data)
   dir_path <- get_tool_work_dir(tool.name, current_hash)
   input_file_path <- tool_input_file_path(
@@ -91,6 +94,7 @@ interface_with_tool <- function(
 
   col_nms <- names(df)
   if (!read_cached_results) {
+    # write --------------------------------------------------------------------
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
       print(head(df))
@@ -104,20 +108,26 @@ interface_with_tool <- function(
       working.dir = dir_path,
       input.file.path = input_file_path
     )
+
+    # settings -----------------------------------------------------------------
+    if (parameter_contents_are_available(colnameset_name)) {
+      parameter_file_write(parameter_file_contents(
+        colnameset.name = colnameset_name,
+        tool.work.dir = dir_path
+      ))
+    }
     if (tool_settings_are_available(colnameset_name)) {
       tool_settings_copy(tgt.dir.path = dir_path,
                          colnameset.name = colnameset_name)
     }
 
+    # call ---------------------------------------------------------------------
     switch(
       how,
       automatically = {
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "automatically...")
-        parameter_file_write(parameter_file_contents(
-          colnameset.name = colnameset_name,
-          tool.work.dir = dir_path
-        ))
+
         tool_exe_call(tool.name = tool.name)
       },
       interactively = {
@@ -157,17 +167,17 @@ interface_with_tool <- function(
     )
   }
 
-
+  # read -----------------------------------------------------------------------
   if (verbose) {
     message("* iarccrgtools::interface_with_tool: reading tools results")
   }
-
   data_list <- read_tools_results(
     tool.name = tool.name,
     input.col.nms = col_nms,
     hash = current_hash
   )
 
+  # clean ----------------------------------------------------------------------
   if (clean) {
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: clean = TRUE. Deleting ",
@@ -176,10 +186,10 @@ interface_with_tool <- function(
     cache_clean_hash(current_hash)
   }
 
+  # done -----------------------------------------------------------------------
   if (verbose) {
     message("* iarccrgtools::interface_with_tool: finished")
   }
-
   data_list
 }
 
@@ -187,10 +197,10 @@ interface_with_tool <- function(
 
 
 automate_tool <- function(
-  data,
-  tool.name,
-  clean = FALSE,
-  verbose = FALSE
+    data,
+    tool.name,
+    clean = FALSE,
+    verbose = FALSE
 ) {
   interface_with_tool(
     data = data,
@@ -219,10 +229,10 @@ automate_tool <- function(
 #' @template verbose
 #' @export
 interact_with_tool <- function(
-  data,
-  tool.name,
-  clean = FALSE,
-  verbose = FALSE
+    data,
+    tool.name,
+    clean = FALSE,
+    verbose = FALSE
 ) {
   interface_with_tool(
     data = data,
@@ -258,8 +268,8 @@ interact_with_tool <- function(
 #'   (e.g. `multiple_primary_input.exl`); therefore the columns in the output of
 #'   `connect_tool_results_to_observations` vary by tool used.
 connect_tool_results_to_observations <- function(
-  record.ids,
-  tool.results
+    record.ids,
+    tool.results
 ) {
   stopifnot(
     is.integer(record.ids),
