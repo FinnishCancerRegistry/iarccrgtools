@@ -8,7 +8,6 @@
 \alias{cache_metadata_write}
 \alias{cache_metadata_append_or_replace}
 \alias{cache_metadata_refresh}
-\alias{cache_hash_random}
 \alias{cache_hash}
 \alias{cache_clean_hash}
 \alias{cache_clean_all}
@@ -25,8 +24,6 @@ cache_metadata_write(metadata)
 cache_metadata_append_or_replace(hash, working.dir, input.file.path)
 
 cache_metadata_refresh()
-
-cache_hash_random()
 
 cache_hash(df)
 
@@ -87,9 +84,6 @@ same input file path, if any.
 
 \verb{[iarccrgtools::cache_metadata_refresh]} removes any non-existing
 directories from the cache metadata.
-
-
-\verb{[iarccrgtools::cache_hash_random]} outputs a random hash.
 
 
 \verb{[iarccrgtools::cache_hash]} outputs a hash for the input \code{data.frame}.

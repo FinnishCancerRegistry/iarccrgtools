@@ -138,13 +138,6 @@ cache_metadata_refresh <- function() {
 #' @rdname cache_metadata
 #' @export
 #' @section Functions:
-#' `[iarccrgtools::cache_hash_random]` outputs a random hash.
-cache_hash_random <- function() {
-  cache_hash(runif(n = 1L))
-}
-#' @rdname cache_metadata
-#' @export
-#' @section Functions:
 #' `[iarccrgtools::cache_hash]` outputs a hash for the input `data.frame`.
 #' @param df `[data.frame]` (no default)
 #' `data.frame` for which to compute hash.
