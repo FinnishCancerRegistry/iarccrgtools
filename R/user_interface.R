@@ -141,7 +141,7 @@ interface_with_tool <- function(
           "- open IARC CRG Tools\n",
           "- start ",
           deparse(tool_menu_name(tool.name)), " -> ",
-          deparse(tool_real_name_of_clean_name(tool.name)), "\n",
+          deparse(tool_menu_item_name(tool.name)), "\n",
           "- supply this as input path: ", input_file_path, "\n",
           "- supply this as output path: ", output_path, "\n",
           "- choose columns when prompted; the columns in the input file are ",
