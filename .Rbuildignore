@@ -5,3 +5,4 @@
 ^iarc_test$
 ^appveyor\.yml$
 ^\.travis\.yml$
+^tmp$
