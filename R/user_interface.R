@@ -267,6 +267,7 @@ interact_with_tool <- function(
 #'   and any text in `tool_text` is collected into a separate column
 #'   (e.g. `multiple_primary_input.exl`); therefore the columns in the output of
 #'   `connect_tool_results_to_observations` vary by tool used.
+#' @importFrom data.table .SD
 connect_tool_results_to_observations <- function(
     record.ids,
     tool.results
@@ -297,7 +298,8 @@ connect_tool_results_to_observations <- function(
     ))
     if (any(duplicated(result_dt, by = "record_id"))) {
       result_dt <- result_dt[
-        j = list(text = paste0(text, collapse = "; ")),
+        j = list(text = paste0(.SD[[1]], collapse = "; ")),
+        .SDcols = "text",
         keyby = "record_id"
       ]
     }
