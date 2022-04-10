@@ -4,21 +4,11 @@
 \alias{create_example}
 \title{Example Datasets}
 \usage{
-create_example(colnameset.name, n.rows = 10L)
+create_example(...)
 }
 \arguments{
-\item{colnameset.name}{\verb{[character]} (mandatory, no default)
-
-one of the values given in the output of
-\verb{[iarccrgtools::tool_colnameset_names()]}}
-
-\item{n.rows}{\verb{[integer]} (mandatory, default \code{10L})
-
-number of rows to have in the created example dataset; only one row has been
-defined and that is repeated this many times; the purpose of having a larger
-example dataset of this kind is mainly to test memory use}
+\item{...}{Unused, this function has been deprecated.}
 }
 \description{
-Create example datasets with correct column names and column data types
-and nonsense contents.
+DEPRECATED, use \verb{[iarccrgtools::tool_colnameset_example_dataset]}.
 }

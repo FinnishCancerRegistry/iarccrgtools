@@ -7,61 +7,16 @@
 
 #' @title Example Datasets
 #' @description
-#' Create example datasets with correct column names and column data types
-#' and nonsense contents.
-#' @param colnameset.name `[character]` (mandatory, no default)
+#' DEPRECATED, use `[iarccrgtools::tool_colnameset_example_dataset]`.
+#' @param ...
 #'
-#' one of the values given in the output of
-#' `[iarccrgtools::tool_colnameset_names()]`
-#' @param n.rows `[integer]` (mandatory, default `10L`)
-#'
-#' number of rows to have in the created example dataset; only one row has been
-#' defined and that is repeated this many times; the purpose of having a larger
-#' example dataset of this kind is mainly to test memory use
+#' Unused, this function has been deprecated.
 #' @export
 create_example <- function(
-  colnameset.name,
-  n.rows = 10L
+  ...
 ) {
-  stopifnot(
-    length(n.rows) == 1,
-    n.rows %% 1 == 0,
-    n.rows > 0
-  )
-  col_nms <- tool_colnameset(colnameset.name)
-
-  df <- data.frame(
-    subject_id = 1L,
-    record_id = 1L,
-    record_order = 1L,
-    sex = 1L,
-    icd9 = "5020",
-    icd10 = "5020",
-    icdo1_topography = "5020",
-    icdo1_histology = "8522",
-    icdo1_grade = 1L,
-    icdo2_topography = "502",
-    icdo2_histology = "8522",
-    icdo3_topography = "502",
-    icdo3_histology = "8522",
-    icdo3_behavior = 1L,
-    icdo3_grade = 1L,
-    basis = 1L,
-    bi_date = as.Date("1950-12-31"),
-    dg_date = as.Date("2000-12-31"),
-    dg_age = 50L,
-    stringsAsFactors = FALSE
-  )
-
-
-  df <- df[rep(1L, n.rows), col_nms]
-  if ("record_id" %in% names(df)) {
-    df[["record_id"]] <- 1:nrow(df)
-  }
-  if ("subject_id" %in% names(df)) {
-    df[["subject_id"]] <- 1:nrow(df)
-  }
-  return(df[])
+  stop("iarccrgtools::create_example deprecated; use ",
+       "iarccrgtools::tool_colnameset_example_dataset.")
 }
 
 

@@ -142,6 +142,65 @@ tool_colnameset <- function(
 
 }
 
+
+#' @export
+#' @rdname tool_specific_metadata
+#' @template tool_name
+#' @section Functions:
+#' `[iarccrgtools::tool_example_dataset]` returns a `data.table`,
+#' a fake example of what the data should look like for a given
+#' `colnameset.name`.
+#' @examples
+#'
+#' # iarccrgtools::tool_colnameset_example_dataset
+#' ac <- iarccrgtools::tool_colnameset_example_dataset("all_check", 20L)
+#' stopifnot(
+#'   "sex" %in% names(ac),
+#'   !duplicated(ac[["subject_id"]])
+#' )
+#' @param n.rows `[integer]` (default `10L`)
+#'
+#' How many times should the example row (only one is defined) be repeated?
+#' Each resulting row will have its own `subject_id` and `record_id`.
+tool_colnameset_example_dataset <- function(
+    colnameset.name,
+    n.rows = 10L
+) {
+  stopifnot(
+    length(n.rows) == 1,
+    n.rows %% 1 == 0,
+    n.rows > 0
+  )
+  col_nms <- tool_colnameset(colnameset.name)
+  df <- data.frame(
+    subject_id = 1L,
+    record_id = 1L,
+    record_order = 1L,
+    sex = 1L,
+    icd9 = "5020",
+    icd10 = "5020",
+    icdo1_topography = "5020",
+    icdo1_histology = "8522",
+    icdo1_grade = 1L,
+    icdo2_topography = "502",
+    icdo2_histology = "8522",
+    icdo3_topography = "502",
+    icdo3_histology = "8522",
+    icdo3_behavior = 1L,
+    icdo3_grade = 1L,
+    basis = 1L,
+    bi_date = as.Date("1950-12-31"),
+    dg_date = as.Date("2000-12-31"),
+    dg_age = 50L,
+    stringsAsFactors = FALSE
+  )
+  df <- df[rep(1L, n.rows), col_nms]
+  df[["record_id"]] <- 1:nrow(df)
+  df[["subject_id"]] <- 1:nrow(df)
+  return(df[])
+}
+
+
 #' @export
 #' @rdname tool_specific_metadata
 #' @template tool_name

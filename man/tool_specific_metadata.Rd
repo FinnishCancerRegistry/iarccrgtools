@@ -8,6 +8,7 @@
 \alias{tool_colnameset_name_to_tool_name}
 \alias{tool_colnameset_names}
 \alias{tool_colnameset}
+\alias{tool_colnameset_example_dataset}
 \alias{tool_column_classes}
 \alias{tool_column_fwf_widths}
 \alias{tool_column_explanation}
@@ -25,6 +26,8 @@ tool_colnameset_names()
 
 tool_colnameset(colnameset.name)
 
+tool_colnameset_example_dataset(colnameset.name, n.rows = 10L)
+
 tool_column_classes(col.nms)
 
 tool_column_fwf_widths(col.nms)
@@ -38,6 +41,11 @@ name of tool to run; see output of \code{tool_clean_names()} for options}
 
 \item{colnameset.name}{one of the items returned by
 \code{\link{tool_colnameset_names}}}
+
+\item{n.rows}{\verb{[integer]} (default \code{10L})
+
+How many times should the example row (only one is defined) be repeated?
+Each resulting row will have its own \code{subject_id} and \code{record_id}.}
 
 \item{col.nms}{\verb{[character]} (no default)
 
@@ -70,6 +78,11 @@ sets.
 
 \verb{[iarccrgtools::tool_colnameset]} returns all column names for the given
 column name set name.
+
+
+\verb{[iarccrgtools::tool_example_dataset]} returns a \code{data.table},
+a fake example of what the data should look like for a given
+\code{colnameset.name}.
 
 
 \verb{[iarccrgtools::tool_column_classes]} returns the appropriate class for each
@@ -115,6 +128,13 @@ stopifnot(
 # iarccrgtools::tool_colnameset
 stopifnot(
   "sex" \%in\% iarccrgtools::tool_colnameset("all_check")
+)
+
+# iarccrgtools::tool_colnameset_example_dataset
+ac <- iarccrgtools::tool_colnameset_example_dataset("all_check", 20L)
+stopifnot(
+  "sex" \%in\% names(ac),
+  !duplicated(ac[["subject_id"]])
 )
 
 # iarccrgtools::tool_column_classes
