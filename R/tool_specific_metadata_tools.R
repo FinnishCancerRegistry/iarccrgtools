@@ -156,7 +156,10 @@ tool_colnameset <- function(
 #' ac <- iarccrgtools::tool_colnameset_example_dataset("all_check", 20L)
 #' stopifnot(
 #'   "sex" %in% names(ac),
-#'   !duplicated(ac[["subject_id"]])
+#'   !duplicated(ac[["subject_id"]]),
+#'   vapply(names(ac), function(ac_col_nm) {
+#'     inherits(ac[[ac_col_nm]], iarccrgtools::tool_column_classes(ac_col_nm))
+#'   }, logical(1L))
 #' )
 #' @param n.rows `[integer]` (default `10L`)
 #'
