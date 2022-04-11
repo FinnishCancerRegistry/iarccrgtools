@@ -41,7 +41,7 @@ format_fwf.character <- function(x, width) {
 #' @rdname fwf
 #' @export
 format_fwf.Date <- function(x, width) {
-  format_fwf(as.character(x), width)
+  iarccrgtools::format_fwf(as.character(x), width)
 }
 
 
@@ -79,7 +79,7 @@ write_fwf <- function(x, path, widths = NULL, ...) {
   }
   
   fwf_x <- data.table::setDT(lapply(seq_along(widths), function(j) {
-    format_fwf(x[[j]], width = widths[j])
+    iarccrgtools::format_fwf(x[[j]], width = widths[j])
   }))
   data.table::setnames(fwf_x, names(fwf_x), names(x))
   data.table::fwrite(fwf_x, file = path, ...)

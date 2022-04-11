@@ -9,7 +9,7 @@
 #' Set and get path to IARC CRG Tools executable.
 #' @details
 #' The executable is attempted to be discovered automatically by
-#' \code{\link{guess_tools_exe_path}} at start-up of this package, so with
+#' [iarccrgtools::guess_tools_exe_path] at start-up of this package, so with
 #' any luck you don't need to set it by hand.
 #'
 #' Executable path will be stored for the duration of the ongoing R session.
@@ -67,18 +67,18 @@ get_tools_install_dir_path <- function() {
   exe_path_env[["dir"]]
 }
 
-#' @describeIn exe_path subdir of `get_tools_install_dir_path()` output where
+#' @describeIn exe_path subdir of `iarccrgtools::get_tools_install_dir_path()` output where
 #' tool-specfic executables live
 #' @export
 get_tool_exe_dir_path <- function() {
-  filesystem_path_normalise(paste0(get_tools_install_dir_path(), "\\pgm\\"))
+  filesystem_path_normalise(paste0(iarccrgtools::get_tools_install_dir_path(), "\\pgm\\"))
 }
 
 #' @describeIn exe_path tries to guess where the executable is based on
 #' typical installation directories
 #' @export
 guess_tools_exe_path <- function() {
-  dir <- guess_tools_exe_dir_path()
+  dir <- iarccrgtools::guess_tools_exe_dir_path()
   
   exe_nm <- dir(dir, pattern = "^IARCcrgTools\\.exe$",
                 ignore.case = TRUE, full.names = FALSE)
@@ -93,10 +93,10 @@ guess_tools_exe_path <- function() {
 }
 
 exe_path_env <- new.env(parent = emptyenv())
-exe_path_env$dir <- tryCatch(guess_tools_exe_dir_path(),
+exe_path_env$dir <- tryCatch(iarccrgtools::guess_tools_exe_dir_path(),
                              error = function(e) NA_character_,
                              warning = function(w) NA_character_)
-exe_path_env$path <- tryCatch(guess_tools_exe_path(),
+exe_path_env$path <- tryCatch(iarccrgtools::guess_tools_exe_path(),
                               error = function(e) NA_character_,
                               warning = function(w) NA_character_)
 

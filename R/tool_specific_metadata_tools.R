@@ -174,7 +174,7 @@ tool_colnameset_example_dataset <- function(
     n.rows %% 1 == 0,
     n.rows > 0
   )
-  col_nms <- tool_colnameset(colnameset.name)
+  col_nms <- iarccrgtools::tool_colnameset(colnameset.name)
   df <- data.frame(
     subject_id = 1L,
     record_id = 1L,

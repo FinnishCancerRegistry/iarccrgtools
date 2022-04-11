@@ -147,7 +147,7 @@ assert_tools_data <- function(
     stop("Arg ", deparse(data.arg.nm), " must have at least one row")
   }
 
-  mandatory_col_nms <- tool_colnameset(
+  mandatory_col_nms <- iarccrgtools::tool_colnameset(
     paste0("mandatory_", tool.name)
   )
   miss_col_nms <- setdiff(mandatory_col_nms, names(data))
@@ -157,8 +157,8 @@ assert_tools_data <- function(
          "these columns: ", deparse(miss_col_nms))
   }
 
-  col_nms <- intersect(tool_colnameset(paste0("all_", tool.name)), names(data))
-  col_classes <- tool_column_classes(col_nms)
+  col_nms <- intersect(iarccrgtools::tool_colnameset(paste0("all_", tool.name)), names(data))
+  col_classes <- iarccrgtools::tool_column_classes(col_nms)
   lapply(seq_along(col_nms), function(col_no) {
     col_nm <- col_nms[col_no]
     col_class <- col_classes[col_no]
@@ -183,7 +183,7 @@ assert_tools_colnameset_name <- function(colnameset.name, colnameset.name.arg.nm
   if (is.null(colnameset.name.arg.nm)) {
     colnameset.name.arg.nm <- deparse(substitute(colnameset.name))
   }
-  allowed <- tool_colnameset_names()
+  allowed <- iarccrgtools::tool_colnameset_names()
 
   if (length(colnameset.name) != 1) {
     stop("Arg ", deparse(colnameset.name.arg.nm), " must be of length 1")

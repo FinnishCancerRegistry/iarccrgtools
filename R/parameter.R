@@ -62,7 +62,7 @@ parameter_file_contents <- function(
          deparse(colnameset.name), "; column name sets for which this is ",
          "implemented: ", paste0(tpc[["colnameset_name"]], collapse = ", "))
   }
-  tool_name <- tool_colnameset_name_to_tool_name(colnameset.name)
+  tool_name <- iarccrgtools::tool_colnameset_name_to_tool_name(colnameset.name)
   input_file_path <- tool_input_file_path(
     dir = tool.work.dir,
     tool.name = tool_name

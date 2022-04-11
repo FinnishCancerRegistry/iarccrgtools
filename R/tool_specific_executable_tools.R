@@ -9,7 +9,7 @@ tool_exe_names <- function() {
 
 tool_exe_path <- function(tool.name) {
   assert_tool(tool.name)
-  exe_dir_path <- filesystem_path_normalise(get_tool_exe_dir_path())
+  exe_dir_path <- filesystem_path_normalise(iarccrgtools::get_tool_exe_dir_path())
   exe_nm <- tool_exe_names()[tool.name]
   exe_path <- filesystem_path_normalise(paste0(exe_dir_path, exe_nm))
   if (!file.exists(exe_path)) {

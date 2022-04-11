@@ -131,14 +131,14 @@ get_tool_work_dir <- function(tool.name, hash) {
 write_tools_data <- function(
   x,
   colnameset.name = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = get_tools_work_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
   ...
 ) {
   assert_is_logical_nonNA_atom(verbose)
   assert_dataframe(x)
-  col_nms <- tool_colnameset(colnameset.name)
+  col_nms <- iarccrgtools::tool_colnameset(colnameset.name)
   assert_names(x, expected.names = col_nms, arg.nm = "x")
   assert_write_file_path(path = file)
 
@@ -219,7 +219,7 @@ write_tools_data <- function(
     t_write <- proc.time()
   }
 
-  expected_widths <- tool_column_fwf_widths(
+  expected_widths <- iarccrgtools::tool_column_fwf_widths(
     setdiff(names(x), ".__this_is_a_buffer_column_yo__.")
   )
   expected_widths <- c(expected_widths, 0L)
@@ -242,7 +242,7 @@ write_tools_data <- function(
     NULL
   })
 
-  write_fwf(
+  iarccrgtools::write_fwf(
     x = x,
     widths = expected_widths,
     path = file,
@@ -313,7 +313,7 @@ read_tools_results <- function(
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- get_tool_work_dir(tool.name = tool.name, hash = hash)
+  dir <- iarccrgtools::get_tool_work_dir(tool.name = tool.name, hash = hash)
 
   file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 

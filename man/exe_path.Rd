@@ -30,7 +30,7 @@ Set and get path to IARC CRG Tools executable.
 }
 \details{
 The executable is attempted to be discovered automatically by
-\code{\link{guess_tools_exe_path}} at start-up of this package, so with
+\link{guess_tools_exe_path} at start-up of this package, so with
 any luck you don't need to set it by hand.
 
 Executable path will be stored for the duration of the ongoing R session.
@@ -48,7 +48,7 @@ value will be \code{NA_character_} if no path has been set yet.
 \item \code{get_tools_install_dir_path}: gets currently saved path to directory where
 IARC CRG Tools is installed
 
-\item \code{get_tool_exe_dir_path}: subdir of \code{get_tools_install_dir_path()} output where
+\item \code{get_tool_exe_dir_path}: subdir of \code{iarccrgtools::get_tools_install_dir_path()} output where
 tool-specfic executables live
 
 \item \code{guess_tools_exe_path}: tries to guess where the executable is based on

@@ -24,7 +24,7 @@ cache_metadata_file_name <- function() {
 #' to the cache metadata.
 cache_metadata_file_path <- function() {
   dir_path <- iarccrgtools::get_tools_work_dir()
-  file_path <- paste0(dir_path, "/", cache_metadata_file_name())
+  file_path <- paste0(dir_path, "/", iarccrgtools::cache_metadata_file_name())
   filesystem_path_normalise(file_path)
 }
 
@@ -36,7 +36,7 @@ cache_metadata_file_path <- function() {
 #' `[iarccrgtools::cache_metadata_file_path]`. Returns a `data.table` with
 #' zero rows if no file found.
 cache_metadata_read <- function() {
-  file_path <- cache_metadata_file_path()
+  file_path <- iarccrgtools::cache_metadata_file_path()
   default_out <- data.table::data.table(
     dir_path = character(0L),
     input_file_path = character(0L),
@@ -66,7 +66,7 @@ cache_metadata_write <- function(metadata) {
   stopifnot(
     is.data.frame(metadata)
   )
-  data.table::fwrite(metadata, file = cache_metadata_file_path())
+  data.table::fwrite(metadata, file = iarccrgtools::cache_metadata_file_path())
 }
 
 #' @rdname cache_metadata
@@ -104,7 +104,7 @@ cache_metadata_append_or_replace <- function(
     !is.na(input.file.path),
     file.exists(input.file.path)
   )
-  cache_metadata <- cache_metadata_read()
+  cache_metadata <- iarccrgtools::cache_metadata_read()
   cache_metadata <- rbind(
     cache_metadata,
     data.table::data.table(
@@ -121,7 +121,7 @@ cache_metadata_append_or_replace <- function(
   cache_metadata <- cache_metadata[
     !duplicated(cache_metadata, by = "input_file_path", fromLast = TRUE),
   ]
-  cache_metadata_write(cache_metadata)
+  iarccrgtools::cache_metadata_write(cache_metadata)
 }
 
 #' @rdname cache_metadata
@@ -130,9 +130,9 @@ cache_metadata_append_or_replace <- function(
 #' `[iarccrgtools::cache_metadata_refresh]` removes any non-existing
 #' directories from the cache metadata.
 cache_metadata_refresh <- function() {
-  cache_metadata <- cache_metadata_read()
+  cache_metadata <- iarccrgtools::cache_metadata_read()
   cache_metadata <- cache_metadata[dir.exists(cache_metadata[["dir_path"]]), ]
-  cache_metadata_write(cache_metadata)
+  iarccrgtools::cache_metadata_write(cache_metadata)
 }
 
 #' @rdname cache_metadata
@@ -154,7 +154,7 @@ cache_hash <- function(df) {
 #' `[iarccrgtools::cache_clean_hash]` removes all cache dirs for the given hash.
 #' Also cleans up the cache metadata.
 cache_clean_hash <- function(hash) {
-  meta <- cache_metadata_read()
+  meta <- iarccrgtools::cache_metadata_read()
   has_hash <- meta[["hash"]] == hash
   dir_paths <- meta[["dir_path"]][has_hash]
   dir_paths <- dir_paths[dir.exists(dir_paths)]
@@ -162,7 +162,7 @@ cache_clean_hash <- function(hash) {
     unlink(dir_paths, recursive = TRUE, force = TRUE)
   }
   meta <- meta[!has_hash, ]
-  cache_metadata_write(meta)
+  iarccrgtools::cache_metadata_write(meta)
 }
 
 #' @rdname cache_metadata
@@ -171,14 +171,14 @@ cache_clean_hash <- function(hash) {
 #' `[iarccrgtools::cache_clean_all]` removes all cache dirs.
 #' Also cleans up the cache metadata.
 cache_clean_all <- function() {
-  meta <- cache_metadata_read()
+  meta <- iarccrgtools::cache_metadata_read()
   dir_paths <- meta[["dir_path"]]
   dir_paths <- dir_paths[dir.exists(dir_paths)]
   if (length(dir_paths) > 0) {
     unlink(dir_paths, recursive = TRUE, force = TRUE)
   }
   meta <- meta[0L, ]
-  cache_metadata_write(meta)
+  iarccrgtools::cache_metadata_write(meta)
 }
 
 

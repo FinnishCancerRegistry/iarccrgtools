@@ -47,11 +47,11 @@ tool_settings_source_dir_path <- function() {
 #' )
 #'
 tool_settings_availability <- function() {
-  src_dir_path <- tool_settings_source_dir_path()
+  src_dir_path <- iarccrgtools::tool_settings_source_dir_path()
   file_names <- dir(src_dir_path)
   file_paths <- filesystem_path_normalise(paste0(src_dir_path, "\\", file_names))
   tool_colnameset_names <- sub("[.].+$", "", file_names)
-  tool_names <- tool_colnameset_name_to_tool_name(tool_colnameset_names)
+  tool_names <- iarccrgtools::tool_colnameset_name_to_tool_name(tool_colnameset_names)
   data.table::data.table(
     file_name = file_names,
     file_path = file_paths,
@@ -76,7 +76,7 @@ tool_settings_availability <- function() {
 #' )
 #'
 tool_settings_are_available <- function(colnameset.name) {
-  tsa <- tool_settings_availability()
+  tsa <- iarccrgtools::tool_settings_availability()
   colnameset.name %in% tsa[["colnameset_name"]]
 }
 
@@ -104,7 +104,7 @@ tool_settings_copy <- function(
   tgt.dir.path <- filesystem_path_normalise(paste0(tgt.dir.path, "\\"))
   assert_tools_colnameset_name(colnameset.name)
 
-  tsa <- tool_settings_availability()
+  tsa <- iarccrgtools::tool_settings_availability()
   tsa <- tsa[tsa[["colnameset_name"]] == colnameset.name, ]
   lapply(seq_along(tsa[[1]]), function(i) {
     src_file_path <- tsa[["file_path"]][i]
@@ -133,3 +133,4 @@ tool_settings_copy <- function(
 
   invisible(NULL)
 }
+

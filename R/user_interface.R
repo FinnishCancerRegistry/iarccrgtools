@@ -10,10 +10,10 @@ collect_tools_data <- function(
 ) {
   assert_tool(tool.name)
   assert_tools_data(data = data, tool.name = tool.name)
-  mandatory_col_nms <- tool_colnameset(
+  mandatory_col_nms <- iarccrgtools::tool_colnameset(
     paste0("mandatory_", tool.name)
   )
-  optional_col_nms <- tool_colnameset(
+  optional_col_nms <- iarccrgtools::tool_colnameset(
     paste0("optional_", tool.name)
   )
 
@@ -29,7 +29,7 @@ collect_tools_data <- function(
   found_opt_col_nms <- setdiff(optional_col_nms, miss_opt_col_nms)
 
   col_nms <- c(mandatory_col_nms, found_opt_col_nms)
-  col_nms <- intersect(tool_colnameset("all"), col_nms) # to sort them
+  col_nms <- intersect(iarccrgtools::tool_colnameset("all"), col_nms) # to sort them
   df <- data.table::setDF(mget(col_nms, as.environment(data)))
   data.table::setattr(df, "colnameset_name", used_set_name)
   df
@@ -68,13 +68,13 @@ interface_with_tool <- function(
   }
 
   # cache ----------------------------------------------------------------------
-  current_hash <- cache_hash(data)
-  dir_path <- get_tool_work_dir(tool.name, current_hash)
+  current_hash <- iarccrgtools::cache_hash(data)
+  dir_path <- iarccrgtools::get_tool_work_dir(tool.name, current_hash)
   input_file_path <- tool_input_file_path(
     dir = dir_path,
     tool.name = tool.name
   )
-  cache_metadata <- cache_metadata_read()
+  cache_metadata <- iarccrgtools::cache_metadata_read()
   cache_hash <- cache_metadata[["hash"]][
     cache_metadata[["input_file_path"]] == input_file_path
   ]
@@ -100,10 +100,10 @@ interface_with_tool <- function(
       print(utils::head(df))
       message("* iarccrgtools::interface_with_tool: Writing table to '", input_file_path, "'...")
     }
-    write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
+    iarccrgtools::write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
                      verbose = verbose)
     rm(list = "df")
-    cache_metadata_append_or_replace(
+    iarccrgtools::cache_metadata_append_or_replace(
       hash = current_hash,
       working.dir = dir_path,
       input.file.path = input_file_path
@@ -116,8 +116,8 @@ interface_with_tool <- function(
         tool.work.dir = dir_path
       ))
     }
-    if (tool_settings_are_available(colnameset_name)) {
-      tool_settings_copy(tgt.dir.path = dir_path,
+    if (iarccrgtools::tool_settings_are_available(colnameset_name)) {
+      iarccrgtools::tool_settings_copy(tgt.dir.path = dir_path,
                          colnameset.name = colnameset_name)
     }
 
@@ -133,15 +133,15 @@ interface_with_tool <- function(
       interactively = {
         output_path <- tool_output_file_paths(
           tool.name = tool.name,
-          dir = get_tool_work_dir(tool.name, hash = current_hash)
+          dir = iarccrgtools::get_tool_work_dir(tool.name, hash = current_hash)
         )[1L]
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "interactively...")
         message(
           "- open IARC CRG Tools\n",
           "- start ",
-          deparse(tool_menu_name(tool.name)), " -> ",
-          deparse(tool_menu_item_name(tool.name)), "\n",
+          deparse(iarccrgtools::tool_menu_name(tool.name)), " -> ",
+          deparse(iarccrgtools::tool_menu_item_name(tool.name)), "\n",
           "- supply this as input path: ", input_file_path, "\n",
           "- supply this as output path: ", output_path, "\n",
           "- choose columns when prompted; the columns in the input file are ",
@@ -171,7 +171,7 @@ interface_with_tool <- function(
   if (verbose) {
     message("* iarccrgtools::interface_with_tool: reading tools results")
   }
-  data_list <- read_tools_results(
+  data_list <- iarccrgtools::read_tools_results(
     tool.name = tool.name,
     input.col.nms = col_nms,
     hash = current_hash
@@ -183,7 +183,7 @@ interface_with_tool <- function(
       message("* iarccrgtools::interface_with_tool: clean = TRUE. Deleting ",
               "dir ", deparse(dir_path))
     }
-    cache_clean_hash(current_hash)
+    iarccrgtools::cache_clean_hash(current_hash)
   }
 
   # done -----------------------------------------------------------------------
