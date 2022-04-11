@@ -198,8 +198,12 @@ tool_colnameset_example_dataset <- function(
     stringsAsFactors = FALSE
   )
   df <- df[rep(1L, n.rows), col_nms]
-  df[["record_id"]] <- 1:nrow(df)
-  df[["subject_id"]] <- 1:nrow(df)
+  if ("record_id" %in% col_nms) {
+    df[["record_id"]] <- 1:nrow(df)
+  }
+  if ("subject_id" %in% col_nms) {
+    df[["subject_id"]] <- 1:nrow(df)
+  }
   return(df[])
 }
 
