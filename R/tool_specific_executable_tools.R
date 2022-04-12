@@ -33,9 +33,9 @@ tool_exe_call <- function(tool.name) {
   std_err <- readLines(std_err_file_path)
   std_out <- readLines(std_out_file_path)
   if (!status_code %in% c(0L, 13L)) {
-    stop("Calling ", deparse(tool_exe_path), " resulted in status code ",
-         status_code, ", but 0 or 13 was expected. stderr was: ",
-         deparse(std_err), ". stdout was: ", deparse(std_out))
+    warning("Calling ", deparse(tool_exe_path), " resulted in status code ",
+            status_code, ", but 0 or 13 was expected. stderr was: ",
+            deparse(std_err), ". stdout was: ", deparse(std_out))
   }
   return(mget(c("status_code", "std_err", "std_out")))
 }
