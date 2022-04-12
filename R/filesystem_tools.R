@@ -36,7 +36,7 @@ filesystem_path_normalise <- function(path, double.slash = FALSE) {
   path <- normalizePath(path = path, winslash = "\\", mustWork = FALSE)
 
   is_dir <- dir.exists(path)
-  path[is_dir] <- paste0(path, "\\")
+  path[is_dir] <- paste0(path[is_dir], "\\")
 
   path <- gsub("[\\/]+", "\\\\", path, fixed = FALSE)
   if (double.slash) {

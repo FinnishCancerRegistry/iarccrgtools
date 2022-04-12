@@ -51,7 +51,7 @@ IARC CRG Tools is installed
 \item \code{get_tool_exe_dir_path}: subdir of \code{iarccrgtools::get_tools_install_dir_path()} output where
 tool-specfic executables live
 
-\item \code{guess_tools_exe_path}: tries to guess where the executable is based on
+\item \code{guess_tools_exe_path}: tries to guess where the main executable is based on
 typical installation directories
 }}
 

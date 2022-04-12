@@ -16,12 +16,16 @@
 #' If this package is somehow unloaded or reloaded, the setting will reset.
 NULL
 
+
+exe_path_env <- new.env(parent = emptyenv())
+
 #' @describeIn exe_path sets path to .exe
 #' @param path path to IARC CRG Tools executable
 #' @export
 set_tools_exe_path <- function(path) {
   assert_file_path(path)
   assign(x = "path", value = path, envir = exe_path_env)
+  assign(x = "dir", value = filesystem_dir_of_path(path), envir = exe_path_env)
   invisible(NULL)
 }
 
@@ -48,7 +52,8 @@ guess_tools_exe_dir_path <- function() {
     "C:\\Program Files (x86)\\IARCcrgTools",
     "C:\\Program Files\\IARCcrgTools"
   )
-  
+  dir_set <- filesystem_path_normalise(dir_set)
+
   dir_exists <- dir.exists(dir_set)
   if (!any(dir_exists)) {
     stop("Could not guess path to IARC CRG Tools executable directory. ",
@@ -64,23 +69,41 @@ guess_tools_exe_dir_path <- function() {
 #' IARC CRG Tools is installed
 #' @export
 get_tools_install_dir_path <- function() {
-  exe_path_env[["dir"]]
+  dp <- exe_path_env[["dir"]]
+  if (is.na(dp) || !dir.exists(dp)) {
+    raise_internal_error(
+      "No such directory: ", deparse(dp), "."
+    )
+  }
+  dp
 }
 
 #' @describeIn exe_path subdir of `iarccrgtools::get_tools_install_dir_path()` output where
 #' tool-specfic executables live
 #' @export
 get_tool_exe_dir_path <- function() {
-  filesystem_path_normalise(paste0(iarccrgtools::get_tools_install_dir_path(), "\\pgm\\"))
+  dp <- filesystem_path_normalise(
+    paste0(iarccrgtools::get_tools_install_dir_path(), "\\pgm\\")
+  )
+  if (is.na(dp) || !dir.exists(dp)) {
+    raise_internal_error(
+      "No such directory: ", deparse(dp), "."
+    )
+  }
+  dp
 }
 
-#' @describeIn exe_path tries to guess where the executable is based on
+main_exe_name <- function() {
+  "IARCcrgTools.EXE"
+}
+
+#' @describeIn exe_path tries to guess where the main executable is based on
 #' typical installation directories
 #' @export
 guess_tools_exe_path <- function() {
-  dir <- iarccrgtools::guess_tools_exe_dir_path()
-  
-  exe_nm <- dir(dir, pattern = "^IARCcrgTools\\.exe$",
+  dir <- guess_tools_exe_dir_path()
+
+  exe_nm <- dir(dir, pattern = paste0("^", main_exe_name(), "$"),
                 ignore.case = TRUE, full.names = FALSE)
   if (length(exe_nm) != 1) {
     stop("Could not guess path to IARC CRG Tools executable. You need to ",
@@ -92,13 +115,17 @@ guess_tools_exe_path <- function() {
   exe_path
 }
 
-exe_path_env <- new.env(parent = emptyenv())
-exe_path_env$dir <- tryCatch(iarccrgtools::guess_tools_exe_dir_path(),
-                             error = function(e) NA_character_,
-                             warning = function(w) NA_character_)
-exe_path_env$path <- tryCatch(iarccrgtools::guess_tools_exe_path(),
-                              error = function(e) NA_character_,
-                              warning = function(w) NA_character_)
+exe_path_env_guess <- function() {
+  exe_path_env$dir <- tryCatch(guess_tools_exe_dir_path(),
+                               error = function(e) NA_character_,
+                               warning = function(w) NA_character_)
+  exe_path_env$path <- tryCatch(guess_tools_exe_path(),
+                                error = function(e) NA_character_,
+                                warning = function(w) NA_character_)
+  invisible(NULL)
+}
+exe_path_env_guess()
+
 
 
 
