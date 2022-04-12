@@ -26,20 +26,22 @@ if (!dir.exists(dir_path)) {
 }
 iarccrgtools::set_tools_work_dir(dir_path)
 
-tool_name <- "icdo3_to_icd10"
-df1 <- iarccrgtools::create_example(paste0("mandatory_", tool_name), n.rows = 2L)
-wat1 <- iarccrgtools::interface_with_tool(df1, tool.name = tool_name,
+tool_name <- "multiple_primary"
+iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
+  paste0("mandatory_", tool_name), n.rows = 1e4L
+)
+if ("subject_id" %in% names(iarc_df)) {
+  iarc_df[["subject_id"]][1:3] <- 1L
+}
+if ("record_order" %in% names(iarc_df)) {
+  iarc_df[["record_order"]][1:3] <- 1:3
+}
+auto <- iarccrgtools::interface_with_tool(iarc_df, tool.name = tool_name,
                                           clean = FALSE, how = "automatically")
 unlink(dir_path, recursive = TRUE, force = TRUE)
-unlink(parameter_file_path())
 dir.create(dir_path)
-# stop("halt")
 
-df2 <- df1
-# df2$subject_id <- 10L + df2$subject_id
-wat2 <- iarccrgtools::interface_with_tool(df2, tool.name = tool_name,
+manu <- iarccrgtools::interface_with_tool(iarc_df, tool.name = tool_name,
                                           clean = FALSE, how = "interactively")
-print(all.equal(wat1, wat2))
-print(parameter_file_read()[3L])
+print(all.equal(auto, manu))
 unlink(dir_path, recursive = TRUE, force = TRUE)
-unlink(parameter_file_path())
