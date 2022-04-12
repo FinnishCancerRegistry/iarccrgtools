@@ -116,6 +116,7 @@ interface_with_tool <- function(
         tool.work.dir = dir_path
       ))
     }
+    on.exit(unlink(parameter_file_path(), force = TRUE))
     if (iarccrgtools::tool_settings_are_available(colnameset_name)) {
       iarccrgtools::tool_settings_copy(tgt.dir.path = dir_path,
                          colnameset.name = colnameset_name)
