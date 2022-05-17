@@ -12,7 +12,7 @@ parameter_file_path <- function() {
   # `iarccrgtools:::parameter_file_path` returns a string, the path to the
   # parameter file. The parameter file is assumed to live in either the
   # dir given by `[iarccrgtools::get_tool_exe_dir_path]`, if it is writable,
-  # or in `${parameter_dir_path_virtual()}` otherwise.
+  # or in `${iarccrgtools:::parameter_dir_path_virtual()}` otherwise.
   # @codedoc_comment_block iarccrgtools:::parameter_file_path
   dir_path <- iarccrgtools::get_tool_exe_dir_path()
   if (!filesystem_dir_path_is_writable(dir_path)) {
