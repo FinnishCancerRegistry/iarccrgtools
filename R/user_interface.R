@@ -2,8 +2,6 @@
 
 
 
-
-#' @importFrom data.table setDF setattr
 collect_tools_data <- function(
     data,
     tool.name
@@ -61,6 +59,9 @@ interface_with_tool <- function(
   assert_is_logical_nonNA_atom(clean)
 
   # data -----------------------------------------------------------------------
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+  # First, a subset of columns from `data` is collected based on `tool.name`.
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   df <- collect_tools_data(data = data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
@@ -68,10 +69,14 @@ interface_with_tool <- function(
   }
 
   # cache ----------------------------------------------------------------------
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+  # Then the cache is checked for pre-existing results for the given
+  # `data` and `tool.name`. See e.g. `[iarccrgtools::cache_metadata_read]`.
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   current_hash <- iarccrgtools::cache_hash(data)
-  dir_path <- iarccrgtools::get_tool_work_dir(tool.name, current_hash)
+  tool_work_dir_path <- iarccrgtools::get_tool_work_dir(tool.name, current_hash)
   input_file_path <- tool_input_file_path(
-    dir = dir_path,
+    dir = tool_work_dir_path,
     tool.name = tool.name
   )
   cache_metadata <- iarccrgtools::cache_metadata_read()
@@ -80,6 +85,11 @@ interface_with_tool <- function(
   ]
   read_cached_results <- FALSE
   if (identical(cache_hash, current_hash)) {
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    # If pre-existing results are found, the user is prompted whether to use
+    # the pre-existing results from disk and skip IARC CRG Tools altogether,
+    # or to proceed to running IARC CRG Tools (again).
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
     message("* iarccrgtools::interface_with_tool: looks like a dataset ",
             "identical to the one you have supplied already exists in ",
             deparse(input_file_path),
@@ -96,30 +106,61 @@ interface_with_tool <- function(
   if (!read_cached_results) {
     # write --------------------------------------------------------------------
     if (verbose) {
-      message("* iarccrgtools::interface_with_tool: selected columns; first five row of working table: ")
+      message("* iarccrgtools::interface_with_tool: selected columns; ",
+              "first five row of working table: ")
       print(utils::head(df))
-      message("* iarccrgtools::interface_with_tool: Writing table to '", input_file_path, "'...")
+      message("* iarccrgtools::interface_with_tool: ",
+              "Writing table to '", input_file_path, "'...")
     }
-    iarccrgtools::write_tools_data(x = df, file = input_file_path, colnameset.name = colnameset_name,
-                     verbose = verbose)
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    # If there were no cached results / the user did not want to read them,
+    # `[iarccrgtools::write_tools_data]` is called.
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    iarccrgtools::write_tools_data(
+      x = df, file = input_file_path, 
+      colnameset.name = colnameset_name,
+      verbose = verbose
+    )
     rm(list = "df")
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    # Cache metadata is then updated by calling
+    # `[iarccrgtools::cache_metadata_append_or_replace]`.
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
     iarccrgtools::cache_metadata_append_or_replace(
       hash = current_hash,
-      working.dir = dir_path,
+      working.dir = tool_work_dir_path,
       input.file.path = input_file_path
     )
 
     # settings -----------------------------------------------------------------
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    # iarccrgtools attempts to write (sensible, default) parameters
+    # (e.g. path to input / output) for use by IARC CRG Tools.
+    # The user has the responsibility to make sure that the parameters
+    # are correct for their dataset. You will see them when you run IARC CRG
+    # Tools.
+    # @codedoc_insert_comment_block details(iarccrgtools:::parameter_file_write)
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
     if (parameter_contents_are_available(colnameset_name)) {
       parameter_file_write(parameter_file_contents(
         colnameset.name = colnameset_name,
-        tool.work.dir = dir_path
+        tool.work.dir = tool_work_dir_path
       ))
     }
     on.exit(unlink(parameter_file_path(), force = TRUE))
     if (iarccrgtools::tool_settings_are_available(colnameset_name)) {
-      iarccrgtools::tool_settings_copy(tgt.dir.path = dir_path,
-                         colnameset.name = colnameset_name)
+      # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+      # If R package iarccrgtools contains pre-defined (default) settings
+      # (e.g. positions of specific columns in the file on disk), those are
+      # written into the dir given by `[iarccrgtools::get_tool_work_dir]`.
+      # The user has the responsibility to make sure that the settings
+      # are correct for their dataset. You will see them when you run IARC CRG
+      # Tools.
+      # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+      iarccrgtools::tool_settings_copy(
+        tgt.dir.path = tool_work_dir_path,
+        colnameset.name = colnameset_name
+      )
     }
 
     # call ---------------------------------------------------------------------
@@ -132,6 +173,10 @@ interface_with_tool <- function(
         tool_exe_call(tool.name = tool.name)
       },
       interactively = {
+        # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+        # With the data and parameters in place, the user is next informed what
+        # they have to do in IARC CRG Tools.
+        # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
         output_path <- tool_output_file_paths(
           tool.name = tool.name,
           dir = iarccrgtools::get_tool_work_dir(tool.name, hash = current_hash)
@@ -172,6 +217,10 @@ interface_with_tool <- function(
   if (verbose) {
     message("* iarccrgtools::interface_with_tool: reading tools results")
   }
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+  # When permission is given to read the data into R,
+  # `[iarccrgtools::read_tools_results]` is called.
+  # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   data_list <- iarccrgtools::read_tools_results(
     tool.name = tool.name,
     input.col.nms = col_nms,
@@ -182,8 +231,12 @@ interface_with_tool <- function(
   if (clean) {
     if (verbose) {
       message("* iarccrgtools::interface_with_tool: clean = TRUE. Deleting ",
-              "dir ", deparse(dir_path))
+              "dir ", deparse(tool_work_dir_path))
     }
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
+    # Finally, if `clean = TRUE`, `[iarccrgtools::cache_clean_hash]` for the
+    # hash of the dataset given by the user.
+    # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
     iarccrgtools::cache_clean_hash(current_hash)
   }
 
@@ -229,12 +282,20 @@ automate_tool <- function(
 #' - `FALSE`: all files are left to be in peace
 #' @template verbose
 #' @export
+#' @eval codedoc::codedoc_lines(
+#'   "^details\\(iarccrgtools::interact_with_tool\\)$"
+#' )
 interact_with_tool <- function(
     data,
     tool.name,
     clean = FALSE,
     verbose = FALSE
 ) {
+  # @codedoc_comment_block details(iarccrgtools::interact_with_tool)
+  # @details
+  # `iarccrgtools::interact_with_tool` performs the following steps.
+  # @codedoc_insert_comment_block details(iarccrgtools:::interface_with_tool)
+  # @codedoc_comment_block details(iarccrgtools::interact_with_tool)
   interface_with_tool(
     data = data,
     tool.name = tool.name,
@@ -246,7 +307,6 @@ interact_with_tool <- function(
 
 
 
-#' @importFrom data.table data.table setkeyv setDT :=
 #' @export
 #' @rdname interact_with_tool
 #' @param record.ids `[integer]` (mandatory, no default)
@@ -258,17 +318,18 @@ interact_with_tool <- function(
 #' list of tables and/or log texts as output by one of the interface functions
 #' to IARC CRG Tools (e.g. [interact_with_tool])
 #' @details
-#' - `connect_tool_results_to_observations` returns a `data.table` with
-#'   `length(record.ids)` rows; it has column
-#'   `record_id` and additional columns depending on results in
-#'   `tool.results`; this function goes through each object in `tool.results`
-#'   and if an object is a `data.table` with columns `record_id` and `tool_text`,
-#'   each record appearing in that `data.table` is marked in the output
-#'   `data.table` in a logical column (e.g. ` in_multiple_primary_input.exl`)
-#'   and any text in `tool_text` is collected into a separate column
-#'   (e.g. `multiple_primary_input.exl`); therefore the columns in the output of
-#'   `connect_tool_results_to_observations` vary by tool used.
-#' @importFrom data.table .SD
+#' `iarccrgtools::connect_tool_results_to_observations`
+#' returns a `data.table` with
+#' `length(record.ids)` rows; it has column
+#' `record_id` and additional columns depending on results in
+#' `tool.results`; this function goes through each object in `tool.results`
+#' and if an object is a `data.table` with columns `record_id` and `tool_text`,
+#' each record appearing in that `data.table` is marked in the output
+#' `data.table` in a logical column (e.g. ` in_multiple_primary_input.exl`)
+#' and any text in `tool_text` is collected into a separate column
+#' (e.g. `multiple_primary_input.exl`); therefore the columns in the output of
+#' `connect_tool_results_to_observations` vary by tool used.
+#' @importFrom data.table .SD :=
 connect_tool_results_to_observations <- function(
     record.ids,
     tool.results
@@ -322,17 +383,3 @@ connect_tool_results_to_observations <- function(
   })
   return(dt[])
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

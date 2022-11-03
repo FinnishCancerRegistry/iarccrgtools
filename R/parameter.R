@@ -1,6 +1,10 @@
 
 
 parameter_dir_path_virtual <- function() {
+  # @codedoc_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
+  # The virtual dir is assumed to be found at
+  # "%LOCALAPPDATA%\VirtualStore\Program Files (x86)\IARCcrgTools\pgm\".
+  # @codedoc_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
   filesystem_path_normalise(paste0(
     Sys.getenv("LOCALAPPDATA"),
     "\\VirtualStore\\Program Files (x86)\\IARCcrgTools\\pgm\\"
@@ -13,7 +17,28 @@ parameter_file_path <- function() {
   # parameter file. The parameter file is assumed to live in either the
   # dir given by `[iarccrgtools::get_tool_exe_dir_path]`, if it is writable,
   # or in `${iarccrgtools:::parameter_dir_path_virtual()}` otherwise.
+  # If `${iarccrgtools:::parameter_dir_path_virtual()}` does not exist, it is
+  # attempted to be created.
   # @codedoc_comment_block iarccrgtools:::parameter_file_path
+
+  # @codedoc_comment_block details(iarccrgtools:::parameter_file_path)
+  # The location of the parameter is fairly involved because IARC CRG Tools
+  # is an older programme. Newer versions of Windows do not allow the user to
+  # write anything into the dir where IARC CRG Tools is installed, which
+  # IARC CRG Tools nevertheless wants to do. Microsoft has solved this by
+  # creating a "virtual" directory where the user can write stuff.
+  # However, in some situations (e.g. with admin permissions) you ARE able to
+  # write into the IARC CRG Tools installation dir. So first the dir given by
+  # `[iarccrgtools::get_tool_exe_dir_path]` is tested, whether it is writable
+  # or not. If it is, the parameter file will be stored there. If not,
+  # the virtual dir as attempted to be used.
+  # @codedoc_insert_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
+  # It is attempted to be
+  # created if it does not exist. It is possible that there are versions of
+  # Windows where this will not work, either because the virtual dir has a
+  # different location or maybe because virtual dirs are not used at all.
+  # If all else fails, IARC CRG Tools works best with admin permissions.
+  # @codedoc_comment_block details(iarccrgtools:::parameter_file_path)
   dir_path <- iarccrgtools::get_tool_exe_dir_path()
   if (!filesystem_dir_path_is_writable(dir_path)) {
     virtual_dir_path <- parameter_dir_path_virtual()
@@ -25,7 +50,7 @@ parameter_file_path <- function() {
           "Could not select location of parameter.dat --- dir ",
           deparse(virtual_dir_path), " did not exist and could not be created ",
           ", and ",
-           deparse(dir_path),
+          deparse(dir_path),
           " is not writeable; see ?iarccrgtools::interact_with_tool"
         )
       }
@@ -66,6 +91,9 @@ parameter_file_write <- function(x, verbose = TRUE) {
   # `iarccrgtools:::parameter_file_read` always returns `NULL` invisibly.
   # @codedoc_comment_block iarccrgtools:::parameter_file_write
   file_path <- parameter_file_path()
+  # @codedoc_comment_block details(iarccrgtools:::parameter_file_write)
+  # @codedoc_insert_comment_block details(iarccrgtools:::parameter_file_path)
+  # @codedoc_comment_block details(iarccrgtools:::parameter_file_write)
   if (verbose) {
     message(
       "* iarccrgtools::parameter_file_write: writing these contents to ",

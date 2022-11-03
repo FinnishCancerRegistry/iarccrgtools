@@ -126,7 +126,6 @@ get_tool_work_dir <- function(tool.name, hash) {
 #' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
 #' use when writing
 #'
-#' @importFrom data.table fwrite setDF
 #' @export
 write_tools_data <- function(
   x,
@@ -304,7 +303,6 @@ n_file_lines <- function(path) {
 #' saved for use by IARC CRG Tools. If IARC CRG Tools adds a column in addition
 #' to the ones you had in input data, that column will gain the name
 #' `"tool_text"` automatically.
-#' @importFrom data.table setnames
 #' @export
 read_tools_results <- function(
   tool.name,
@@ -475,7 +473,6 @@ guess_table_header_and_footer_sizes <- function(
 
 
 
-#' @importFrom data.table fread
 read_matching_table_rows <- function(
   file,
   pattern,
@@ -510,8 +507,6 @@ read_matching_table_rows <- function(
 }
 
 
-
-#' @importFrom data.table fread
 read_table_without_header_and_footer <- function(
   file,
   n.header.lines = NULL,

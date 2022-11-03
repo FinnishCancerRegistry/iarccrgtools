@@ -38,20 +38,20 @@ If this package is somehow unloaded or reloaded, the setting will reset.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_tools_exe_path}: sets path to .exe
+\item \code{set_tools_exe_path()}: sets path to .exe
 
-\item \code{get_tools_exe_path}: gets currently saved path to .exe;
+\item \code{get_tools_exe_path()}: gets currently saved path to .exe;
 value will be \code{NA_character_} if no path has been set yet.
 
-\item \code{guess_tools_exe_dir_path}: tries to guess where the executable is
+\item \code{guess_tools_exe_dir_path()}: tries to guess where the executable is
 
-\item \code{get_tools_install_dir_path}: gets currently saved path to directory where
+\item \code{get_tools_install_dir_path()}: gets currently saved path to directory where
 IARC CRG Tools is installed
 
-\item \code{get_tool_exe_dir_path}: subdir of \code{iarccrgtools::get_tools_install_dir_path()} output where
+\item \code{get_tool_exe_dir_path()}: subdir of \code{iarccrgtools::get_tools_install_dir_path()} output where
 tool-specfic executables live
 
-\item \code{guess_tools_exe_path}: tries to guess where the main executable is based on
+\item \code{guess_tools_exe_path()}: tries to guess where the main executable is based on
 typical installation directories
-}}
 
+}}

@@ -42,8 +42,54 @@ Write data for IARC CRG Tools and read it back into R after the run
 has finished.
 }
 \details{
-\itemize{
-\item \code{connect_tool_results_to_observations} returns a \code{data.table} with
+\code{iarccrgtools::interact_with_tool} performs the following steps.
+First, a subset of columns from \code{data} is collected based on \code{tool.name}.
+Then the cache is checked for pre-existing results for the given
+\code{data} and \code{tool.name}. See e.g. \verb{[iarccrgtools::cache_metadata_read]}.
+If pre-existing results are found, the user is prompted whether to use
+the pre-existing results from disk and skip IARC CRG Tools altogether,
+or to proceed to running IARC CRG Tools (again).
+If there were no cached results / the user did not want to read them,
+\verb{[iarccrgtools::write_tools_data]} is called.
+Cache metadata is then updated by calling
+\verb{[iarccrgtools::cache_metadata_append_or_replace]}.
+iarccrgtools attempts to write (sensible, default) parameters
+(e.g. path to input / output) for use by IARC CRG Tools.
+The user has the responsibility to make sure that the parameters
+are correct for their dataset. You will see them when you run IARC CRG
+Tools.
+The location of the parameter is fairly involved because IARC CRG Tools
+is an older programme. Newer versions of Windows do not allow the user to
+write anything into the dir where IARC CRG Tools is installed, which
+IARC CRG Tools nevertheless wants to do. Microsoft has solved this by
+creating a "virtual" directory where the user can write stuff.
+However, in some situations (e.g. with admin permissions) you ARE able to
+write into the IARC CRG Tools installation dir. So first the dir given by
+\verb{[iarccrgtools::get_tool_exe_dir_path]} is tested, whether it is writable
+or not. If it is, the parameter file will be stored there. If not,
+the virtual dir as attempted to be used.
+The virtual dir is assumed to be found at
+"\%LOCALAPPDATA\%\VirtualStore\Program Files (x86)\IARCcrgTools\pgm\".
+It is attempted to be
+created if it does not exist. It is possible that there are versions of
+Windows where this will not work, either because the virtual dir has a
+different location or maybe because virtual dirs are not used at all.
+If all else fails, IARC CRG Tools works best with admin permissions.
+If R package iarccrgtools contains pre-defined (default) settings
+(e.g. positions of specific columns in the file on disk), those are
+written into the dir given by \verb{[iarccrgtools::get_tool_work_dir]}.
+The user has the responsibility to make sure that the settings
+are correct for their dataset. You will see them when you run IARC CRG
+Tools.
+With the data and parameters in place, the user is next informed what
+they have to do in IARC CRG Tools.
+When permission is given to read the data into R,
+\verb{[iarccrgtools::read_tools_results]} is called.
+Finally, if \code{clean = TRUE}, \verb{[iarccrgtools::cache_clean_hash]} for the
+hash of the dataset given by the user.
+
+\code{iarccrgtools::connect_tool_results_to_observations}
+returns a \code{data.table} with
 \code{length(record.ids)} rows; it has column
 \code{record_id} and additional columns depending on results in
 \code{tool.results}; this function goes through each object in \code{tool.results}
@@ -53,5 +99,4 @@ each record appearing in that \code{data.table} is marked in the output
 and any text in \code{tool_text} is collected into a separate column
 (e.g. \code{multiple_primary_input.exl}); therefore the columns in the output of
 \code{connect_tool_results_to_observations} vary by tool used.
-}
 }

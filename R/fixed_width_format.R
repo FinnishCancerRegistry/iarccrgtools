@@ -48,7 +48,6 @@ format_fwf.Date <- function(x, width) {
 
 #' @rdname fwf
 #' @export
-#' @importFrom data.table setDT setnames fwrite
 #' @param path `[character]` (mandatory, no default)
 #' 
 #' - `write_fwf`: path to write to

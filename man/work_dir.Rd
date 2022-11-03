@@ -43,13 +43,13 @@ results for the "check" tool.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_tools_work_dir}: sets working directory
+\item \code{set_tools_work_dir()}: sets working directory
 
-\item \code{get_tools_work_dir}: gets current root working directory as string;
+\item \code{get_tools_work_dir()}: gets current root working directory as string;
 e.g. \code{"C:\\\\iarc\\\\"}
 
-\item \code{get_tool_work_dir}: gets the working directory of an individual tool and
+\item \code{get_tool_work_dir()}: gets the working directory of an individual tool and
 dataset under the main working directory set by \code{set_tools_work_dir};
 e.g. \code{"C:\\\\iarc\\\\check\\\\hash_213io3\\\\"}
-}}
 
+}}
