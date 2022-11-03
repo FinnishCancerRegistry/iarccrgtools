@@ -18,12 +18,17 @@ parameter_file_path <- function() {
   if (!filesystem_dir_path_is_writable(dir_path)) {
     virtual_dir_path <- parameter_dir_path_virtual()
     if (!dir.exists(virtual_dir_path)) {
-      stop("Could not determine location of parameter.dat --- dir ",
-           deparse(virtual_dir_path), " does not exist and ",
+      result <- tryCatch(dir.create(virtual_dir_path, recursive = TRUE),
+                         error = function(e) e)
+      if (inherits(result, "error")) {
+        stop(
+          "Could not select location of parameter.dat --- dir ",
+          deparse(virtual_dir_path), " did not exist and could not be created ",
+          ", and ",
            deparse(dir_path),
-           " is not writeable; ",
-           "this is an internal error, if you see this you should complain to ",
-           "the package maintainer; a work-around may be to run R as an admin")
+          " is not writeable; see ?iarccrgtools::interact_with_tool"
+        )
+      }
     }
     dir_path <- virtual_dir_path
   }
