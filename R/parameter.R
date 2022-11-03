@@ -3,7 +3,7 @@
 parameter_dir_path_virtual <- function() {
   # @codedoc_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
   # The virtual dir is assumed to be found at
-  # "%LOCALAPPDATA%\VirtualStore\Program Files (x86)\IARCcrgTools\pgm\".
+  # `%LOCALAPPDATA%/VirtualStore/Program Files (x86)/IARCcrgTools/pgm/`.
   # @codedoc_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
   filesystem_path_normalise(paste0(
     Sys.getenv("LOCALAPPDATA"),

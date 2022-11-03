@@ -69,7 +69,7 @@ write into the IARC CRG Tools installation dir. So first the dir given by
 or not. If it is, the parameter file will be stored there. If not,
 the virtual dir as attempted to be used.
 The virtual dir is assumed to be found at
-"\%LOCALAPPDATA\%\VirtualStore\Program Files (x86)\IARCcrgTools\pgm\".
+\verb{\%LOCALAPPDATA\%/VirtualStore/Program Files (x86)/IARCcrgTools/pgm/}.
 It is attempted to be
 created if it does not exist. It is possible that there are versions of
 Windows where this will not work, either because the virtual dir has a
