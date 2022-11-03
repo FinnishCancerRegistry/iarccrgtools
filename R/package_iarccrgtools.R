@@ -1,13 +1,16 @@
 
-
-#' @title iarccrgtools: Using IARC CRG Tools via R
+#' iarccrgtools
+#'
 #' @name iarccrgtools
 #' @docType package
-#' @description
-#' Contains functions to make using IARC CRG Tools easier with R,
-#' including writing and reading IARC CRG Tools input/output files and
-#' guided or automatic use of IARC CRG Tools itself.
-#' See \code{\link{interact_with_tool}}.
-#'
+#' @title Package `iarccrgtools`
+#' @eval c(
+#'   codedoc::codedoc_news_for_R_package(),
+#'   codedoc::codedoc_R_package_description("iarccrgtools")
+#' )
 NULL
 
+
+# @codedoc_comment_block R_package_description(iarccrgtools)
+# Utilities for using IARC CRG Tools on Windows via R.
+# @codedoc_comment_block R_package_description(iarccrgtools)

@@ -282,8 +282,10 @@ automate_tool <- function(
 #' - `FALSE`: all files are left to be in peace
 #' @template verbose
 #' @export
-#' @eval codedoc::codedoc_lines(
+#' @eval c(
+#' codedoc::codedoc_lines(
 #'   "^details\\(iarccrgtools::interact_with_tool\\)$"
+#' )
 #' )
 interact_with_tool <- function(
     data,
@@ -291,6 +293,11 @@ interact_with_tool <- function(
     clean = FALSE,
     verbose = FALSE
 ) {
+  # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2022-11-03", "0.2.28")
+  # Document what steps `iarccrgtools::interact_with_tool` performs, in
+  # particular caching and parameter/setting files.
+  # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2022-11-03", "0.2.28")
+  
   # @codedoc_comment_block details(iarccrgtools::interact_with_tool)
   # @details
   # `iarccrgtools::interact_with_tool` performs the following steps.

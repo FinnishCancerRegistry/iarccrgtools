@@ -3,10 +3,28 @@
 \docType{package}
 \name{iarccrgtools}
 \alias{iarccrgtools}
-\title{iarccrgtools: Using IARC CRG Tools via R}
+\title{Package \code{iarccrgtools}}
 \description{
-Contains functions to make using IARC CRG Tools easier with R,
-including writing and reading IARC CRG Tools input/output files and
-guided or automatic use of IARC CRG Tools itself.
-See \code{\link{interact_with_tool}}.
+iarccrgtools
+
+Utilities for using IARC CRG Tools on Windows via R.
 }
+\section{News}{
+
+\subsection{News for version 0.2.28}{
+\subsection{Object iarccrgtools::interact_with_tool news:}{
+
+If the virtual directory does not exist, it is now attempted to be
+created. See ?iarccrgtools::interact_with_tool for information about
+what the virtual directory is.
+}
+
+\subsection{Object iarccrgtools::interact_with_tool news:}{
+
+Document what steps \code{iarccrgtools::interact_with_tool} performs, in
+particular caching and parameter/setting files.
+}
+
+}
+}
+

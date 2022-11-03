@@ -43,6 +43,11 @@ parameter_file_path <- function() {
   if (!filesystem_dir_path_is_writable(dir_path)) {
     virtual_dir_path <- parameter_dir_path_virtual()
     if (!dir.exists(virtual_dir_path)) {
+      # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2022-11-03", "0.2.28")
+      # If the virtual directory does not exist, it is now attempted to be
+      # created. See ?iarccrgtools::interact_with_tool for information about
+      # what the virtual directory is.
+      # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2022-11-03", "0.2.28")
       result <- tryCatch(dir.create(virtual_dir_path, recursive = TRUE),
                          error = function(e) e)
       if (inherits(result, "error")) {
