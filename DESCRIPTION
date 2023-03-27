@@ -7,7 +7,8 @@ Maintainer: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Description: Utilities for using IARC CRG Tools on Windows via R.
 Imports:
     data.table,
-    digest
+    digest,
+    fwf (>= 0.1.0)
 Depends:
     R (>= 2.10)
 Suggests:
@@ -21,3 +22,5 @@ RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/FinnishCancerRegistry/iarccrgtools
 BugReports: https://github.com/FinnishCancerRegistry/iarccrgtools/issues
+Remotes:
+    github::FinnishCancerRegistry/fwf

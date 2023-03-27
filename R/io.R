@@ -96,11 +96,15 @@ get_tool_work_dir <- function(tool.name, hash) {
 #'
 #' if `TRUE`, the function emits messages during it's run to let you know
 #' what's happening
-#' @param ...
+#' @param fwrite_arg_list `[NULL, list]`
 #'
-#' arguments passed to [write_fwf];
-#' e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
-#' use when writing
+#' Passed to [fwf::fwf_write] arg `fwrite_arg_list`. The following defaults are
+#' internally:
+#' - `sep = ";"`
+#' - `dec = ","`
+#' - `quote = FALSE`
+#' - `row.names = FALSE`
+#' - `col.names = FALSE`
 #'
 #' @export
 write_tools_data <- function(
@@ -109,7 +113,7 @@ write_tools_data <- function(
   file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
-  ...
+  fwrite_arg_list = NULL
 ) {
   assert_is_logical_nonNA_atom(verbose)
   assert_dataframe(x)
@@ -217,16 +221,20 @@ write_tools_data <- function(
     NULL
   })
 
-  iarccrgtools::write_fwf(
-    x = x,
-    widths = expected_widths,
-    path = file,
+  user_fwrite_arg_list <- as.list(fwrite_arg_list)
+  fwrite_arg_list <- list(
     sep = ";",
     dec = ",",
     quote = FALSE,
     row.names = FALSE,
-    col.names = FALSE,
-    ...
+    col.names = FALSE
+  )
+  fwrite_arg_list[names(user_fwrite_arg_list)] <- user_fwrite_arg_list
+  fwf::fwf_write(
+    x = x,
+    path = file,
+    widths = expected_widths,
+    fwrite_arg_list = fwrite_arg_list
   )
   if (verbose) {
     message(

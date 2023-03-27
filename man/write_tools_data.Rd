@@ -10,7 +10,7 @@ write_tools_data(
   file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::get_tools_work_dir()),
   overwrite = NULL,
   verbose = FALSE,
-  ...
+  fwrite_arg_list = NULL
 )
 }
 \arguments{
@@ -39,9 +39,17 @@ an error
 if \code{TRUE}, the function emits messages during it's run to let you know
 what's happening}
 
-\item{...}{arguments passed to \link{write_fwf};
-e.g. try \code{nThread = x} where \code{x} is a desired number of cores to
-use when writing}
+\item{fwrite_arg_list}{\verb{[NULL, list]}
+
+Passed to \link[fwf:fwf]{fwf::fwf_write} arg \code{fwrite_arg_list}. The following defaults are
+internally:
+\itemize{
+\item \code{sep = ";"}
+\item \code{dec = ","}
+\item \code{quote = FALSE}
+\item \code{row.names = FALSE}
+\item \code{col.names = FALSE}
+}}
 }
 \description{
 A text file is written in a fixed field format.
