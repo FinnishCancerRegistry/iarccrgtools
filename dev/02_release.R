@@ -1,15 +1,21 @@
 
-library("usethis")
+message("which number to bump in version? [major/minor/patch]")
+desc::desc_bump_version(readline(": "))
 
-# increment version + commit
-usethis::use_version()
+message("automatically tag version? [y/n]")
+if (readline(": ") == "y") {
+  s1 <- git2r::status()
+  git2r::add(path = "DESCRIPTION")
+  s2 <- git2r::status()
+  if (!identical(s1, s2)) {
+    new_v <- desc::desc_get_version()
+    system2("git", c("commit", paste0("-m \"build: v", new_v, "\"")))
+    system2("git", c("tag", paste0("v", new_v)))
+  }
+}
 
-# tag this version with the command:
-# git tag vX.Y.Z
-# e.g.
-# git tag v0.2.28
-
-# remember to push commits with e.g.
-# git push
-# and to push tags with
-# git push --tags
+message("push commits and tags? [y/n]")
+if (readline(": ") == "y") {
+  system2("git", c("push"))
+  system2("git", c("push", "--tags"))
+}
