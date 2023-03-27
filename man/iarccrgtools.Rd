@@ -11,6 +11,15 @@ Utilities for using IARC CRG Tools on Windows via R.
 }
 \section{News}{
 
+\subsection{News for version 0.2.29}{
+\subsection{Object iarccrgtools::create_example news:}{
+
+\code{iarccrgtools::create_example} permanently removed. Use
+\code{iarccrgtools::tool_colnameset_example_dataset}.
+}
+
+}
+
 \subsection{News for version 0.2.28}{
 \subsection{Object iarccrgtools::interact_with_tool news:}{
 

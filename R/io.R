@@ -1,28 +1,4 @@
 
-
-
-
-
-
-
-#' @title Example Datasets
-#' @description
-#' DEPRECATED, use `[iarccrgtools::tool_colnameset_example_dataset]`.
-#' @param ...
-#'
-#' Unused, this function has been deprecated.
-#' @export
-create_example <- function(
-  ...
-) {
-  stop("iarccrgtools::create_example deprecated; use ",
-       "iarccrgtools::tool_colnameset_example_dataset.")
-}
-
-
-
-
-
 #' @name work_dir
 #' @title IARC CRG Tools Working Directory
 #' @description
