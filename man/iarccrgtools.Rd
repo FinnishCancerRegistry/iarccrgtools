@@ -11,6 +11,26 @@ Utilities for using IARC CRG Tools on Windows via R.
 }
 \section{News}{
 
+\subsection{News for version 0.2.30}{
+\subsection{Object iarccrgtools::format_fwf news:}{
+
+\code{iarccrgtools::format_fwf} permanently removed.
+}
+
+\subsection{Object iarccrgtools::read_fwf news:}{
+
+\code{iarccrgtools::read_fwf} permanently removed. Use
+\code{fwf::fwf_read}.
+}
+
+\subsection{Object iarccrgtools::write_fwf news:}{
+
+\code{iarccrgtools::write_fwf} permanently removed. Use
+\code{fwf::fwf_write}.
+}
+
+}
+
 \subsection{News for version 0.2.29}{
 \subsection{Object iarccrgtools::create_example news:}{
 
