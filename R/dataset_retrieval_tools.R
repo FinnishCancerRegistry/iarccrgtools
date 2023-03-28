@@ -1,5 +1,4 @@
 
-
 get_exported_dataset <- function(dataset.name) {
   stopifnot(
     length(dataset.name) == 1,
@@ -20,10 +19,6 @@ get_exported_dataset <- function(dataset.name) {
   e[[dataset.name]]
 }
 
-
-
-
-
 get_internal_dataset <- function(dataset.name) {
   stopifnot(
     length(dataset.name) == 1,
@@ -43,4 +38,3 @@ get_internal_dataset <- function(dataset.name) {
   }
   return(result[])
 }
-

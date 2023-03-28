@@ -11,6 +11,47 @@ Utilities for using IARC CRG Tools on Windows via R.
 }
 \section{News}{
 
+\subsection{News for version 0.3.0}{
+\subsection{Object iarccrgtools::get_tool_exe_dir_path news:}{
+
+\code{iarccrgtools::get_tool_exe_dir_path} no longer usable.
+}
+
+\subsection{Object iarccrgtools::get_tools_exe_path news:}{
+
+\code{iarccrgtools::get_tools_exe_path} no longer usable ---
+use `iarccrgtools::iarc_exe_path_get``.
+}
+
+\subsection{Object iarccrgtools::get_tools_install_dir_path news:}{
+
+\code{iarccrgtools::get_tools_install_dir_path} no longer usable.
+}
+
+\subsection{Object iarccrgtools::guess_tools_exe_dir_path news:}{
+
+\code{iarccrgtools::guess_tools_exe_dir_path} no longer usable.
+}
+
+\subsection{Object iarccrgtools::guess_tools_exe_path news:}{
+
+\code{iarccrgtools::guess_tools_exe_path} no longer usable ---
+use `iarccrgtools::iarc_exe_path_guess``.
+}
+
+\subsection{Object iarccrgtools::iarc_exe_dir_path_guess news:}{
+
+\code{iarccrgtools::iarc_exe_dir_path_guess} no longer usable.
+}
+
+\subsection{Object iarccrgtools::set_tools_exe_path news:}{
+
+\code{iarccrgtools::set_tools_exe_path} no longer usable ---
+use `iarccrgtools::iarc_exe_path_set``.
+}
+
+}
+
 \subsection{News for version 0.2.30}{
 \subsection{Object iarccrgtools::format_fwf news:}{
 

@@ -15,7 +15,7 @@ parameter_file_path <- function() {
   # @codedoc_comment_block iarccrgtools:::parameter_file_path
   # `iarccrgtools:::parameter_file_path` returns a string, the path to the
   # parameter file. The parameter file is assumed to live in either the
-  # dir given by `[iarccrgtools::get_tool_exe_dir_path]`, if it is writable,
+  # dir `pgm` in the IARC CRG Tools installation dir, if it is writable,
   # or in `${iarccrgtools:::parameter_dir_path_virtual()}` otherwise.
   # If `${iarccrgtools:::parameter_dir_path_virtual()}` does not exist, it is
   # attempted to be created.
@@ -28,8 +28,8 @@ parameter_file_path <- function() {
   # IARC CRG Tools nevertheless wants to do. Microsoft has solved this by
   # creating a "virtual" directory where the user can write stuff.
   # However, in some situations (e.g. with admin permissions) you ARE able to
-  # write into the IARC CRG Tools installation dir. So first the dir given by
-  # `[iarccrgtools::get_tool_exe_dir_path]` is tested, whether it is writable
+  # write into the IARC CRG Tools installation dir. So first the subdir `pgm`
+  # is tested, whether it is writable
   # or not. If it is, the parameter file will be stored there. If not,
   # the virtual dir as attempted to be used.
   # @codedoc_insert_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
@@ -39,7 +39,7 @@ parameter_file_path <- function() {
   # different location or maybe because virtual dirs are not used at all.
   # If all else fails, IARC CRG Tools works best with admin permissions.
   # @codedoc_comment_block details(iarccrgtools:::parameter_file_path)
-  dir_path <- iarccrgtools::get_tool_exe_dir_path()
+  dir_path <- iarc_toolexe_dir_path()
   if (!filesystem_dir_path_is_writable(dir_path)) {
     virtual_dir_path <- parameter_dir_path_virtual()
     if (!dir.exists(virtual_dir_path)) {

@@ -12,53 +12,67 @@
 #' temporary directory if you don't want to store any results
 #' (see [base::tempdir]).
 #'
-#' The tools working directory set by `set_tools_work_dir` will itself be
+#' The tools working directory set by `iarc_workdir_set` will itself be
 #' populated by tool-specific directories, e.g. `"my_dir/check/"` will contain
 #' results for the "check" tool.
 NULL
 
-#' @describeIn work_dir sets working directory
-#' @param dir string; path to a directory
+#' @describeIn work_dir Set working directory, directory where IARC CRG Tools
+#' input and output data will be written.
+#' @param dir `[character]` (no default)
+#' 
+#' Path to an existing directory. This will be the working directory.
+#' 
 #' @export
-set_tools_work_dir <- function(dir) {
+iarc_workdir_set <- function(dir) {
   assert_dir_path(dir)
   dir <- filesystem_path_normalise(dir)
   assign(x = "path", value = dir, envir = wd_env)
 }
-
-#' @describeIn work_dir gets current root working directory as string;
-#' e.g. `"C:\\iarc\\"`
+#' @describeIn work_dir Deprecated.
 #' @export
-get_tools_work_dir <- function() {
+set_tools_work_dir <- function(dir) {
+  stop("set_tools_work_dir no longer usable --- use iarc_workdir_set")
+}
+
+#' @describeIn work_dir Get currently set working directory for IARC CRG Tools.
+#' @export
+iarc_workdir_get <- function() {
   if (identical(wd_env$path, FALSE)) {
     stop("Working directory for IARC CRG Tools not set --- ",
-         "see ?set_tools_work_dir")
+         "see ?iarc_workdir_set")
   } else if (!dir.exists(wd_env$path)) {
     stop("Supplied IARC CRG Tools root working directory does not exist: ",
-         deparse(wd_env$path), "; see ?set_tools_work_dir")
+         deparse(wd_env$path), "; see ?iarc_workdir_set")
   }
   wd_env$path
 }
 wd_env <- new.env(parent = emptyenv())
 wd_env$path <- FALSE
 
-#' @describeIn work_dir gets the working directory of an individual tool and
-#' dataset under the main working directory set by `set_tools_work_dir`;
-#' e.g. `"C:\\iarc\\check\\hash_213io3\\"`
+#' @describeIn work_dir Deprecated.
+#' @export
+get_tools_work_dir <- function() {
+  stop("get_tools_work_dir no longer usable --- use iarc_workdir_get")
+}
+
+#' @describeIn work_dir Get tool-specific working directory for IARC CRG Tools.
+#' Each tool (e.g. "check") has its own subdir in the path given by
+#' `[iarccrgtools::iarc_workdir_get]`.
 #' @export
 #' @template tool_name
 #' @param hash `[character]` (no default)
 #'
 #' Hash of an input dataset; get working directory for `tool.name` and this
 #' dataset.
-get_tool_work_dir <- function(tool.name, hash) {
+iarc_toolworkdir_get <- function(tool.name, hash) {
   assert_tool(tool.name = tool.name)
   stopifnot(
     is.character(hash),
     length(hash) == 1,
     !is.na(hash)
   )
-  dir_path <- iarccrgtools::get_tools_work_dir()
+  dir_path <- iarccrgtools::iarc_workdir_get()
   dir_path <- filesystem_path_normalise(paste0(dir_path, "\\", tool.name))
   if (!dir.exists(dir_path)) {
     dir.create(dir_path)
@@ -71,7 +85,11 @@ get_tool_work_dir <- function(tool.name, hash) {
   }
   return(dir_path)
 }
-
+#' @describeIn work_dir Deprecated.
+#' @export
+get_tool_work_dir <- function(tool.name, hash) {
+  stop("get_tool_work_dir no longer usable --- use iarc_toolworkdir_get")
+}
 
 
 
@@ -110,7 +128,7 @@ get_tool_work_dir <- function(tool.name, hash) {
 write_tools_data <- function(
   x,
   colnameset.name = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::get_tools_work_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::iarc_workdir_get()),
   overwrite = NULL,
   verbose = FALSE,
   fwrite_arg_list = NULL
@@ -295,7 +313,7 @@ read_tools_results <- function(
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- iarccrgtools::get_tool_work_dir(tool.name = tool.name, hash = hash)
+  dir <- iarccrgtools::iarc_toolworkdir_get(tool.name = tool.name, hash = hash)
 
   file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 
@@ -530,26 +548,3 @@ read_table_without_header_and_footer <- function(
   arg_list[names(ddd)] <- ddd
   do.call(data.table::fread, arg_list)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -64,8 +64,8 @@ write anything into the dir where IARC CRG Tools is installed, which
 IARC CRG Tools nevertheless wants to do. Microsoft has solved this by
 creating a "virtual" directory where the user can write stuff.
 However, in some situations (e.g. with admin permissions) you ARE able to
-write into the IARC CRG Tools installation dir. So first the dir given by
-\verb{[iarccrgtools::get_tool_exe_dir_path]} is tested, whether it is writable
+write into the IARC CRG Tools installation dir. So first the subdir \code{pgm}
+is tested, whether it is writable
 or not. If it is, the parameter file will be stored there. If not,
 the virtual dir as attempted to be used.
 The virtual dir is assumed to be found at
@@ -77,7 +77,7 @@ different location or maybe because virtual dirs are not used at all.
 If all else fails, IARC CRG Tools works best with admin permissions.
 If R package iarccrgtools contains pre-defined (default) settings
 (e.g. positions of specific columns in the file on disk), those are
-written into the dir given by \verb{[iarccrgtools::get_tool_work_dir]}.
+written into the dir given by \verb{[iarccrgtools::iarc_toolworkdir_get]}.
 The user has the responsibility to make sure that the settings
 are correct for their dataset. You will see them when you run IARC CRG
 Tools.

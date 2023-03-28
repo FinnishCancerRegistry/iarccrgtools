@@ -23,7 +23,7 @@ cache_metadata_file_name <- function() {
 #' `[iarccrgtools::cache_metadata_file_path]` returns a string, the path
 #' to the cache metadata.
 cache_metadata_file_path <- function() {
-  dir_path <- iarccrgtools::get_tools_work_dir()
+  dir_path <- iarccrgtools::iarc_workdir_get()
   file_path <- paste0(dir_path, "/", iarccrgtools::cache_metadata_file_name())
   filesystem_path_normalise(file_path)
 }

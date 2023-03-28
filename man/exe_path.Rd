@@ -2,28 +2,42 @@
 % Please edit documentation in R/zzz_executable.R
 \name{exe_path}
 \alias{exe_path}
+\alias{iarc_exe_path_set}
 \alias{set_tools_exe_path}
+\alias{iarc_exe_path_get}
 \alias{get_tools_exe_path}
+\alias{iarc_exe_path_guess}
+\alias{guess_tools_exe_path}
+\alias{iarc_exe_dir_path_guess}
 \alias{guess_tools_exe_dir_path}
 \alias{get_tools_install_dir_path}
 \alias{get_tool_exe_dir_path}
-\alias{guess_tools_exe_path}
 \title{IARC CRG Tools Executable Path}
 \usage{
+iarc_exe_path_set(path)
+
 set_tools_exe_path(path)
 
+iarc_exe_path_get()
+
 get_tools_exe_path()
+
+iarc_exe_path_guess()
+
+guess_tools_exe_path()
+
+iarc_exe_dir_path_guess()
 
 guess_tools_exe_dir_path()
 
 get_tools_install_dir_path()
 
 get_tool_exe_dir_path()
-
-guess_tools_exe_path()
 }
 \arguments{
-\item{path}{path to IARC CRG Tools executable}
+\item{path}{\verb{[character]} (no defaukt)
+
+Path to IARC CRG Tools main executable.}
 }
 \description{
 Set and get path to IARC CRG Tools executable.
@@ -38,20 +52,28 @@ If this package is somehow unloaded or reloaded, the setting will reset.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_tools_exe_path()}: sets path to .exe
+\item \code{iarc_exe_path_set()}: Sets path to IARC CRG Tools main executable.
 
-\item \code{get_tools_exe_path()}: gets currently saved path to .exe;
-value will be \code{NA_character_} if no path has been set yet.
+\item \code{set_tools_exe_path()}: Deprecated.
 
-\item \code{guess_tools_exe_dir_path()}: tries to guess where the executable is
+\item \code{iarc_exe_path_get()}: Get currently set path to IARC CRG Tools main
+executable.
 
-\item \code{get_tools_install_dir_path()}: gets currently saved path to directory where
-IARC CRG Tools is installed
+\item \code{get_tools_exe_path()}: Deprecated.
 
-\item \code{get_tool_exe_dir_path()}: subdir of \code{iarccrgtools::get_tools_install_dir_path()} output where
-tool-specfic executables live
+\item \code{iarc_exe_path_guess()}: Guesses location of IARC CRG Tools main executable
+based on usual installation locations. This will work if you have
+Installed IARC CRG Tools in either \verb{C:/Program Files (x86)/IARCcrgTools"}
+or \code{"C:/Program Files/IARCcrgTools"}.
 
-\item \code{guess_tools_exe_path()}: tries to guess where the main executable is based on
-typical installation directories
+\item \code{guess_tools_exe_path()}: Deprecated.
+
+\item \code{iarc_exe_dir_path_guess()}: Deprecated.
+
+\item \code{guess_tools_exe_dir_path()}: Deprecated.
+
+\item \code{get_tools_install_dir_path()}: Deprecated.
+
+\item \code{get_tool_exe_dir_path()}: Deprecated.
 
 }}

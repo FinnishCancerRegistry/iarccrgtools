@@ -74,7 +74,7 @@ interface_with_tool <- function(
   # `data` and `tool.name`. See e.g. `[iarccrgtools::cache_metadata_read]`.
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   current_hash <- iarccrgtools::cache_hash(data)
-  tool_work_dir_path <- iarccrgtools::get_tool_work_dir(tool.name, current_hash)
+  tool_work_dir_path <- iarccrgtools::iarc_toolworkdir_get(tool.name, current_hash)
   input_file_path <- tool_input_file_path(
     dir = tool_work_dir_path,
     tool.name = tool.name
@@ -152,7 +152,7 @@ interface_with_tool <- function(
       # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
       # If R package iarccrgtools contains pre-defined (default) settings
       # (e.g. positions of specific columns in the file on disk), those are
-      # written into the dir given by `[iarccrgtools::get_tool_work_dir]`.
+      # written into the dir given by `[iarccrgtools::iarc_toolworkdir_get]`.
       # The user has the responsibility to make sure that the settings
       # are correct for their dataset. You will see them when you run IARC CRG
       # Tools.
@@ -170,7 +170,7 @@ interface_with_tool <- function(
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "automatically...")
 
-        tool_exe_call(tool.name = tool.name)
+        iarc_toolexe_call(tool.name = tool.name)
       },
       interactively = {
         # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
@@ -179,7 +179,7 @@ interface_with_tool <- function(
         # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
         output_path <- tool_output_file_paths(
           tool.name = tool.name,
-          dir = iarccrgtools::get_tool_work_dir(tool.name, hash = current_hash)
+          dir = iarccrgtools::iarc_toolworkdir_get(tool.name, hash = current_hash)
         )[1L]
         message("* iarccrgtools::interface_with_tool: calling tools ",
                 "interactively...")

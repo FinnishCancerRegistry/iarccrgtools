@@ -7,7 +7,7 @@
 write_tools_data(
   x,
   colnameset.name = tool_colnameset_names()[1],
-  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::get_tools_work_dir()),
+  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::iarc_workdir_get()),
   overwrite = NULL,
   verbose = FALSE,
   fwrite_arg_list = NULL

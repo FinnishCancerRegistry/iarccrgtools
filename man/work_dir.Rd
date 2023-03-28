@@ -2,19 +2,30 @@
 % Please edit documentation in R/io.R
 \name{work_dir}
 \alias{work_dir}
+\alias{iarc_workdir_set}
 \alias{set_tools_work_dir}
+\alias{iarc_workdir_get}
 \alias{get_tools_work_dir}
+\alias{iarc_toolworkdir_get}
 \alias{get_tool_work_dir}
 \title{IARC CRG Tools Working Directory}
 \usage{
+iarc_workdir_set(dir)
+
 set_tools_work_dir(dir)
 
+iarc_workdir_get()
+
 get_tools_work_dir()
+
+iarc_toolworkdir_get(tool.name, hash)
 
 get_tool_work_dir(tool.name, hash)
 }
 \arguments{
-\item{dir}{string; path to a directory}
+\item{dir}{\verb{[character]} (no default)
+
+Path to an existing directory. This will be the working directory.}
 
 \item{tool.name}{\verb{[character]} (mandatory, no default)
 
@@ -37,19 +48,25 @@ recommended to be created by you manually in advance. You may also use a
 temporary directory if you don't want to store any results
 (see \link[base:tempfile]{base::tempdir}).
 
-The tools working directory set by \code{set_tools_work_dir} will itself be
+The tools working directory set by \code{iarc_workdir_set} will itself be
 populated by tool-specific directories, e.g. \code{"my_dir/check/"} will contain
 results for the "check" tool.
 }
 \section{Functions}{
 \itemize{
-\item \code{set_tools_work_dir()}: sets working directory
+\item \code{iarc_workdir_set()}: Set working directory, directory where IARC CRG Tools
+input and output data will be written.
 
-\item \code{get_tools_work_dir()}: gets current root working directory as string;
-e.g. \code{"C:\\\\iarc\\\\"}
+\item \code{set_tools_work_dir()}: Deprecated.
 
-\item \code{get_tool_work_dir()}: gets the working directory of an individual tool and
-dataset under the main working directory set by \code{set_tools_work_dir};
-e.g. \code{"C:\\\\iarc\\\\check\\\\hash_213io3\\\\"}
+\item \code{iarc_workdir_get()}: Get currently set working directory for IARC CRG Tools.
+
+\item \code{get_tools_work_dir()}: Deprecated.
+
+\item \code{iarc_toolworkdir_get()}: Get tool-specific working directory for IARC CRG Tools.
+Each tool (e.g. "check") has its own subdir in the path given by
+\verb{[iarccrgtools::iarc_workdir_get]}.
+
+\item \code{get_tool_work_dir()}: Deprecated.
 
 }}
