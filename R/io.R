@@ -232,7 +232,7 @@ iarc_output_read <- function(
   verbose = TRUE
 ) {
   assert_tool(tool.name = tool.name)
-  dir <- iarccrgtools::iarc_toolworkdir_get(tool.name = tool.name, hash = hash)
+  dir <- iarc_toolworkdir_get(tool.name = tool.name, hash = hash)
 
   file_paths <- tool_output_file_paths(tool.name = tool.name, dir = dir)
 
