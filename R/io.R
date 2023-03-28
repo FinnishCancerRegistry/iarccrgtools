@@ -1,98 +1,4 @@
 
-#' @name work_dir
-#' @title IARC CRG Tools Working Directory
-#' @description
-#' Get and set directory where input and output files of IARC CRG Tools
-#' are stored.
-#' @details
-#' The working directory is where files for IARC CRG Tools and created by
-#' IARC CRG Tools should live. This is not the same directory where the
-#' executable for IARC CRG Tools is. Instead, the working directory is
-#' recommended to be created by you manually in advance. You may also use a
-#' temporary directory if you don't want to store any results
-#' (see [base::tempdir]).
-#'
-#' The tools working directory set by `iarc_workdir_set` will itself be
-#' populated by tool-specific directories, e.g. `"my_dir/check/"` will contain
-#' results for the "check" tool.
-NULL
-
-#' @describeIn work_dir Set working directory, directory where IARC CRG Tools
-#' input and output data will be written.
-#' @param dir `[character]` (no default)
-#' 
-#' Path to an existing directory. This will be the working directory.
-#' 
-#' @export
-iarc_workdir_set <- function(dir) {
-  assert_dir_path(dir)
-  dir <- filesystem_path_normalise(dir)
-  assign(x = "path", value = dir, envir = wd_env)
-}
-#' @describeIn work_dir Deprecated.
-#' @export
-set_tools_work_dir <- function(dir) {
-  stop("set_tools_work_dir no longer usable --- use iarc_workdir_set")
-}
-
-#' @describeIn work_dir Get currently set working directory for IARC CRG Tools.
-#' @export
-iarc_workdir_get <- function() {
-  if (identical(wd_env$path, FALSE)) {
-    stop("Working directory for IARC CRG Tools not set --- ",
-         "see ?iarc_workdir_set")
-  } else if (!dir.exists(wd_env$path)) {
-    stop("Supplied IARC CRG Tools root working directory does not exist: ",
-         deparse(wd_env$path), "; see ?iarc_workdir_set")
-  }
-  wd_env$path
-}
-wd_env <- new.env(parent = emptyenv())
-wd_env$path <- FALSE
-
-#' @describeIn work_dir Deprecated.
-#' @export
-get_tools_work_dir <- function() {
-  stop("get_tools_work_dir no longer usable --- use iarc_workdir_get")
-}
-
-#' @describeIn work_dir Get tool-specific working directory for IARC CRG Tools.
-#' Each tool (e.g. "check") has its own subdir in the path given by
-#' `[iarccrgtools::iarc_workdir_get]`.
-#' @export
-#' @template tool_name
-#' @param hash `[character]` (no default)
-#'
-#' Hash of an input dataset; get working directory for `tool.name` and this
-#' dataset.
-iarc_toolworkdir_get <- function(tool.name, hash) {
-  assert_tool(tool.name = tool.name)
-  stopifnot(
-    is.character(hash),
-    length(hash) == 1,
-    !is.na(hash)
-  )
-  dir_path <- iarccrgtools::iarc_workdir_get()
-  dir_path <- filesystem_path_normalise(paste0(dir_path, "\\", tool.name))
-  if (!dir.exists(dir_path)) {
-    dir.create(dir_path)
-  }
-  dir_path <- filesystem_path_normalise(
-    paste0(dir_path, "/", "hash_", substring(hash, 1, 6))
-  )
-  if (!dir.exists(dir_path)) {
-    dir.create(dir_path)
-  }
-  return(dir_path)
-}
-#' @describeIn work_dir Deprecated.
-#' @export
-get_tool_work_dir <- function(tool.name, hash) {
-  stop("get_tool_work_dir no longer usable --- use iarc_toolworkdir_get")
-}
-
-
-
 #' @title Write File to Use as IARC CRG Tools Input
 #' @description
 #' A text file is written in a fixed field format.
@@ -306,7 +212,7 @@ n_file_lines <- function(path) {
 #' to the ones you had in input data, that column will gain the name
 #' `"tool_text"` automatically.
 #' @export
-read_tools_results <- function(
+iarc_result_read <- function(
   tool.name,
   hash,
   input.col.nms = NULL,
@@ -323,13 +229,15 @@ read_tools_results <- function(
     path_type <- names(file_paths)[i]
 
     if (verbose) {
-      message("* iarccrgtools::read_tools_results: attempting to read file from ",
-              deparse(unname(file_path)))
+      message(
+        "* iarccrgtools::iarc_result_read: attempting to read file from ",
+        deparse(unname(file_path))
+      )
     }
 
     if (!file.exists(file_path)) {
       if (verbose) {
-        message("* iarccrgtools::read_tools_results: file '", file_path,
+        message("* iarccrgtools::iarc_result_read: file '", file_path,
                 "' did not exist; ",
                 "returning NULL")
       }
@@ -338,7 +246,7 @@ read_tools_results <- function(
     n_lines <- n_file_lines(path = file_path)
     if (n_lines == 0) {
       if (verbose) {
-        message("* iarccrgtools::read_tools_results: file '", file_path,
+        message("* iarccrgtools::iarc_result_read: file '", file_path,
                 "' had zero rows; ",
                 "returning NULL")
       }
@@ -376,7 +284,7 @@ read_tools_results <- function(
       )
     }
     if (verbose) {
-      message("* iarccrgtools::read_tools_results: file successfully read ")
+      message("* iarccrgtools::iarc_result_read: file successfully read ")
     }
 
 
@@ -392,6 +300,18 @@ read_tools_results <- function(
 
   names(output_list) <- basename(file_paths)
   output_list
+}
+
+#' @describeIn iarc_result_read Deprecated --- use
+#' `iarccrgtools::iarc_result_read`.
+#' @export
+read_tools_results <- function(
+  tool.name,
+  hash,
+  input.col.nms = NULL,
+  verbose = TRUE
+) {
+  stop("Deprecated --- use iarccrgtools::iarc_result_read")
 }
 
 
@@ -416,63 +336,16 @@ readlines_from_to <- function(
   )
 
   file_con <- file(file, "r")
-  row <- 0L
-  while (row < from-1L) {
+  row_no <- 0L
+  while (row_no < from - 1L) {
     readLines(file_con, n = 1L, ...)
-    row <- row+1L
+    row <- row + 1L
   }
 
-  lines <- readLines(file_con, n = to+1L-from)
+  lines <- readLines(file_con, n = to + 1L - from)
   close(file_con)
   lines
 }
-
-
-
-
-guess_table_header_and_footer_sizes <- function(
-  file,
-  n.guessing.lines = 100,
-  data.regex = "^[0-9]+[;]"
-) {
-  assert_file_path(file)
-  stopifnot(
-    length(n.guessing.lines) == 1,
-    n.guessing.lines > 0
-  )
-  n_lines <- n_file_lines(file)
-
-  if (n_lines %in% 0:1) {
-    return(c(0L, 0L))
-  }
-
-  n.guessing.lines <- min(n.guessing.lines, n_lines)
-  header <- readLines(file, n = n.guessing.lines)
-  footer <- readlines_from_to(file = file,
-                              from = n_lines+1L - n.guessing.lines,
-                              to = n_lines)
-  hf <- list(header, footer)
-
-  n_hf_lines <- vapply(seq_along(hf), function(i) {
-    lines <- hf[[i]]
-
-    is_data <- grepl(
-      data.regex,
-      lines
-    )
-
-    tgt_value <- switch(as.character(i),
-                        "1" = 0L,
-                        "2" = sum(is_data))
-    add <- switch(as.character(i),
-                  "1" = 0L,
-                  "2" = -1L)
-    sum(cumsum(is_data) == tgt_value) + add
-  }, integer(1))
-
-  n_hf_lines
-}
-
 
 
 read_matching_table_rows <- function(
@@ -506,45 +379,4 @@ read_matching_table_rows <- function(
   }
 
   return(dt[])
-}
-
-
-read_table_without_header_and_footer <- function(
-  file,
-  n.header.lines = NULL,
-  n.footer.lines = NULL,
-  ...
-) {
-  requireNamespace("data.table")
-
-  if (is.null(n.header.lines) || is.null(n.footer.lines)) {
-    n_hf_lines <- guess_table_header_and_footer_sizes(file = file)
-    if (is.null(n.header.lines)) {
-      n.header.lines <- n_hf_lines[1]
-    }
-    if (is.null(n.footer.lines)) {
-      n.footer.lines <- n_hf_lines[2]
-    }
-  }
-  stopifnot(
-    n.header.lines >= 0,
-    length(n.header.lines) == 1,
-    n.header.lines %% 1 == 0,
-    n.footer.lines >= 0,
-    length(n.footer.lines) == 1,
-    n.footer.lines %% 1 == 0
-  )
-  assert_file_path(file)
-
-
-  arg_list <- list(
-    file = file,
-    sep = ";", dec = ",", header = FALSE, skip = n.header.lines,
-    nrow = n_file_lines(file) - n.header.lines - n.footer.lines,
-    quote = '"',
-    blank.lines.skip = TRUE
-  )
-  ddd <- list(...)
-  arg_list[names(ddd)] <- ddd
-  do.call(data.table::fread, arg_list)
 }

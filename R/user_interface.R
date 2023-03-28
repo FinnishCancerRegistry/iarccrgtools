@@ -2,7 +2,7 @@
 
 
 
-collect_tools_data <- function(
+iarc_dataset <- function(
     data,
     tool.name
 ) {
@@ -19,15 +19,11 @@ collect_tools_data <- function(
   miss_opt_col_nms <- setdiff(optional_col_nms, names(data))
   if (length(miss_opt_col_nms)) {
     used_set_name <- paste0("mandatory_", tool.name)
-    message("* iarccrgtools::collect_tools_data: ",
-            "the following optional columns were not found in data: ",
-            deparse(miss_opt_col_nms),
-            "; the tool will still probably work, but in a limited manner")
   }
   found_opt_col_nms <- setdiff(optional_col_nms, miss_opt_col_nms)
 
   col_nms <- c(mandatory_col_nms, found_opt_col_nms)
-  col_nms <- intersect(iarccrgtools::tool_colnameset("all"), col_nms) # to sort them
+  col_nms <- intersect(iarccrgtools::tool_colnameset("all"), col_nms) # sort
   df <- data.table::setDF(mget(col_nms, as.environment(data)))
   data.table::setattr(df, "colnameset_name", used_set_name)
   df
@@ -62,7 +58,7 @@ interface_with_tool <- function(
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   # First, a subset of columns from `data` is collected based on `tool.name`.
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
-  df <- collect_tools_data(data = data, tool.name = tool.name)
+  df <- iarc_dataset(data = data, tool.name = tool.name)
   colnameset_name <- attributes(df)[["colnameset_name"]]
   if (is.null(colnameset_name)) {
     raise_internal_error("Could not retrieve implied colnameset name for data.")
@@ -219,9 +215,9 @@ interface_with_tool <- function(
   }
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   # When permission is given to read the data into R,
-  # `[iarccrgtools::read_tools_results]` is called.
+  # `[iarccrgtools::iarc_result_read]` is called.
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
-  data_list <- iarccrgtools::read_tools_results(
+  data_list <- iarccrgtools::iarc_result_read(
     tool.name = tool.name,
     input.col.nms = col_nms,
     hash = current_hash

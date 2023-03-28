@@ -84,7 +84,7 @@ Tools.
 With the data and parameters in place, the user is next informed what
 they have to do in IARC CRG Tools.
 When permission is given to read the data into R,
-\verb{[iarccrgtools::read_tools_results]} is called.
+\verb{[iarccrgtools::iarc_result_read]} is called.
 Finally, if \code{clean = TRUE}, \verb{[iarccrgtools::cache_clean_hash]} for the
 hash of the dataset given by the user.
 
