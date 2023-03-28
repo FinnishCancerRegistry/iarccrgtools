@@ -77,7 +77,7 @@ different location or maybe because virtual dirs are not used at all.
 If all else fails, IARC CRG Tools works best with admin permissions.
 If R package iarccrgtools contains pre-defined (default) settings
 (e.g. positions of specific columns in the file on disk), those are
-written into the dir given by \verb{[iarccrgtools::iarc_toolworkdir_get]}.
+written into the dir given by \verb{[iarc_toolworkdir_get]}.
 The user has the responsibility to make sure that the settings
 are correct for their dataset. You will see them when you run IARC CRG
 Tools.

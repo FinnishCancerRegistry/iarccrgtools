@@ -17,6 +17,11 @@ Utilities for using IARC CRG Tools on Windows via R.
 \code{iarccrgtools::get_tool_exe_dir_path} no longer usable.
 }
 
+\subsection{Object iarccrgtools::get_tool_work_dir news:}{
+
+\code{iarccrgtools::get_tool_work_dir} no longer usable.
+}
+
 \subsection{Object iarccrgtools::get_tools_exe_path news:}{
 
 \code{iarccrgtools::get_tools_exe_path} no longer usable ---
@@ -26,6 +31,12 @@ use `iarccrgtools::iarc_exe_path_get``.
 \subsection{Object iarccrgtools::get_tools_install_dir_path news:}{
 
 \code{iarccrgtools::get_tools_install_dir_path} no longer usable.
+}
+
+\subsection{Object iarccrgtools::get_tools_work_dir news:}{
+
+\code{iarccrgtools::get_tools_work_dir} no longer usable ---
+use `iarccrgtools::iarc_workdir_get``.
 }
 
 \subsection{Object iarccrgtools::guess_tools_exe_dir_path news:}{
@@ -48,6 +59,12 @@ use `iarccrgtools::iarc_exe_path_guess``.
 
 \code{iarccrgtools::set_tools_exe_path} no longer usable ---
 use `iarccrgtools::iarc_exe_path_set``.
+}
+
+\subsection{Object iarccrgtools::set_tools_work_dir news:}{
+
+\code{iarccrgtools::set_tools_work_dir} no longer usable ---
+use `iarccrgtools::iarc_workdir_set``.
 }
 
 }

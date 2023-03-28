@@ -32,6 +32,10 @@ iarc_workdir_set <- function(dir) {
 #' @describeIn work_dir Deprecated.
 #' @export
 set_tools_work_dir <- function(dir) {
+  # @codedoc_comment_block news("iarccrgtools::set_tools_work_dir", "2023-03-28", "0.3.0")
+  # `iarccrgtools::set_tools_work_dir` no longer usable ---
+  # use `iarccrgtools::iarc_workdir_set``.
+  # @codedoc_comment_block news("iarccrgtools::set_tools_work_dir", "2023-03-28", "0.3.0")
   stop("set_tools_work_dir no longer usable --- use iarc_workdir_set")
 }
 
@@ -53,6 +57,10 @@ wd_env$path <- FALSE
 #' @describeIn work_dir Deprecated.
 #' @export
 get_tools_work_dir <- function() {
+  # @codedoc_comment_block news("iarccrgtools::get_tools_work_dir", "2023-03-28", "0.3.0")
+  # `iarccrgtools::get_tools_work_dir` no longer usable ---
+  # use `iarccrgtools::iarc_workdir_get``.
+  # @codedoc_comment_block news("iarccrgtools::get_tools_work_dir", "2023-03-28", "0.3.0")
   stop("get_tools_work_dir no longer usable --- use iarc_workdir_get")
 }
 
@@ -85,5 +93,8 @@ iarc_toolworkdir_get <- function(tool.name, hash) {
 #' Hash of an input dataset; get working directory for `tool.name` and this
 #' dataset.
 get_tool_work_dir <- function(tool.name, hash) {
+  # @codedoc_comment_block news("iarccrgtools::get_tool_work_dir", "2023-03-28", "0.3.0")
+  # `iarccrgtools::get_tool_work_dir` no longer usable.
+  # @codedoc_comment_block news("iarccrgtools::get_tool_work_dir", "2023-03-28", "0.3.0")
   stop("get_tool_work_dir no longer usable")
 }

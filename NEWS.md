@@ -6,6 +6,10 @@
 
 `iarccrgtools::get_tool_exe_dir_path` no longer usable.
 
+### Object iarccrgtools::get_tool_work_dir news:
+
+`iarccrgtools::get_tool_work_dir` no longer usable.
+
 ### Object iarccrgtools::get_tools_exe_path news:
 
 `iarccrgtools::get_tools_exe_path` no longer usable ---
@@ -14,6 +18,11 @@ use `iarccrgtools::iarc_exe_path_get``.
 ### Object iarccrgtools::get_tools_install_dir_path news:
 
 `iarccrgtools::get_tools_install_dir_path` no longer usable.
+
+### Object iarccrgtools::get_tools_work_dir news:
+
+`iarccrgtools::get_tools_work_dir` no longer usable ---
+use `iarccrgtools::iarc_workdir_get``.
 
 ### Object iarccrgtools::guess_tools_exe_dir_path news:
 
@@ -32,6 +41,11 @@ use `iarccrgtools::iarc_exe_path_guess``.
 
 `iarccrgtools::set_tools_exe_path` no longer usable ---
 use `iarccrgtools::iarc_exe_path_set``.
+
+### Object iarccrgtools::set_tools_work_dir news:
+
+`iarccrgtools::set_tools_work_dir` no longer usable ---
+use `iarccrgtools::iarc_workdir_set``.
 
 
 ## News for version 0.2.30
