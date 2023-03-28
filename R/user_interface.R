@@ -110,9 +110,9 @@ interface_with_tool <- function(
     }
     # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
     # If there were no cached results / the user did not want to read them,
-    # `[iarccrgtools::write_tools_data]` is called.
+    # `[iarccrgtools::iarc_input_write]` is called.
     # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
-    iarccrgtools::write_tools_data(
+    iarccrgtools::iarc_input_write(
       x = df, file = input_file_path, 
       colnameset.name = colnameset_name,
       verbose = verbose
@@ -215,9 +215,9 @@ interface_with_tool <- function(
   }
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
   # When permission is given to read the data into R,
-  # `[iarccrgtools::iarc_result_read]` is called.
+  # `[iarccrgtools::iarc_output_read]` is called.
   # @codedoc_comment_block details(iarccrgtools:::interface_with_tool)
-  data_list <- iarccrgtools::iarc_result_read(
+  data_list <- iarccrgtools::iarc_output_read(
     tool.name = tool.name,
     input.col.nms = col_nms,
     hash = current_hash

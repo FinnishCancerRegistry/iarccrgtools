@@ -31,7 +31,7 @@
 #' - `col.names = FALSE`
 #'
 #' @export
-write_tools_data <- function(
+iarc_input_write <- function(
   x,
   colnameset.name = tool_colnameset_names()[1],
   file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::iarc_workdir_get()),
@@ -47,13 +47,13 @@ write_tools_data <- function(
 
   if (file.exists(file) && is.null(overwrite)) {
     if (!interactive()) {
-      stop("* write_tools_data: File ", deparse(file), " already existed ",
-           "so aborted. see ?write_tools_data")
+      stop("* iarc_input_write: File ", deparse(file), " already existed ",
+           "so aborted. see ?iarc_input_write")
     }
-    ow <- ask_yes_no("* write_tools_data: File ", deparse(file),
+    ow <- ask_yes_no("* iarc_input_write: File ", deparse(file),
                      " already exists. overwrite?")
     if (!ow) {
-      message("* iarccrgtools::write_tools_data: Cancelled writing table to ",
+      message("* iarccrgtools::iarc_input_write: Cancelled writing table to ",
               deparse(file), ".")
       return(invisible(NULL))
     }
@@ -61,7 +61,7 @@ write_tools_data <- function(
 
   if (verbose) {
     message(
-      "* iarccrgtools::write_tools_data: collecting and transforming data..."
+      "* iarccrgtools::iarc_input_write: collecting and transforming data..."
     )
   }
   x <- data.table::setDT(mget(col_nms, as.environment(x)))
@@ -112,13 +112,13 @@ write_tools_data <- function(
   )
 
   if (verbose) {
-    message("* iarccrgtools::write_tools_data: ready to write to disk; ",
+    message("* iarccrgtools::iarc_input_write: ready to write to disk; ",
             "first five rows of current dataset:")
     print(utils::head(x))
   }
 
   if (verbose) {
-    message("* iarccrgtools::write_tools_data: writing...")
+    message("* iarccrgtools::iarc_input_write: writing...")
     t_write <- proc.time()
   }
 
@@ -162,13 +162,26 @@ write_tools_data <- function(
   )
   if (verbose) {
     message(
-      "* iarccrgtools::write_tools_data: done writing; ",
+      "* iarccrgtools::iarc_input_write: done writing; ",
       data.table::timetaken(t_write)
     )
   }
   invisible(NULL)
 }
 
+#' @describeIn iarc_input_write Deprecated --- use
+#' `iarccrgtools::iarc_input_write`.
+#' @export
+write_tools_data <- function(
+  x,
+  colnameset.name = tool_colnameset_names()[1],
+  file = tempfile(fileext = ".txt", tmpdir = iarccrgtools::iarc_workdir_get()),
+  overwrite = NULL,
+  verbose = FALSE,
+  fwrite_arg_list = NULL
+) {
+  stop("Deprecated --- use iarccrgtools::iarc_input_write")
+}
 
 
 
@@ -191,8 +204,8 @@ n_file_lines <- function(path) {
 
 
 #' @md
-#' @title IARC CRG Tools Results
-#' @description Read IARC CRG Tools results into R.
+#' @title IARC CRG Tools Output
+#' @description Read IARC CRG Tools output into R.
 #' @template tool_name
 #' @param hash `[character]` (no default)
 #' Hash of input dataset to read into R. See `[iarccrgtools::cache_hash]`.
@@ -212,7 +225,7 @@ n_file_lines <- function(path) {
 #' to the ones you had in input data, that column will gain the name
 #' `"tool_text"` automatically.
 #' @export
-iarc_result_read <- function(
+iarc_output_read <- function(
   tool.name,
   hash,
   input.col.nms = NULL,
@@ -230,14 +243,14 @@ iarc_result_read <- function(
 
     if (verbose) {
       message(
-        "* iarccrgtools::iarc_result_read: attempting to read file from ",
+        "* iarccrgtools::iarc_output_read: attempting to read file from ",
         deparse(unname(file_path))
       )
     }
 
     if (!file.exists(file_path)) {
       if (verbose) {
-        message("* iarccrgtools::iarc_result_read: file '", file_path,
+        message("* iarccrgtools::iarc_output_read: file '", file_path,
                 "' did not exist; ",
                 "returning NULL")
       }
@@ -246,7 +259,7 @@ iarc_result_read <- function(
     n_lines <- n_file_lines(path = file_path)
     if (n_lines == 0) {
       if (verbose) {
-        message("* iarccrgtools::iarc_result_read: file '", file_path,
+        message("* iarccrgtools::iarc_output_read: file '", file_path,
                 "' had zero rows; ",
                 "returning NULL")
       }
@@ -284,7 +297,7 @@ iarc_result_read <- function(
       )
     }
     if (verbose) {
-      message("* iarccrgtools::iarc_result_read: file successfully read ")
+      message("* iarccrgtools::iarc_output_read: file successfully read ")
     }
 
 
@@ -302,8 +315,8 @@ iarc_result_read <- function(
   output_list
 }
 
-#' @describeIn iarc_result_read Deprecated --- use
-#' `iarccrgtools::iarc_result_read`.
+#' @describeIn iarc_output_read Deprecated --- use
+#' `iarccrgtools::iarc_output_read`.
 #' @export
 read_tools_results <- function(
   tool.name,
@@ -311,7 +324,7 @@ read_tools_results <- function(
   input.col.nms = NULL,
   verbose = TRUE
 ) {
-  stop("Deprecated --- use iarccrgtools::iarc_result_read")
+  stop("Deprecated --- use iarccrgtools::iarc_output_read")
 }
 
 

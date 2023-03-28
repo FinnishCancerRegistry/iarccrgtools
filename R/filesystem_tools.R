@@ -120,4 +120,3 @@ filesystem_dir_path_is_writable <- function(
   }
   test
 }
-

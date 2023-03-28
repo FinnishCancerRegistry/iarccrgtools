@@ -50,7 +50,7 @@ If pre-existing results are found, the user is prompted whether to use
 the pre-existing results from disk and skip IARC CRG Tools altogether,
 or to proceed to running IARC CRG Tools (again).
 If there were no cached results / the user did not want to read them,
-\verb{[iarccrgtools::write_tools_data]} is called.
+\verb{[iarccrgtools::iarc_input_write]} is called.
 Cache metadata is then updated by calling
 \verb{[iarccrgtools::cache_metadata_append_or_replace]}.
 iarccrgtools attempts to write (sensible, default) parameters
@@ -84,7 +84,7 @@ Tools.
 With the data and parameters in place, the user is next informed what
 they have to do in IARC CRG Tools.
 When permission is given to read the data into R,
-\verb{[iarccrgtools::iarc_result_read]} is called.
+\verb{[iarccrgtools::iarc_output_read]} is called.
 Finally, if \code{clean = TRUE}, \verb{[iarccrgtools::cache_clean_hash]} for the
 hash of the dataset given by the user.
 
