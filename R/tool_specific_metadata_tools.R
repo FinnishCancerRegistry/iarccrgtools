@@ -287,17 +287,8 @@ tool_column_explanation <- function(
   cn <- col_specs[["column_name"]]
   ci <- col_specs[["info"]]
 
-
   ci[match(col.nms, cn, nomatch = NA_integer_)]
-
 }
-
-
-
-
-
-
-
 
 tool_output_file_paths <- function(
     dir,
@@ -319,10 +310,6 @@ tool_output_file_paths <- function(
   file_paths
 }
 
-
-
-
-
 tool_input_file_path <- function(
     dir,
     tool.name
@@ -332,12 +319,3 @@ tool_input_file_path <- function(
 
   filesystem_path_normalise(paste0(dir, "\\", tool.name, "_input.txt"))
 }
-
-
-
-
-
-
-
-
-
