@@ -42,6 +42,11 @@ use `iarccrgtools::iarc_exe_path_guess``.
 `iarccrgtools::interact_with_tool` now accepts `icdo3_topography` value with
 up to five characters.
 
+`iarccrgtools::interact_with_tool` now no longer requires `subject_id`,
+`record_id` to be of class integer --- it can be any class. Remember that
+the class of each column in results read into R is ultimately decided by
+`data.table::fread`.
+
 ### Object iarccrgtools::set_tools_exe_path news:
 
 `iarccrgtools::set_tools_exe_path` no longer usable ---
