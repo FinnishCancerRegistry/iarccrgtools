@@ -55,6 +55,12 @@ use `iarccrgtools::iarc_exe_path_guess``.
 \code{iarccrgtools::iarc_exe_dir_path_guess} no longer usable.
 }
 
+\subsection{Object iarccrgtools::interact_with_tool news:}{
+
+\code{iarccrgtools::interact_with_tool} now accepts \code{icdo3_topography} value with
+up to five characters.
+}
+
 \subsection{Object iarccrgtools::set_tools_exe_path news:}{
 
 \code{iarccrgtools::set_tools_exe_path} no longer usable ---

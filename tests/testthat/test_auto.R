@@ -11,8 +11,15 @@ if (interactive()) {
     iarccrgtools::iarc_workdir_set(dir_path)
 
     tool_name <- "multiple_primary"
+    col_nm_set <- paste0("all_", tool_name)
     iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
-      paste0("mandatory_", tool_name), n.rows = 10L
+      col_nm_set, n.rows = 10L
+    )
+    iarc_df[["icdo3_topography"]] <- sub(
+      "(?=[0-9]$)",
+      ".",
+      paste0("C", iarc_df[["icdo3_topography"]]),
+      perl = TRUE
     )
     if ("subject_id" %in% names(iarc_df)) {
       iarc_df[["subject_id"]][1:3] <- 1L

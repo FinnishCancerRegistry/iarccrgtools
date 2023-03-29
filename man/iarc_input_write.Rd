@@ -51,7 +51,7 @@ what's happening}
 
 \item{fwrite_arg_list}{\verb{[NULL, list]}
 
-Passed to \link[fwf:fwf]{fwf::fwf_write} arg \code{fwrite_arg_list}. The following defaults are
+Passed to \code{fwf::fwf_write} arg \code{fwrite_arg_list}. The following defaults are
 internally:
 \itemize{
 \item \code{sep = ";"}

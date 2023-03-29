@@ -22,7 +22,7 @@
 #' what's happening
 #' @param fwrite_arg_list `[NULL, list]`
 #'
-#' Passed to [fwf::fwf_write] arg `fwrite_arg_list`. The following defaults are
+#' Passed to `fwf::fwf_write` arg `fwrite_arg_list`. The following defaults are
 #' internally:
 #' - `sep = ";"`
 #' - `dec = ","`

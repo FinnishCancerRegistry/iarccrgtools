@@ -162,6 +162,9 @@ assert_tools_data <- function(
   lapply(seq_along(col_nms), function(col_no) {
     col_nm <- col_nms[col_no]
     col_class <- col_classes[col_no]
+    if (col_class == "any") {
+      return(NULL)
+    }
     has_class <- inherits(data[[col_nm]], col_class)
     if (!has_class) {
       stop("column ", deparse(col_nm), " was expected to have class ",

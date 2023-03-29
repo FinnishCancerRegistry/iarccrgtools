@@ -294,6 +294,11 @@ interact_with_tool <- function(
   # particular caching and parameter/setting files.
   # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2022-11-03", "0.2.28")
   
+  # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2023-03-29", "0.3.0")
+  # `iarccrgtools::interact_with_tool` now accepts `icdo3_topography` value with
+  # up to five characters.
+  # @codedoc_comment_block news("iarccrgtools::interact_with_tool", "2023-03-29", "0.3.0")
+  
   # @codedoc_comment_block details(iarccrgtools::interact_with_tool)
   # @details
   # `iarccrgtools::interact_with_tool` performs the following steps.

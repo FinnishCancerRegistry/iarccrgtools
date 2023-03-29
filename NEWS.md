@@ -37,6 +37,11 @@ use `iarccrgtools::iarc_exe_path_guess``.
 
 `iarccrgtools::iarc_exe_dir_path_guess` no longer usable.
 
+### Object iarccrgtools::interact_with_tool news:
+
+`iarccrgtools::interact_with_tool` now accepts `icdo3_topography` value with
+up to five characters.
+
 ### Object iarccrgtools::set_tools_exe_path news:
 
 `iarccrgtools::set_tools_exe_path` no longer usable ---
