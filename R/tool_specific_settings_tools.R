@@ -1,5 +1,3 @@
-
-
 #' @title IARC CRG Tools Settings
 #' @description
 #' Tools to handle settings files included in this package.
@@ -80,7 +78,6 @@ tool_settings_are_available <- function(colnameset.name) {
   colnameset.name %in% tsa[["colnameset_name"]]
 }
 
-
 #' @export
 #' @rdname tool_settings
 #' @template dir_path
@@ -133,4 +130,3 @@ tool_settings_copy <- function(
 
   invisible(NULL)
 }
-

@@ -1,5 +1,3 @@
-
-
 parameter_dir_path_virtual <- function() {
   # @codedoc_comment_block details(iarccrgtools:::parameter_dir_path_virtual)
   # The virtual dir is assumed to be found at
@@ -66,8 +64,6 @@ parameter_file_path <- function() {
   return(file_path)
 }
 
-
-
 parameter_file_read <- function() {
   # @codedoc_comment_block iarccrgtools:::parameter_file_read
   # `iarccrgtools:::parameter_file_read` reads the parameter file at the path
@@ -76,7 +72,6 @@ parameter_file_read <- function() {
   path <- parameter_file_path()
   readLines(path)
 }
-
 
 parameter_file_write <- function(x, verbose = TRUE) {
   # @codedoc_comment_block iarccrgtools:::parameter_file_write
@@ -171,6 +166,3 @@ parameter_file_contents <- function(
   ]
   return(c(input_file_path, output_file_path, parameter_line))
 }
-
-
-

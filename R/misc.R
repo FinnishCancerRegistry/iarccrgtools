@@ -1,8 +1,3 @@
-
-
-
-
-
 ask_yes_no <- function(
   ...
 ) {
@@ -35,9 +30,6 @@ ask_yes_no <- function(
   )
 }
 
-
-
-
 raise_internal_error <- function(
   ...
 ) {
@@ -53,50 +45,7 @@ raise_internal_error <- function(
 
 }
 
-
-
-
-
-
 str_extract <- function(x, pattern, ...) {
   m <- regexpr(pattern = pattern, text = x, ...)
   regmatches(x = x, m = m)
 }
-
-
-
-
-
-
-seconds_elapsed <- function(t) {
-  stopifnot(
-    inherits(t, "proc_time")
-  )
-  proc.time()["elapsed"] - t["elapsed"]
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

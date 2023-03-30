@@ -1,7 +1,3 @@
-
-
-
-
 iarc_dataset <- function(
     data,
     tool.name
@@ -28,9 +24,6 @@ iarc_dataset <- function(
   data.table::setattr(df, "colnameset_name", used_set_name)
   df
 }
-
-
-
 
 # @param how `[character]` (mandatory, default `"interactively"`)
 # - `"interactively"`: the user must open IARC CRG Tools manually and interact
@@ -243,9 +236,6 @@ interface_with_tool <- function(
   data_list
 }
 
-
-
-
 automate_tool <- function(
     data,
     tool.name,
@@ -260,10 +250,6 @@ automate_tool <- function(
     how = "automatically"
   )
 }
-
-
-
-
 
 #' @title IARC CRG Tools R Interface
 #' @description
@@ -317,8 +303,6 @@ interact_with_tool <- function(
     how = "interactively"
   )
 }
-
-
 
 #' @export
 #' @rdname interact_with_tool

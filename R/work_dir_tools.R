@@ -1,4 +1,3 @@
-
 #' @name work_dir
 #' @title IARC CRG Tools Working Directory
 #' @description

@@ -86,11 +86,6 @@ tool_colnameset_name_to_tool_name <- function(colnameset.name) {
   sub("(^all_)|(^optional_)|(^mandatory_)", "", colnameset.name)
 }
 
-
-
-
-
-
 #' @export
 #' @rdname tool_specific_metadata
 #' @template tool_name
@@ -109,7 +104,6 @@ tool_colnameset_names <- function() {
                          rep(tool_nms, each = 3))
   c(tool_set_nms, "all")
 }
-
 
 #' @export
 #' @rdname tool_specific_metadata
@@ -139,9 +133,7 @@ tool_colnameset <- function(
   }
 
   col_specs[["column_name"]][col_specs[[col_specs_col_nm]]]
-
 }
-
 
 #' @export
 #' @rdname tool_specific_metadata
@@ -206,7 +198,6 @@ tool_colnameset_example_dataset <- function(
   }
   return(df[])
 }
-
 
 #' @export
 #' @rdname tool_specific_metadata

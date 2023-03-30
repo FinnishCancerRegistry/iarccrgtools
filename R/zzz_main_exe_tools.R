@@ -1,8 +1,3 @@
-
-
-
-
-
 #' @title IARC CRG Tools Executable Path
 #' @name exe_path
 #' @description
@@ -15,7 +10,6 @@
 #' Executable path will be stored for the duration of the ongoing R session.
 #' If this package is somehow unloaded or reloaded, the setting will reset.
 NULL
-
 
 iarc_exe_file_name <- function() {
   "IARCcrgTools.EXE"
