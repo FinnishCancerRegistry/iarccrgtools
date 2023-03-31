@@ -1,5 +1,3 @@
-
-
 filesystem_dir_of_path <- function(path) {
   ## - if is existing dir, return path
   ## - if is existing (non-directory) file path, return dir of this file
@@ -25,9 +23,6 @@ filesystem_dir_of_path <- function(path) {
 
 }
 
-
-
-
 filesystem_path_normalise <- function(path, double.slash = FALSE) {
   stopifnot(
     is.character(path)
@@ -50,48 +45,9 @@ filesystem_path_normalise <- function(path, double.slash = FALSE) {
 
 }
 
-
-
 filesystem_file_path_extension <- function(file) {
   str_extract(file, pattern = "(?<=\\.)\\w{1,}$", perl = TRUE)
 }
-
-
-
-
-filesystem_file_path_is_writable <- function(
-    file.paths
-) {
-  vapply(file.paths, function(file_path) {
-    assert_file_path(file_path)
-    bat_lines <- c(
-      "2>nul (",
-      paste0("  >>\"", file_path, "\" (call )"),
-      ") && (echo 1) || (echo 0)"
-    )
-
-    tf <- tempfile(pattern = "tmp_iarccrgtools_bat_",
-                   fileext = ".bat")
-
-    writeLines(bat_lines, tf)
-
-    output <- system2(
-      command = tf,
-      stdout = TRUE,
-      stderr = TRUE
-    )
-    output <- output[output %in% c("0", "1")]
-    switch(
-      output,
-      "0" = FALSE,
-      "1" = TRUE,
-      raise_internal_error("could not determine writability of file ",
-                           file_path)
-    )
-  }, logical(1))
-}
-
-
 
 filesystem_dir_path_is_writable <- function(
     dir.path
