@@ -20,7 +20,6 @@ if (readline(": ") == "y") {
     iarccrgtools:::multiple_primary_validation_result
 }
 
-
 usethis::use_data(tools,
                   column_specifications,
                   tool_output_files,

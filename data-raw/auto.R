@@ -19,7 +19,12 @@ if ("subject_id" %in% names(iarc_df)) {
 if ("record_order" %in% names(iarc_df)) {
   iarc_df[["record_order"]][1:3] <- 1:3
 }
-
+iarc_df[["icdo3_topography"]] <- sub(
+  "(?=[0-9]$)",
+  ".",
+  paste0("C", iarc_df[["icdo3_topography"]]),
+  perl = TRUE
+)
 auto <- iarccrgtools:::interface_with_tool(
   iarc_df, tool.name = tool_name, clean = FALSE, how = "automatically"
 )
