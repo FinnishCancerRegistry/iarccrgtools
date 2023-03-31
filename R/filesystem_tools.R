@@ -7,10 +7,7 @@ filesystem_dir_of_path <- function(path) {
     length(path) == 1,
     is.character(path)
   )
-  has_ext <- grepl(
-    pattern = "\\.[[:alnum:]]{1,10}$",
-    x = path
-  )
+  has_ext <- filesystem_file_path_extension(path) != ""
   if (dir.exists(path)) {
     return(path)
   } else if (file.exists(path) || has_ext) {
@@ -38,15 +35,17 @@ filesystem_path_normalise <- function(path, double.slash = FALSE) {
     path <- gsub("[\\/]+", "\\\\\\\\", path, fixed = FALSE)
   }
 
-  # e.g. \\\\solaris\\drive\\dir\\
   path <- ifelse(substr(path, 1, 1) == "\\", paste0("\\", path), path)
-
   path
 
 }
 
 filesystem_file_path_extension <- function(file) {
-  str_extract(file, pattern = "(?<=\\.)\\w{1,}$", perl = TRUE)
+  out <- str_extract(file, pattern = "(?<=\\.)\\w{1,}$", perl = TRUE)
+  if (identical(out, character(0L))) {
+    out <- ""
+  }
+  return(out)
 }
 
 filesystem_dir_path_is_writable <- function(
@@ -55,24 +54,19 @@ filesystem_dir_path_is_writable <- function(
   assert_dir_path(dir.path)
 
   tf <- tempfile(pattern = "file_", tmpdir = dir.path, fileext = ".tmp")
-
   on.exit({
     if (file.exists(tf)) {
-      file.remove(tf)
+      unlink(tf, force = TRUE)
     }
   })
 
   test <- tryCatch(
-    {
+    expr = {
       writeLines("test string", con = tf)
       TRUE
     },
-    error = function(e) e,
-    warning = function(w) w
+    error = function(e) FALSE,
+    warning = function(w) FALSE
   )
-
-  if (!identical(test, TRUE)) {
-    test <- FALSE
-  }
-  test
+  return(test)
 }
