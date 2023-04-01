@@ -265,9 +265,12 @@ automate_tool <- function(
 #' @template verbose
 #' @export
 #' @eval c(
-#' codedoc::codedoc_lines(
-#'   "^details\\(iarccrgtools::interact_with_tool\\)$"
-#' )
+#'   codedoc::codedoc_lines(
+#'     "^examples\\(iarccrgtools::interact_with_tool\\)$"
+#'   ),
+#'   codedoc::codedoc_lines(
+#'     "^details\\(iarccrgtools::interact_with_tool\\)$"
+#'   )
 #' )
 interact_with_tool <- function(
     data,
@@ -295,6 +298,32 @@ interact_with_tool <- function(
   # `iarccrgtools::interact_with_tool` performs the following steps.
   # @codedoc_insert_comment_block details(iarccrgtools:::interface_with_tool)
   # @codedoc_comment_block details(iarccrgtools::interact_with_tool)
+  
+  # @codedoc_comment_block examples(iarccrgtools::interact_with_tool)
+  # @examples
+  #
+  # # iarccrgtools::interact_with_tool
+  # \dontrun{
+  # @codedoc_comment_block R_package_example(iarccrgtools)
+  # dir_path <- tempdir()
+  # iarccrgtools::iarc_workdir_set(dir_path)
+  #
+  # tool_name <- "check"
+  # subset <- "mandatory"
+  # iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
+  #   paste0(subset, "_", tool_name), n.rows = 10L
+  # )
+  # results <- iarccrgtools::interact_with_tool(
+  #   iarc_df, tool.name = tool_name, clean = TRUE
+  # )
+  #
+  # result_df <- iarccrgtools::connect_tool_results_to_observations(
+  #   record.ids = iarc_df[["record_id"]], tool.results = results
+  # )
+  # @codedoc_comment_block R_package_example(iarccrgtools)
+  # }
+  # @codedoc_comment_block examples(iarccrgtools::interact_with_tool)
+
   interface_with_tool(
     data = data,
     tool.name = tool.name,

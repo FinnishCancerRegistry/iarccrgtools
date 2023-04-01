@@ -100,3 +100,26 @@ and any text in \code{tool_text} is collected into a separate column
 (e.g. \code{multiple_primary_input.exl}); therefore the columns in the output of
 \code{connect_tool_results_to_observations} vary by tool used.
 }
+\examples{
+
+# iarccrgtools::interact_with_tool
+\dontrun{
+dir_path <- tempdir()
+iarccrgtools::iarc_workdir_set(dir_path)
+
+tool_name <- "check"
+subset <- "mandatory"
+iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
+  paste0(subset, "_", tool_name), n.rows = 10L
+)
+results <- iarccrgtools::interact_with_tool(
+  iarc_df, tool.name = tool_name, clean = TRUE
+)
+
+result_df <- iarccrgtools::connect_tool_results_to_observations(
+  record.ids = iarc_df[["record_id"]], tool.results = results
+)
+}
+
+
+}
