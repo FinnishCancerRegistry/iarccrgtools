@@ -9,3 +9,4 @@
 ^sandbox.R$
 ^dev$
 ^.*\.code-workspace$
+^LICENSE\.md$
