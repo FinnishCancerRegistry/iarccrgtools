@@ -5,3 +5,4 @@
 *.Rproj
 iarc_test/
 tmp
+*.code-workspace

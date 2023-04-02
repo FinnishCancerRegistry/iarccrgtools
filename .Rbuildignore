@@ -8,3 +8,4 @@
 ^tmp$
 ^sandbox.R$
 ^dev$
+^.*\.code-workspace$
