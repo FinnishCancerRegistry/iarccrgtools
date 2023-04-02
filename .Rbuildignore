@@ -10,3 +10,4 @@
 ^dev$
 ^.*\.code-workspace$
 ^LICENSE\.md$
+^\.github$

@@ -6,6 +6,8 @@
 \title{\code{iarccrgtools}}
 \description{
 Utilities for using IARC CRG Tools on Windows via R.
+
+\href{https://github.com/WetRobot/iarccrgtools/actions/workflows/R-CMD-check.yaml}{\if{html}{\figure{https://github.com/WetRobot/iarccrgtools/actions/workflows/R-CMD-check.yaml/badge.svg}}}
 }
 \section{Recommended installation}{
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{devtools::install_github(

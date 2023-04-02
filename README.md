@@ -6,6 +6,10 @@
 
 Utilities for using IARC CRG Tools on Windows via R.
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/WetRobot/iarccrgtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/WetRobot/iarccrgtools/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # Recommended installation
 
 ```r
