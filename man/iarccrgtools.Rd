@@ -11,8 +11,8 @@ Utilities for using IARC CRG Tools on Windows via R.
 }
 \section{Recommended installation}{
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{devtools::install_github(
-  "FinnishCancerRegistry/iarccrgtools",
-  ref = readline("enter latest tag on github: ")
+"FinnishCancerRegistry/iarccrgtools",
+ref = readline("enter latest tag on github: ")
 )
 }\if{html}{\out{</div>}}
 }
@@ -24,14 +24,14 @@ iarccrgtools::iarc_workdir_set(dir_path)
 tool_name <- "check"
 subset <- "mandatory"
 iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
-  paste0(subset, "_", tool_name), n.rows = 10L
+paste0(subset, "_", tool_name), n.rows = 10L
 )
 results <- iarccrgtools::interact_with_tool(
-  iarc_df, tool.name = tool_name, clean = TRUE
+iarc_df, tool.name = tool_name, clean = TRUE
 )
 
 result_df <- iarccrgtools::connect_tool_results_to_observations(
-  record.ids = iarc_df[["record_id"]], tool.results = results
+record.ids = iarc_df[["record_id"]], tool.results = results
 )
 }\if{html}{\out{</div>}}
 }

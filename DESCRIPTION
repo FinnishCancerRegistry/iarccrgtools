@@ -1,27 +1,27 @@
-Package: iarccrgtools
 Type: Package
+Package: iarccrgtools
 Title: IARC CRG Tools Utilities
 Version: 0.2.30
 Author: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Maintainer: Joonas Miettinen <joonas.miettinen@cancer.fi>
 Description: Utilities for using IARC CRG Tools on Windows via R.
+License: MIT + file LICENSE
+URL: https://github.com/FinnishCancerRegistry/iarccrgtools
+BugReports: https://github.com/FinnishCancerRegistry/iarccrgtools/issues
+Depends:
+    R (>= 2.10)
 Imports:
     data.table,
     digest,
     fwf (>= 0.1.0)
-Depends:
-    R (>= 2.10)
 Suggests:
-    utils,
+    codedoc,
     testthat,
-    codedoc
-License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.3
-Roxygen: list(markdown = TRUE)
-URL: https://github.com/FinnishCancerRegistry/iarccrgtools
-BugReports: https://github.com/FinnishCancerRegistry/iarccrgtools/issues
+    utils
 Remotes:
     github::FinnishCancerRegistry/fwf
-    github::FinnishCancerRegistry/codedoc    
+    github::FinnishCancerRegistry/codedoc
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

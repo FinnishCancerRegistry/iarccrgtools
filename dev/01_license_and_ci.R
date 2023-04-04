@@ -9,6 +9,7 @@ usethis::use_github_action_check_release()
 lines <- readLines(".github/workflows/R-CMD-check.yaml")
 lines <- gsub("ubuntu", "windows", lines)
 writeLines(lines, ".github/workflows/R-CMD-check.yaml")
+desc::desc_normalize()
 s2 <- git2r::status()
 
 if (!identical(s1, s2)) {
