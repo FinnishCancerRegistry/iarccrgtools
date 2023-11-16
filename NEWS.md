@@ -2,42 +2,42 @@
 
 ## News for version 0.3.0
 
-### Object iarccrgtools::get_tool_exe_dir_path news:
+### iarccrgtools::get_tool_exe_dir_path
 
 `iarccrgtools::get_tool_exe_dir_path` no longer usable.
 
-### Object iarccrgtools::get_tool_work_dir news:
+### iarccrgtools::get_tool_work_dir
 
 `iarccrgtools::get_tool_work_dir` no longer usable.
 
-### Object iarccrgtools::get_tools_exe_path news:
+### iarccrgtools::get_tools_exe_path
 
 `iarccrgtools::get_tools_exe_path` no longer usable ---
 use `iarccrgtools::iarc_exe_path_get``.
 
-### Object iarccrgtools::get_tools_install_dir_path news:
+### iarccrgtools::get_tools_install_dir_path
 
 `iarccrgtools::get_tools_install_dir_path` no longer usable.
 
-### Object iarccrgtools::get_tools_work_dir news:
+### iarccrgtools::get_tools_work_dir
 
 `iarccrgtools::get_tools_work_dir` no longer usable ---
 use `iarccrgtools::iarc_workdir_get``.
 
-### Object iarccrgtools::guess_tools_exe_dir_path news:
+### iarccrgtools::guess_tools_exe_dir_path
 
 `iarccrgtools::guess_tools_exe_dir_path` no longer usable.
 
-### Object iarccrgtools::guess_tools_exe_path news:
+### iarccrgtools::guess_tools_exe_path
 
 `iarccrgtools::guess_tools_exe_path` no longer usable ---
 use `iarccrgtools::iarc_exe_path_guess``.
 
-### Object iarccrgtools::iarc_exe_dir_path_guess news:
+### iarccrgtools::iarc_exe_dir_path_guess
 
 `iarccrgtools::iarc_exe_dir_path_guess` no longer usable.
 
-### Object iarccrgtools::interact_with_tool news:
+### iarccrgtools::interact_with_tool
 
 `iarccrgtools::interact_with_tool` now accepts `icdo3_topography` value with
 up to five characters.
@@ -47,12 +47,12 @@ up to five characters.
 the class of each column in results read into R is ultimately decided by
 `data.table::fread`.
 
-### Object iarccrgtools::set_tools_exe_path news:
+### iarccrgtools::set_tools_exe_path
 
 `iarccrgtools::set_tools_exe_path` no longer usable ---
 use `iarccrgtools::iarc_exe_path_set``.
 
-### Object iarccrgtools::set_tools_work_dir news:
+### iarccrgtools::set_tools_work_dir
 
 `iarccrgtools::set_tools_work_dir` no longer usable ---
 use `iarccrgtools::iarc_workdir_set``.
@@ -60,16 +60,16 @@ use `iarccrgtools::iarc_workdir_set``.
 
 ## News for version 0.2.30
 
-### Object iarccrgtools::format_fwf news:
+### iarccrgtools::format_fwf
 
 `iarccrgtools::format_fwf` permanently removed.
 
-### Object iarccrgtools::read_fwf news:
+### iarccrgtools::read_fwf
 
 `iarccrgtools::read_fwf` permanently removed. Use
 `fwf::fwf_read`.
 
-### Object iarccrgtools::write_fwf news:
+### iarccrgtools::write_fwf
 
 `iarccrgtools::write_fwf` permanently removed. Use
 `fwf::fwf_write`.
@@ -77,7 +77,7 @@ use `iarccrgtools::iarc_workdir_set``.
 
 ## News for version 0.2.29
 
-### Object iarccrgtools::create_example news:
+### iarccrgtools::create_example
 
 `iarccrgtools::create_example` permanently removed. Use
 `iarccrgtools::tool_colnameset_example_dataset`.
@@ -85,13 +85,13 @@ use `iarccrgtools::iarc_workdir_set``.
 
 ## News for version 0.2.28
 
-### Object iarccrgtools::interact_with_tool news:
+### iarccrgtools::interact_with_tool
 
 If the virtual directory does not exist, it is now attempted to be
 created. See ?iarccrgtools::interact_with_tool for information about
 what the virtual directory is.
 
-### Object iarccrgtools::interact_with_tool news:
+### iarccrgtools::interact_with_tool
 
 Document what steps `iarccrgtools::interact_with_tool` performs, in
 particular caching and parameter/setting files.

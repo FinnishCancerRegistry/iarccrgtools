@@ -11,8 +11,8 @@ Utilities for using IARC CRG Tools on Windows via R.
 }
 \section{Recommended installation}{
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{devtools::install_github(
-"FinnishCancerRegistry/iarccrgtools",
-ref = readline("enter latest tag on github: ")
+  "FinnishCancerRegistry/iarccrgtools",
+  ref = readline("enter latest tag on github: ")
 )
 }\if{html}{\out{</div>}}
 }
@@ -24,14 +24,14 @@ iarccrgtools::iarc_workdir_set(dir_path)
 tool_name <- "check"
 subset <- "mandatory"
 iarc_df <- iarccrgtools::tool_colnameset_example_dataset(
-paste0(subset, "_", tool_name), n.rows = 10L
+  paste0(subset, "_", tool_name), n.rows = 10L
 )
 results <- iarccrgtools::interact_with_tool(
-iarc_df, tool.name = tool_name, clean = TRUE
+  iarc_df, tool.name = tool_name, clean = TRUE
 )
 
 result_df <- iarccrgtools::connect_tool_results_to_observations(
-record.ids = iarc_df[["record_id"]], tool.results = results
+  record.ids = iarc_df[["record_id"]], tool.results = results
 )
 }\if{html}{\out{</div>}}
 }
@@ -39,50 +39,50 @@ record.ids = iarc_df[["record_id"]], tool.results = results
 \section{News}{
 
 \subsection{News for version 0.3.0}{
-\subsection{Object iarccrgtools::get_tool_exe_dir_path news:}{
+\subsection{iarccrgtools::get_tool_exe_dir_path}{
 
 \code{iarccrgtools::get_tool_exe_dir_path} no longer usable.
 }
 
-\subsection{Object iarccrgtools::get_tool_work_dir news:}{
+\subsection{iarccrgtools::get_tool_work_dir}{
 
 \code{iarccrgtools::get_tool_work_dir} no longer usable.
 }
 
-\subsection{Object iarccrgtools::get_tools_exe_path news:}{
+\subsection{iarccrgtools::get_tools_exe_path}{
 
 \code{iarccrgtools::get_tools_exe_path} no longer usable ---
 use `iarccrgtools::iarc_exe_path_get``.
 }
 
-\subsection{Object iarccrgtools::get_tools_install_dir_path news:}{
+\subsection{iarccrgtools::get_tools_install_dir_path}{
 
 \code{iarccrgtools::get_tools_install_dir_path} no longer usable.
 }
 
-\subsection{Object iarccrgtools::get_tools_work_dir news:}{
+\subsection{iarccrgtools::get_tools_work_dir}{
 
 \code{iarccrgtools::get_tools_work_dir} no longer usable ---
 use `iarccrgtools::iarc_workdir_get``.
 }
 
-\subsection{Object iarccrgtools::guess_tools_exe_dir_path news:}{
+\subsection{iarccrgtools::guess_tools_exe_dir_path}{
 
 \code{iarccrgtools::guess_tools_exe_dir_path} no longer usable.
 }
 
-\subsection{Object iarccrgtools::guess_tools_exe_path news:}{
+\subsection{iarccrgtools::guess_tools_exe_path}{
 
 \code{iarccrgtools::guess_tools_exe_path} no longer usable ---
 use `iarccrgtools::iarc_exe_path_guess``.
 }
 
-\subsection{Object iarccrgtools::iarc_exe_dir_path_guess news:}{
+\subsection{iarccrgtools::iarc_exe_dir_path_guess}{
 
 \code{iarccrgtools::iarc_exe_dir_path_guess} no longer usable.
 }
 
-\subsection{Object iarccrgtools::interact_with_tool news:}{
+\subsection{iarccrgtools::interact_with_tool}{
 
 \code{iarccrgtools::interact_with_tool} now accepts \code{icdo3_topography} value with
 up to five characters.
@@ -93,13 +93,13 @@ the class of each column in results read into R is ultimately decided by
 \code{data.table::fread}.
 }
 
-\subsection{Object iarccrgtools::set_tools_exe_path news:}{
+\subsection{iarccrgtools::set_tools_exe_path}{
 
 \code{iarccrgtools::set_tools_exe_path} no longer usable ---
 use `iarccrgtools::iarc_exe_path_set``.
 }
 
-\subsection{Object iarccrgtools::set_tools_work_dir news:}{
+\subsection{iarccrgtools::set_tools_work_dir}{
 
 \code{iarccrgtools::set_tools_work_dir} no longer usable ---
 use `iarccrgtools::iarc_workdir_set``.
@@ -108,18 +108,18 @@ use `iarccrgtools::iarc_workdir_set``.
 }
 
 \subsection{News for version 0.2.30}{
-\subsection{Object iarccrgtools::format_fwf news:}{
+\subsection{iarccrgtools::format_fwf}{
 
 \code{iarccrgtools::format_fwf} permanently removed.
 }
 
-\subsection{Object iarccrgtools::read_fwf news:}{
+\subsection{iarccrgtools::read_fwf}{
 
 \code{iarccrgtools::read_fwf} permanently removed. Use
 \code{fwf::fwf_read}.
 }
 
-\subsection{Object iarccrgtools::write_fwf news:}{
+\subsection{iarccrgtools::write_fwf}{
 
 \code{iarccrgtools::write_fwf} permanently removed. Use
 \code{fwf::fwf_write}.
@@ -128,7 +128,7 @@ use `iarccrgtools::iarc_workdir_set``.
 }
 
 \subsection{News for version 0.2.29}{
-\subsection{Object iarccrgtools::create_example news:}{
+\subsection{iarccrgtools::create_example}{
 
 \code{iarccrgtools::create_example} permanently removed. Use
 \code{iarccrgtools::tool_colnameset_example_dataset}.
@@ -137,14 +137,14 @@ use `iarccrgtools::iarc_workdir_set``.
 }
 
 \subsection{News for version 0.2.28}{
-\subsection{Object iarccrgtools::interact_with_tool news:}{
+\subsection{iarccrgtools::interact_with_tool}{
 
 If the virtual directory does not exist, it is now attempted to be
 created. See ?iarccrgtools::interact_with_tool for information about
 what the virtual directory is.
 }
 
-\subsection{Object iarccrgtools::interact_with_tool news:}{
+\subsection{iarccrgtools::interact_with_tool}{
 
 Document what steps \code{iarccrgtools::interact_with_tool} performs, in
 particular caching and parameter/setting files.
