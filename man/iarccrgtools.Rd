@@ -2,6 +2,7 @@
 % Please edit documentation in R/package_iarccrgtools.R
 \docType{package}
 \name{iarccrgtools}
+\alias{iarccrgtools-package}
 \alias{iarccrgtools}
 \title{\code{iarccrgtools}}
 \description{
@@ -153,3 +154,11 @@ particular caching and parameter/setting files.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/FinnishCancerRegistry/iarccrgtools}
+  \item Report bugs at \url{https://github.com/FinnishCancerRegistry/iarccrgtools/issues}
+}
+
+}
