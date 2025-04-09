@@ -19,8 +19,8 @@ Suggests:
     testthat,
     utils
 Remotes:
-    github::FinnishCancerRegistry/fwf,
-    github::FinnishCancerRegistry/codedoc
+    github::FinnishCancerRegistry/fwf@release,
+    github::FinnishCancerRegistry/codedocfwf@release
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
