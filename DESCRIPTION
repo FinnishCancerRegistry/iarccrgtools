@@ -20,7 +20,7 @@ Suggests:
     utils
 Remotes:
     github::FinnishCancerRegistry/fwf@release,
-    github::FinnishCancerRegistry/codedocfwf@release
+    github::FinnishCancerRegistry/codedoc@release
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
